@@ -1,3 +1,5 @@
+from objects import AnimeObject, Node
+
 class Anime():
 
     def __init__():
@@ -9,18 +11,21 @@ class Anime():
             'fields': ','.join(self.anime_fields),
         }
         uri = f'anime/{id}'
-        return self._api_handler.call(uri, params=params)
+        return AnimeObject(self._api_handler.call(uri, params=params))
 
     # need pagination here
-    def search_anime(self, keyword, limit=20):
+    def search_anime(self, keyword, limit=20, nsfw=None):
         uri = 'anime'
         params = {
             "q": keyword,
             'fields': ','.join(self.anime_fields),
-            'limit': limit
+            'limit': limit,
+            'nsfw': True if nsfw is True else False
         }
-        return self._api_handler.call(uri=uri, params=params)
+        temp = self._api_handler.call(uri=uri, params=params)
+        return [Node(list(temp_object.values())) for temp_object in temp]
 
+    # TODO objectify anime ranking
     def get_anime_ranking(self, ranking_type="all", limit=20):
         uri = 'anime/ranking'
         ranking_types = [
@@ -36,6 +41,7 @@ class Anime():
         }
         return self._api_handler.call(uri=uri, params=params)
 
+    # TODO objectify seasonal anime
     def get_seasonal_anime(self, year, season, sort="anime_score", limit=20):
         seasons = ["winter", "spring", "summer", "fall"]
         if season not in season:
@@ -53,6 +59,7 @@ class Anime():
         }
         return self._api_handler.call(uri=uri, params=params)
 
+    # TODO objectify suggested anime
     def get_suggested_anime(self, limit=20):
         uri = 'anime/suggestions'
         params = {"limit": limit}

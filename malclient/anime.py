@@ -1,4 +1,4 @@
-from objects import AnimeObject, Node
+from .objects import AnimeObject, Node
 
 class Anime():
 

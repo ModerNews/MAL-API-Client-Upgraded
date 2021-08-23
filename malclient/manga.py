@@ -1,4 +1,4 @@
-from objects import MangaObject, Node
+from .objects import MangaObject, Node
 
 class Manga():
 

@@ -116,10 +116,12 @@ class Author(object):
 class AnimeObject(object):
     def __init__(self, d: dict):
         # check if dictionary contains user specific data
+        if not isinstance(d, dict):
+            d = d.d
         self._d: dict = d
         try:
             assert 'my_list_status' in self._d.keys()
-            self.my_list_status: AnimeListStatus = AnimeListStatus(self.id, self.title, self.main_picture,
+            self.my_list_status: AnimeListStatus = AnimeListStatus(d['id'], d['title'], d['main_picture'],
                                                                    d['my_list_status']['score'],
                                                                    d['my_list_status']['status'],
                                                                    d['my_list_status']['num_episodes_watched'],
@@ -170,7 +172,7 @@ class AnimeObject(object):
 
 class MangaObject(object):
     def __init__(self, d):
-        self._d: dict = d
+        self._d: dict = d if isinstance(d, dict) else d.d
         try:
             assert 'my_list_status' in self._d.keys()
             self.my_list_status: AnimeListStatus = AnimeListStatus(d['id'], d['title'], d['main_picture'],

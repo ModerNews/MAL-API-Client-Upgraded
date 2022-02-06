@@ -1,11 +1,11 @@
-import collections
 import requests
-from .exceptions import APIException
+from .exceptions import *
 from .json_serializer import JsonResponse
+
+__all__ = ['APICaller']
 
 
 class APICaller(object):
-
     def __init__(self, base_url, headers):
         self._base_url = base_url
         self._headers = headers
@@ -39,10 +39,20 @@ class APICaller(object):
                         list_reponse.append(new_dict)
                     return list_reponse
                 else:
-                    return JsonResponse(response_json)
+                    return response_json
             elif method == "delete":
                 return response.status_code
         else:
-            raise APIException(
-                f"Error: {response.status_code}: {response.content}, {url}",
-                response)
+            if response.status_code == "400" or response.status_code.lower() == "400 bad request":
+                raise BadRequest(response)
+            elif response.status_code == "401" or response.status_code.lower() == "401 unauthorized":
+                raise Unauthorized(response)
+            elif response.status_code == "403" or response.status_code.lower() == "403 forbidden":
+                raise Forbidden(response)
+            elif response.status_code == "404" or response.status_code.lower() == "404 not found":
+                raise NotFound(response)
+            else:
+                raise APIException(response.status_code, response.content, response)
+
+
+

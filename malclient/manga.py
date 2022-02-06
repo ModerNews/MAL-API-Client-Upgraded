@@ -1,24 +1,71 @@
-from .objects import MangaObject, Node
+from .models import MangaObject, Node
 
-class Manga():
+__manga_fields__ = [
+            "id",
+            "title",
+            "main_picture",
+            "alternative_titles",
+            "start_date",
+            "end_date",
+            "synopsis",
+            "mean",
+            "rank",
+            "popularity",
+            "num_list_users",
+            "num_scoring_users",
+            "nsfw,created_at",
+            "updated_at",
+            "media_type,status",
+            "genres",
+            "my_list_status",
+            "num_volumes",
+            "num_chapters",
+            "authors{first_name,last_name}",
+            "pictures",
+            "background",
+            "related_anime",
+            "related_manga",
+            "recommendations",
+        ]
 
-    def __init__():
+
+class Manga:
+    def __init__(self):
         return
 
-    def search_manga(self, query, limit=20, nsfw=None):
+    def search_manga(self, keyword: str, limit: int = 20, nsfw: bool = None, manga_fields=None) -> list[Node]:
+        """
+        Lookup manga with keyword phrase on https://myanimelist.net
+
+        :param keyword: string to look by
+        :param limit: number of queries returned
+        :param nsfw: boolean enabling/disabling nsfw filter
+
+        :returns: list of manga Node objects
+        """
+        if nsfw is None:
+            nsfw = self.nsfw
         uri = 'manga'
         params = {
-            "q": query,
+            "q": keyword,
             "limit": limit,
-            "fields": ','.join(self.manga_fields),
-            'nsfw': True if nsfw is True else False
+            "fields": ','.join(__manga_fields__),
+            'nsfw': nsfw
         }
-        return [Node(list(temp_object.values())) for temp_object in self._api_handler.call(uri, params=params)]
+        return [Node(**temp_object) for temp_object in self._api_handler.call(uri, params=params)]
 
     def get_manga_details(self, manga_id):
+        """
+        Get full info about manga with provided id
+
+        :param id: id on https://myanimelist.net
+
+        :returns: AnimeObject for requested id
+        """
         uri = f'manga/{manga_id}'
-        params = {"fields": ','.join(self.manga_fields)}
-        return MangaObject(self._api_handler.call(uri, params=params))
+        params = {"fields": ','.join(__manga_fields__)}
+        data = self._api_handler.call(uri, params=params)
+        return MangaObject(**data)
 
     # TODO objectify manga ranking
     def get_manga_ranking(self, ranking_type="manga", limit=20):

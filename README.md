@@ -1,80 +1,103 @@
-# MAL-API-Client
-A third party object oriented python3 client library for MyAnimeList's newly released official REST API.
+# MAL-API-Client-Upgraded
+A third party object-oriented python3 client library for MyAnimeList's official REST API.
+Originally created by [@JFryy](https://github.com/JFryy/MAL-API-Client), dropped around 2 years ago, picked up and rewritten by ModerNews to fit more modern standards and new REST API functions.
 
 ## Installation
 
-`pip install malclient --user`
+`pip install git+https://github.com/ModerNews/MAL-API-Client-Upgraded`
 
 
 ## Authentication
-This client library requires an OAuth2 access token to interface with. While OAuth2 is fantastic for delegating user authorization to third party web applications, it isn't the easiest authentication option for simple automation or scraping (what this client's ideal scope is generally guided towards). Luckily [there is a great guide for authenticating an application and retreiving credentials for this api](https://myanimelist.net/blog.php?eid=835707) which you can use with this library. Please refer to that guide 
+Client library uses OAuth2 authorization, all you need to do is register your app [here](https://myanimelist.net/apiconfig), and generate access token.  
+You can do it old-fashioned way using [this tutorial](https://myanimelist.net/blog.php?eid=835707)  
+Or you can use function implemented in API
+```python
+import malclient
 
+print(malclient.generate_token("<YOUR_CLIENT_ID>", "<YOUR_CLIENT_SECRET>"))
+```
+Although remember to call it only once and, then use the token generated this way, optionally with `Client.refresh_bearer_token` method  
 Once an access token is retrieved, you can simply authenticate with this api with the following:
 ```python
 import malclient
 
-client = malclient.Client()
-client.init(access_token="<your-access-token>")
+client = malclient.Client(access_token="<YOUR_ACCESS_TOKEN>")
 
 ```
 
-If this client library is being used in a long running context, you may want to be periodically refresh your access token. This can be done via the following, and will update future request headers with the newly returned `access_token` and set your new `refresh_token` as an attribute ou can refference.
+As mentioned previously, if your scared that your token will time out you can also utilize `Client.refresh_bearer_token` function
 ```python
- client.refresh_bearer_token(
-            client_id="<your-client-id>",
-            client_secret="<your-client-secret>",
-            refresh_token="<your-refresh-token>"))
+client.refresh_bearer_token(
+          client_id="<your-client-id>",
+          client_secret="<your-client-secret>",
+          refresh_token="<your-refresh-token>"))
 ```
 
-For any other issues regarding authentication, [please refer to the following guide](https://myanimelist.net/blog.php?eid=835707). There are some potential plans in the future for more simple authentication methods, however for now this seems to be the method sanctioned by MyAnimeList.
+For any other issues regarding authentication, [please refer to the following guide](https://myanimelist.net/blog.php?eid=835707).
 
 ## Quick Start Examples
-Below are some examples to demonstrate some usage of this client for MAL's REST API. Please note that responses are serialized to python objects for reffering to attributes directly, however printing the object at top level will return a dictionary for finding attributes.
+I contained some examples of usage of this wrapper, note that all responses are converted to python objects using pydantic
 
 ```python
-    import malclient
+import malclient
 
-    client = malclient.Client()
-    client.init(access_token="<your-access-token>")
+# nsfw filter is enabled by default, although it's recommended to disable it if your results are missing titles, 
+#  you can also enable/disable it for every query individually 
+client = malclient.Client(access_token="<your-access-token>", nsfw=True)
+
+# search anime, returns list
+anime = client.search_anime("cowboy", limit=20)
+for item in anime:
+    # prints only titles
+    print(item)
+    # prints all attributes of object
+    print(repr(item))
     
-    # search anime, returns list
-    anime = client.search_anime("cowboy", limit=20)
-    for ani in anime:
-        # print all attributes as dictionary for refference
-        print(ani)
-        # print attribute
-        print(ani.title)
+# search anime, returns list
+manga = client.search_manfa("Monogatari", limit=20)
+for item in manga:
+    # prints only titles
+    print(manga)
+    # prints all attributes of object
+    print(repr(manga))
 
-    # Get individual anime by ID
-    anime = client.get_anime_details(1)
-    print(anime.title)
-    print(anime)
+# Get individual anime by ID
+anime = client.get_anime_details(1)
+print(anime)
+print(repr(anime))
 
-    # Update Myanime List based off of search results
-    anime = client.search_anime("dorohedoro", limit=1)
-    my_status = {
-        'status': 'watching',
-        'score': 7
-    }
-    status = client.update_anime_my_list_status(anime[0].id, my_status)
+# Update anime List based off of search results
+anime = client.search_anime("Monogatari", limit=1)
+my_status = {
+    'status': 'watching',
+    'score': 7
+}
+status = client.update_anime_my_list_status(anime[0].id, my_status)
 
-    # get my user info
-    print(client.get_user_info())
-    # get my anime list (you can get other users by name)
-    for anime in client.get_user_anime_list():
-        print(anime.title, anime.score)
+# get authenticated user info
+print(client.get_user_info())
 
-    # Update manga list based off search results
-    manga = client.search_manga('doro')
-    my_status = {
-        'status': 'reading',
-        'score': 9
-    }
-    client.update_manga_my_list_status(manga[0].id, my_status)
+# get user anime list (you can get other users by specifying username attribute)
+for anime in client.get_user_anime_list():
+    print(anime.title, anime.score)
+
+# Update manga list based off search results
+manga = client.search_manga('doro')
+my_status = {
+    'status': 'reading',
+    'score': 9
+}
+client.update_manga_my_list_status(manga[0].id, my_status)
 ```
-
-#### To Dos
+### To Dos
 - [] Pagination support
-- [] Alternative authentication methods when they become available upstream
-- [] Unit and Integration tests
-- [] Fix Token Refresh Method
+- [] Enumerators for statuses (completed, reading, watching, etc.)
+- [] Field filters for manga and anime queries
+- [] Rewrite boards (currently disabled)
+- [] Rewrite my list updaters
+- [] Finish RTD documentation (I'm making something using sphinx)
+- [] Probably something else that will pop out midways
+
+## P.S.
+I'm looking forward to developing this library (even if myanimelist doesn't really look like developing API), and counting for your contributions  
+If anything bugs you, you can always reach me out at discord Gruzin#0911

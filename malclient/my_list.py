@@ -1,6 +1,6 @@
 class MyList():
 
-    def __init__():
+    def __init__(self):
         return
 
     def update_anime_my_list_status(self, anime_id, data):

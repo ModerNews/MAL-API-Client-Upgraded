@@ -1,3 +1,5 @@
+import re
+
 from .request_handler import APICaller
 from .anime import Anime
 from .my_list import MyList
@@ -5,109 +7,73 @@ from .boards import Boards
 from .manga import Manga
 import requests
 import logging
+import secrets
+import os
 
 
-class Client(Anime, Manga, MyList, Boards):
+__all__ = ['generate_token', 'Client']
+
+
+def generate_token(client_id, client_secret):
     """
-    MAL Base Client Object for interfacing with the MAL REST API.
+    Helper function to generate access token **do not use to refresh token**
+    :param client_id: your client id (available on myanimelist developer page)
+    :param client_secret: your client secret (available on myanimelist developer page)
     """
+    token = secrets.token_urlsafe(100)
+    code_verifier = code_challenge = token[:128]
 
-    def __init__(self):
-        self.anime_fields = [
-            "id",
-            "title",
-            "main_picture",
-            "alternative_titles",
-            "start_date",
-            "end_date",
-            "synopsis",
-            "mean",
-            "rank",
-            "popularity",
-            "num_list_users",
-            "num_scoring_users",
-            "nsfw",
-            "created_at",
-            "updated_at",
-            "media_type",
-            "status",
-            "genres",
-            "my_list_status",
-            "num_episodes",
-            "start_season",
-            "broadcast",
-            "source",
-            "average_episode_duration"
-            "rating",
-            "pictures",
-            "background",
-            "related_anime",
-            "related_manga",
-            "recommendations",
-            "studios",
-            "statistic",
-        ]
+    # This is just to keep sure token is long enough, if you didn't change anything round here it should not raise an error
+    assert len(token) != 128
 
-        self.manga_fields = [
-            "id",
-            "title",
-            "main_picture",
-            "alternative_titles",
-            "start_date",
-            "end_date",
-            "synopsis",
-            "mean",
-            "rank",
-            "popularity",
-            "num_list_users",
-            "num_scoring_users",
-            "nsfw,created_at",
-            "updated_at",
-            "media_type,status",
-            "genres",
-            "my_list_status",
-            "num_volumes",
-            "num_chapters",
-            "authors{first_name,last_name}",
-            "pictures",
-            "background",
-            "related_anime",
-            "related_manga",
-            "recommendation",
-        ]
-        return
+    print(
+        "Authorization is not fully userless, you will have to press 'ALLOW' and copy paste url that you will be redirected to")
+    input("Press Enter to open authorization page...")
 
-    def init(self, access_token=None, refresh_token=None):
-        base_url = "https://api.myanimelist.net/"
-        version = 'v2'
-        self.base_url = base_url + f'{version}/'
+    authorization_url = f"https://myanimelist.net/v1/oauth2/authorize?response_type=code&client_id={client_id}&state=RequestID42&code_challenge={code_challenge}&code_challenge_method=plain"
+    os.system(f"explorer \"{authorization_url}\"")
+
+    code_url = input("Paste url you were redirected to\n")
+    code = re.search(r"(?<=code=)(\w+)", code_url).group()
+
+    assert code
+
+    base_url = "https://myanimelist.net/v1/"
+    uri = "oauth2/token"
+    headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+    api_handler = APICaller(base_url=base_url, headers=headers)
+    data = {
+        "client_id": client_id,
+        "client_secret": client_secret,
+        "code": code,
+        "code_verifier": code_verifier,
+        "grant_type": "authorization_code"
+    }
+
+    return api_handler.call(uri=uri, method="post", data=data)
+
+
+class Client(Anime, Manga, MyList):
+    """
+    Base class for interacting with MyAnimeList REST API
+    :attr access_token: string containing access token obtained through OAuth2
+    :attr refresh_token: string containing refresh token obtained through OAuth2
+    """
+    def __init__(self, *, access_token: str, refresh_token: str = None, nsfw: bool = False):
+        self.nsfw = nsfw
+        self._base_url = "https://api.myanimelist.net/"
+        self._version = "v2"
+        self._base_url = self._base_url + f'{self._version}/'
         self.bearer_token = access_token
         self.refresh_token = refresh_token
         self.headers = {
-            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Type': 'application/json',
             'Authorization': f'Bearer {self.bearer_token}'
         }
-        self._api_handler = APICaller(base_url=self.base_url,
+        self._api_handler = APICaller(base_url=self._base_url,
                                       headers=self.headers)
 
-    # retrieve oauth bearer token via username and password... leave this out of the initialization process and leave a seperate method for setting bearer token stuff, this is gross!!!
-    @staticmethod
-    def get_bearer_token(client_id, client_secret, code, code_verifier):
-        base_url = "https://myanimelist.net/v1/"
-        uri = "oauth2/token"
-        headers = {'Content-Type': 'application/x-www-form-urlencoded'}
-        api_handler = APICaller(base_url=base_url, headers=headers)
-        data = {
-            "client_id": client_id,
-            "client_secret": client_secret,
-            "code": code,
-            "code_verifier": code_verifier,
-            "grant_type": "authorization_code"
-        }
-
-        return api_handler.call(uri=uri, method="post", data=data)
-
-    def refresh_bearer_token(self, client_id, client_secret, refresh_token):
+    def refresh_bearer_token(self, client_id: str, client_secret: str, refresh_token: str) -> None:
         base_url = "https://myanimelist.net/v1/"
         uri = "oauth2/token"
         headers = {
@@ -134,6 +100,6 @@ class Client(Anime, Manga, MyList, Boards):
             'Authorization': f'Bearer {response.access_token}',
             'X-MAL-Client-ID': '{}'
         }
-        self._api_handler = APICaller(base_url=self.base_url,
+        self._api_handler = APICaller(base_url=self._base_url,
                                       headers=self.headers)
         return

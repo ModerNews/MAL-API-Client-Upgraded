@@ -43,11 +43,12 @@ class Anime():
 
     def get_anime_details(self, id: int) -> AnimeObject:
         """
+
         Get full info about anime with provided id
 
-        :param id: id on https://myanimelist.net
-
+        :param int id: id on https://myanimelist.net
         :returns: AnimeObject for requested id
+        :rtype: AnimeObject
         """
         id = str(id)
         uri = f'anime/{id}'
@@ -61,11 +62,11 @@ class Anime():
         """
         Lookup anime with keyword phrase on https://myanimelist.net
 
-        :param keyword: string to look by
-        :param limit: number of queries returned
-        :param nsfw: boolean enabling/disabling nsfw filter
-
+        :param str keyword: string to look by
+        :param int limit: number of queries returned
+        :param bool nsfw: boolean enabling/disabling nsfw filter
         :returns: list of anime Node objects
+        :rtype: list[Node]
         """
         if nsfw is None:
             nsfw = self.nsfw

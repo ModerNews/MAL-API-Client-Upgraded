@@ -3,29 +3,33 @@ class MyList():
     def __init__(self):
         return
 
-    def update_anime_my_list_status(self, anime_id, data):
+    def update_my_anime_list_status(self, anime_id, data):
         """
+
         Updates myanimelist status for a given anime, takes payload as dictionary as argument.
         Emit fields to not update. Returns response object.
         example input for data:
-            data = {
-                'status': 'watching',
-                'is_rewatching': False,
-                'score': 0,
-                'watched_episodes': 0,
-                'priority': 0,
-                'num_times_rewatch': 0,
-                'rewatch_value': 0,
-                'tags': '',
-                'comments': ''
-            }
+        ```json
+        data = {
+        'status': 'watching',
+        'is_rewatching': False,
+        'score': 0,
+        'watched_episodes': 0,
+        'priority': 0,
+        'num_times_rewatch': 0,
+        'rewatch_value': 0,
+        'tags': '',
+        'comments': ''
+        }
+        ```
+
         """
         statuses = ["watching, completed, on_hold, dropped, plan_to_watch"]
         uri = f'anime/{anime_id}/my_list_status'
         return self._api_handler.call(method="patch", uri=uri, data=data)
 
     # need another function for adding manga to list
-    def delete_anime_my_list_status(self, anime_id):
+    def delete_my_anime_list_status(self, anime_id):
         uri = f'anime/{anime_id}/my_list_status'
         return (self._api_handler.call("delete"))
 
@@ -47,20 +51,23 @@ class MyList():
         params = {"fields": "anime_statistics"}
         return self._api_handler.call(uri)
 
-    def update_manga_my_list_status(self, manga_id, data):
+    def update_my_manga_list_status(self, manga_id, data):
         """
+
         Updates myanimelist status for a given manga, takes payload as dictionary as argument.
         Emit fields to not update. Returns response object.
         example input for data:
-            data = {
-                'status': 'watching',
-                'is_rereading': False,
-                'score': 0,
-                'num_volumes_read': 0,
-                'num_chapters_read': 0,
-                'priority': 0,
-                'comments': ''
-            }
+        ```json
+        data = {
+        'status': 'watching',
+        'is_rereading': False,
+        'score': 0,
+        'num_volumes_read': 0,
+        'num_chapters_read': 0,
+        'priority': 0,
+        'comments': ''
+        }
+        ```
         """
         uri = f'manga/{manga_id}/my_list_status'
         statuses = [
@@ -68,7 +75,7 @@ class MyList():
         ]
         return self._api_handler.call(method="patch", uri=uri, data=data)
 
-    def delete_manga_list_status(self, manga_id):
+    def delete_my_manga_list_status(self, manga_id):
         uri = f'manga/{manga_id}/my_list_status'
         return (self._api_handler.call("delete"))
 

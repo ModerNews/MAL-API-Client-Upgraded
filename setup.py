@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="malclient",
+    name="malclient-upgraded",
     version="1.0",
     author="ModerNews",
     author_email="",
@@ -21,5 +21,4 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires="3.6"
 )

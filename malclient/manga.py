@@ -42,6 +42,7 @@ class Manga:
         :param nsfw: boolean enabling/disabling nsfw filter
 
         :returns: list of manga Node objects
+        :rtype: list[Node]
         """
         if nsfw is None:
             nsfw = self.nsfw
@@ -60,7 +61,8 @@ class Manga:
 
         :param id: id on https://myanimelist.net
 
-        :returns: AnimeObject for requested id
+        :returns: MangaObject for requested id
+        :rtype: MangaObject
         """
         uri = f'manga/{manga_id}'
         params = {"fields": ','.join(__manga_fields__)}

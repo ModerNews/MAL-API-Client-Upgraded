@@ -1,6 +1,5 @@
 import requests
 from .exceptions import *
-from .json_serializer import JsonResponse
 
 __all__ = ['APICaller']
 

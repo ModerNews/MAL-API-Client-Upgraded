@@ -2,6 +2,9 @@
 A third party object-oriented python3 client library for MyAnimeList's official REST API.
 Originally created by [@JFryy](https://github.com/JFryy/MAL-API-Client), dropped around 2 years ago, picked up and rewritten by ModerNews to fit more modern standards and new REST API functions.
 
+## Documentation
+There is first version of docs available, [check it out](https://mal-api-client-upgraded.readthedocs.io)
+
 ## Installation
 
 `pip install git+https://github.com/ModerNews/MAL-API-Client-Upgraded`
@@ -95,7 +98,6 @@ client.update_manga_my_list_status(manga[0].id, my_status)
 - [] Field filters for manga and anime queries
 - [] Rewrite boards (currently disabled)
 - [] Rewrite my list updaters
-- [] Finish RTD documentation (I'm making something using sphinx)
 - [] Probably something else that will pop out midways
 
 ## P.S.

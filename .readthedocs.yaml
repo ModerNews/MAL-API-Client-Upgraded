@@ -1,0 +1,10 @@
+version: 1.1.1
+
+build:
+  os: "Windows 11 Home"
+  tools:
+    python: "3.9"
+
+# Build from the docs/ directory with Sphinx
+sphinx:
+  configuration: docs/conf.py

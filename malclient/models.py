@@ -5,8 +5,11 @@ from typing import Union, Optional
 from pydantic import BaseModel
 
 __all__ = ['Genre', 'Asset', 'Nsfw', 'Broadcast', 'Node', 'Relation', 'RelationType', 'AnimeListStatus', 'Rating',
-           'Recommendation', 'Season', 'Studio', 'MyAnimeListStatus', 'AnimeType', 'AnimeStatus', 'Source',
-           'AnimeObject', 'MyMangaListStatus', 'MangaType', 'MangaStatus', 'MangaObject']
+           'Recommendation', 'Season', 'AnimeSeason', 'Studio', 'MyAnimeListStatus', 'AnimeType', 'AnimeStatus', 'Source',
+           'AnimeObject', 'MyMangaListStatus', 'MangaType', 'MangaStatus', 'MangaObject', 'PagedResult', 'RankingType',
+           'Sorting', "MyListSorting"]
+
+from malclient import exceptions
 
 
 class MALBaseModel(BaseModel):
@@ -112,6 +115,83 @@ class Recommendation(MALBaseModel):
     node: Node
 
 
+class PagedResult(list):
+    """
+
+    List of objects with paging support
+
+    """
+    def __init__(self, seq, page_link: dict):
+        self._page = page_link
+        super().__init__(seq)
+
+    def fetch_next_page(self, client):
+        try:
+            result = client._api_handler.call(uri=self._page["next"].replace(client._base_url, ''))
+        except KeyError:
+            raise exceptions.NotFound("There is no next _page for this query")
+        return PagedResult([Node(**temp_object) for temp_object in result["data"]], result["paging"])
+
+    def fetch_previous_page(self, client):
+        try:
+            result = client._api_handler.call(uri=self._page["previous"].replace(client._base_url, ''))
+        except KeyError:
+            raise exceptions.NotFound("There is no previous _page for this query")
+        return PagedResult([Node(**temp_object) for temp_object in result["data"]], result["paging"])
+
+
+class RankingType(Enum):
+    """
+
+    Representation of type of ranking
+    * **All** - Top Anime Series
+    * **Airing** - Top Airing Anime
+    * **Upcoming** - Top Upcoming Anime
+    * **TV** - Top TV Anime Series
+    * **OVA** - Top OVA Anime Series
+    * **Special** - Top Anime Specials
+    * **Popular** - Top Anime by Popularity
+    * **Favorite** - Top Favorited Anime
+    """
+    All = 'all'
+    Airing = 'airing'
+    Upcoming = 'upcoming'
+    TV = 'tv'
+    OVA = 'ova'
+    Movie = 'movie'
+    Special = 'special'
+    Popular = 'bypopularity'
+    Favorite = 'favorite'
+
+
+class Sorting(Enum):
+    """
+
+    Representation of seasonal anime sorting
+    * **Score** - Sorted by score
+    * **User_Num** - Sorted by number of users in list
+    """
+    Score = "anime_score"
+    User_Num = "anime_num_list_users"
+
+
+class MyListSorting(Enum):
+    """
+
+    Sorting options for User Anime List
+    * **ListScore** - Sorted by score given by user
+    * **LastUpdate** - Sorted by most recently updated
+    * **Title** - Sorted by title
+    * **StartDate** - Sorted by broadcast start date
+    * **Id** - Sorted by ID
+    """
+    ListScore = 'list_score'
+    LastUpdate = 'list_updated_at'
+    Title = "anime_title"
+    StartDate =  "anime_start_date"
+    Id = "anime_id"
+
+
 class Rating(Enum):
     """
 
@@ -132,7 +212,14 @@ class Rating(Enum):
     Rx = 'rx'
 
 
-class Season(MALBaseModel):
+class Season(Enum):
+    Winter = 'winter'
+    Spring = 'spring'
+    Summer = 'summer'
+    Fall = 'fall'
+
+
+class AnimeSeason(MALBaseModel):
     """
 
     Representation of anime season (f.e. winter 2022)
@@ -253,8 +340,8 @@ class AnimeObject(MALBaseModel):
     title: str
     main_picture: Optional[Asset]
     alternative_titles: Optional[dict]
-    start_date: Union[str, datetime.date] #  strptime(d['start_date'], '%Y-%m-%d').date()
-    end_date: Union[str, datetime.date] #  strptime(d['end_date'], '%Y-%m-%d').date()
+    start_date: Union[datetime.date, str] #  strptime(d['start_date'], '%Y-%m-%d').date()
+    end_date: Union[datetime.date, str, None] #  strptime(d['end_date'], '%Y-%m-%d').date()
     synopsis: Optional[str]
     mean: Optional[float]
     rank: Optional[int]
@@ -269,7 +356,7 @@ class AnimeObject(MALBaseModel):
     status: AnimeStatus
     my_list_status: Optional[MyAnimeListStatus]
     num_episodes: int
-    start_season: Optional[Season]
+    start_season: Optional[AnimeSeason]
     broadcast: Optional[Broadcast]
     source: Optional[Source]
     average_episode_duration: Optional[int]
@@ -356,8 +443,8 @@ class MangaObject(MALBaseModel):
     title: str
     main_picture: Optional[Asset]
     alternative_titles: Optional[dict]
-    start_date: Union[str, datetime.date, None]  # strptime(d['start_date'], '%Y-%m-%d').date()
-    end_date: Union[str, datetime.date, None]  # strptime(d['end_date'], '%Y-%m-%d').date()
+    start_date: Union[datetime.date, str, None]  # strptime(d['start_date'], '%Y-%m-%d').date()
+    end_date: Union[datetime.date, str, None]  # strptime(d['end_date'], '%Y-%m-%d').date()
     synopsis: Optional[str]
     mean: Optional[float]
     rank: Optional[int]

@@ -1,3 +1,6 @@
+from models import *
+from typing import Union
+
 class MyList():
 
     def __init__(self):
@@ -33,15 +36,13 @@ class MyList():
         uri = f'anime/{anime_id}/my_list_status'
         return (self._api_handler.call("delete"))
 
-    def get_user_anime_list(self, username="@me", sort=None, status=None, limit=100):
+    def get_user_anime_list(self, username="@me", *, sort: Union[MyListSorting, str] = None, status: str=None, limit: int = 100):
         uri = f'users/{username}/animelist'
-        sort_options = [
-            "list_score", "list_updated_at", "anime_title", "anime_start_date",
-            "anime_id"
-        ]
-        if sort not in sort_options:
-            sort = "list_score"
-        params = {"sort": sort, "limit": limit, "fields": "list_status"}
+        if not sort:
+            sort = MyListSorting.ListScore
+        elif isinstance(sort, str):
+            sort = MyListSorting(sort.lower())
+        params = {"sort": sort.value, "limit": limit, "fields": "list_status"}
         if status is not None:
             params['status'] = status
         return self._api_handler.call(uri=uri, params=params)

@@ -53,7 +53,7 @@ class Manga:
             "fields": ','.join(__manga_fields__),
             'nsfw': nsfw
         }
-        return [Node(**temp_object) for temp_object in self._api_handler.call(uri, params=params)]
+        return [Node(**temp_object) for temp_object in self._api_handler.call(uri, params=params)["data"]]
 
     def get_manga_details(self, manga_id):
         """

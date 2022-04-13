@@ -19,8 +19,8 @@ def generate_token(client_id: str,
 
     Helper function to generate access token **do not use this to refresh token**
 
-    :ivar str client_id: your client id (available on myanimelist developer page)
-    :ivar str client_secret: your client secret (available on myanimelist developer page)
+    :ivar str client_id: your client id (available on myanimelist developer _page)
+    :ivar str client_secret: your client secret (available on myanimelist developer _page)
     :return: Freshly generated Access Token for your client
     :rtype: dict[str, str]
     """
@@ -31,11 +31,11 @@ def generate_token(client_id: str,
     assert 48 <= len(code_verifier) <= 128
 
     print("Authorization is not fully userless, you will have to press 'ALLOW' and copy paste url that you will be redirected to")
-    input("Press Enter to open authorization page...")
+    input("Press Enter to open authorization _page...")
 
     authorization_url = f"https://myanimelist.net/v1/oauth2/authorize?response_type=code&client_id={client_id}&state=RequestID42&code_challenge={code_challenge}&code_challenge_method=plain"
     os.system(f"explorer \"{authorization_url}\"")
-
+    print(f"If opening url failed enter it manually into your browser:\n{authorization_url}")
     code_url = input("Paste url you were redirected to\n")
     code = re.search(r"(?<=code=)(\w+)", code_url).group()
 
@@ -53,7 +53,7 @@ def generate_token(client_id: str,
         "grant_type": "authorization_code"
     }
 
-    return api_handler.call(uri=uri, method="post", data=data).json()
+    return api_handler.call(uri=uri, method="post", data=data)
 
 
 class Client(Anime, Manga, MyList):

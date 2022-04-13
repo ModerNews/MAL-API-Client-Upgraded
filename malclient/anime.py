@@ -1,6 +1,10 @@
-from typing import Optional, Literal
+from typing import Optional, Literal, Union
 
-from .models import AnimeObject, Node, Season
+from .models import AnimeObject, Node, Season, PagedResult, RankingType, Sorting
+
+__node_fields__ = ['id',
+                   'title',
+                   'main_picture']
 
 # Fields that will be requested from myanimelist server by default
 __anime_fields__ = [
@@ -56,9 +60,8 @@ class Anime():
         data = self._api_handler.call(uri, params=params)
         return AnimeObject(**data)
 
-    # TODO need pagination here
-    #  anime_fields misses usage
-    def search_anime(self, keyword: str, *, limit: int = 20, nsfw: Optional[bool] = None, anime_fields=None) -> list[Node]:
+    # TODO anime_fields misses usage
+    def search_anime(self, keyword: str, *, limit: int = 20, nsfw: Optional[bool] = None, anime_fields=None) -> PagedResult[Node]:
         """
         Lookup anime with keyword phrase on https://myanimelist.net
 
@@ -74,45 +77,82 @@ class Anime():
         params = {
             "q": keyword,
             'limit': limit,
-            'fields': ','.join(__anime_fields__),
+            'fields': ','.join(__node_fields__),
             'nsfw': nsfw
         }
         temp = self._api_handler.call(uri=uri, params=params)
-        return [Node(**temp_object) for temp_object in temp]
+        return PagedResult([Node(**temp_object) for temp_object in temp["data"]], temp["paging"])
 
-    # TODO objectify anime ranking
-    def get_anime_ranking(self, ranking_type: str = "all", limit: int = 20) -> dict:
+    def get_anime_ranking(self, *, ranking_type: Union[RankingType, str] = RankingType.All, limit: int = 50) -> PagedResult[Node]:
+        """
+        Gets list of anime from MyAnimeList rankings
+
+        :param Union[RankingType, str] ranking_type: [Optional] Name of ranking from which you want list to be fetched, default to Top Anime
+        :param int limit: [Optional] Number of ranking entries to fetch, 50 by default
+        :return: List of entries fetched from MyAnimeList with paging support
+        :rtype: PagedResult[None]
+        """
+        if isinstance(ranking_type, str):
+            try:
+                RankingType(ranking_type.lower())
+            except:
+                raise ValueError(f"ranking_type can't be '{ranking_type}'")
         uri = 'anime/ranking'
-        ranking_types = [
-            "all", "airing", "upcoming", "tv", "ova", "movie", "special",
-            "bypopularity", "favorite"
-        ]
-        if ranking_type not in ranking_types:
-            return
         params = {
-            "ranking_type": ranking_types,
-            "fields": ','.join(self.anime_fields),
+            "ranking_type": ranking_type.value,
+            "fields": ','.join(__node_fields__),
             "limit": limit
         }
-        return self._api_handler.call(uri=uri, params=params)
+        temp = self._api_handler.call(uri=uri, params=params)
+        return PagedResult([Node(**anime) for anime in temp["data"]], temp["paging"])
 
-    # TODO objectify seasonal anime
-    def get_seasonal_anime(self, season: Season, sort: Literal["anime_score", "anime_num_list_users"] = "anime_score", limit: int = 20) -> dict:
+    SeasonT = Union[Season, Literal['winter', 'spring', 'summer', 'autumn']]
+
+    def get_seasonal_anime(self, season: SeasonT, year: int, *, sort: Union[Sorting, str] = Sorting.Score, limit: int = 50) -> PagedResult[Node]:
+        """
+        Gets list of anime from specified season
+
+        :param SeasonT season: Season of year to fetch
+        :param int year: Year to fetch
+        :param Union[Sorting, str] sort: Sorting method for query, default to Score
+        :param int limit: [Optional] Number of series to fetch, 50 by default
+        :return: List of entries fetched from MyAnimeList with paging support
+        :rtype: PagedResult[None]
+        """
+        if isinstance(sort, str):
+            try:
+                Sorting(sort.lower())
+            except:
+                raise ValueError(f"sort can't be '{sort}'")
+
+        if isinstance(season, str):
+            try:
+                Season(season.lower())
+            except:
+                raise ValueError(f"season can't be '{season}'")
 
         sort_options = ["anime_score", "anime_num_list_users"]
         if sort.lower() not in sort_options:
             raise AttributeError('Sort must be "anime_score" or "anime_num_list_users"')
-        uri = f'anime/season/{season.year}/{season.season}'
+        uri = f'anime/season/{year}/{season.season}'
 
         params = {
             "sort": sort.lower(),
             "limit": limit,
-            "fields": ','.join(self.anime_fields)
+            "fields": ','.join(__anime_fields__)
         }
-        return self._api_handler.call(uri=uri, params=params)
+        temp = self._api_handler.call(uri=uri, params=params)
+        return PagedResult(temp['data'], temp['paging'])
 
-    # TODO objectify suggested anime
-    def get_suggested_anime(self, limit: int = 20):
+    def get_suggested_anime(self, limit: int = 20) -> PagedResult[Node]:
+        """
+        Gets list of suggested anime suggested for user
+
+        :return: List of entries fetched from MyAnimeList with paging support
+        :rtype: PagedResult[None]
+        """
         uri = 'anime/suggestions'
         params = {"limit": limit}
-        return self._api_handler.call(uri=uri, params=params)
+
+        temp = self._api_handler.call(uri=uri, params=params)
+        return PagedResult(temp['data'], temp['paging'])

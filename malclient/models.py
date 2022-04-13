@@ -1,6 +1,6 @@
 import datetime
 from enum import Enum
-from typing import Union, Optional
+from typing import Union, Optional, List
 
 from pydantic import BaseModel
 
@@ -349,7 +349,7 @@ class AnimeObject(MALBaseModel):
     num_list_users: int
     num_scoring_users: int
     nsfw: Optional[Nsfw]
-    genres: list[Genre]
+    genres: List[Genre]
     created_at: Union[datetime.datetime, str] #  strptime(d['created_at'], '%Y-%m-%dT%H:%M:%S%z')
     updated_at: Union[datetime.datetime, str] #  strptime(d['updated_at'], '%Y-%m-%dT%H:%M:%S%z')
     media_type: AnimeType
@@ -361,12 +361,12 @@ class AnimeObject(MALBaseModel):
     source: Optional[Source]
     average_episode_duration: Optional[int]
     rating: Optional[Rating]
-    studios: list[Studio]
-    pictures: list[Asset]
+    studios: List[Studio]
+    pictures: List[Asset]
     background: Optional[str]
-    related_anime: list[Relation]
-    related_manga: list[Relation]
-    recommendations: list[Recommendation]
+    related_anime: List[Relation]
+    related_manga: List[Relation]
+    recommendations: List[Recommendation]
 
     def __eq__(self, other):
         return self.id == other.id
@@ -418,7 +418,7 @@ class MyMangaListStatus(MALBaseModel):
     # priority: int
     # num_times_reread: int
     # reread_value: int
-    # tags: list[str]
+    # tags: List[str]
     # comments: str
 
 
@@ -452,7 +452,7 @@ class MangaObject(MALBaseModel):
     num_list_users: int
     num_scoring_users: int
     nsfw: Optional[Nsfw]
-    genres: list[Genre]
+    genres: List[Genre]
     created_at: Union[datetime.datetime, str]  # strptime(d['created_at'], '%Y-%m-%dT%H:%M:%S%z')
     updated_at: Union[datetime.datetime, str]  # strptime(d['updated_at'], '%Y-%m-%dT%H:%M:%S%z')
     media_type: MangaType
@@ -460,11 +460,11 @@ class MangaObject(MALBaseModel):
     my_list_status: Optional[MyMangaListStatus]
     num_volumes: int
     num_chapters: int
-    pictures: list[Asset]
+    pictures: List[Asset]
     background: Optional[str]
-    related_anime: list[Relation]
-    related_manga: list[Relation]
-    recommendations: list[Recommendation]
+    related_anime: List[Relation]
+    related_manga: List[Relation]
+    recommendations: List[Recommendation]
 
     def __eq__(self, other):
         return id == other.id

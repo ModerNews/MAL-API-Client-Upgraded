@@ -1,4 +1,4 @@
-from typing import Optional, Literal, Union
+from typing import Optional, Literal, Union, List
 
 from .models import AnimeObject, Node, Season, PagedResult, RankingType, Sorting
 

@@ -1,4 +1,5 @@
 from .models import MangaObject, Node
+from typing import List
 
 __manga_fields__ = [
             "id",
@@ -33,7 +34,7 @@ class Manga:
     def __init__(self):
         return
 
-    def search_manga(self, keyword: str, limit: int = 20, nsfw: bool = None, manga_fields=None) -> list[Node]:
+    def search_manga(self, keyword: str, limit: int = 20, nsfw: bool = None, manga_fields=None) -> List[Node]:
         """
         Lookup manga with keyword phrase on https://myanimelist.net
 

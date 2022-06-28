@@ -31,7 +31,7 @@ __anime_fields__ = [
             "start_season",
             "broadcast",
             "source",
-            "average_episode_duration"
+            "average_episode_duration",
             "rating",
             "pictures",
             "background",
@@ -121,23 +121,23 @@ class Anime():
         """
         if isinstance(sort, str):
             try:
-                Sorting(sort.lower())
+                sort = Sorting(sort.lower())
             except:
                 raise ValueError(f"sort can't be '{sort}'")
 
         if isinstance(season, str):
             try:
-                Season(season.lower())
+                season = Season(season.lower())
             except:
                 raise ValueError(f"season can't be '{season}'")
 
         sort_options = ["anime_score", "anime_num_list_users"]
-        if sort.lower() not in sort_options:
+        if sort.value.lower() not in sort_options:
             raise AttributeError('Sort must be "anime_score" or "anime_num_list_users"')
-        uri = f'anime/season/{year}/{season.season}'
+        uri = f'anime/season/{year}/{season.value}'
 
         params = {
-            "sort": sort.lower(),
+            "sort": sort.value.lower(),
             "limit": limit,
             "fields": ','.join(__anime_fields__)
         }

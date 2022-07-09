@@ -5,7 +5,7 @@ from unittest import mock
 import malclient
 import pytest
 
-from malclient.models import Season, Sorting
+from malclient.Datamodels.models import Season, Sorting
 from malclient.anime import __anime_fields__
 
 ANIME_RESPONSE = {

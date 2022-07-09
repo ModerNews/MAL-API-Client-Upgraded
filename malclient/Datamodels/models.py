@@ -1,6 +1,7 @@
 import datetime
 from enum import Enum
-from typing import Union, Optional, List
+from typing import Union, Optional
+from __future__ import annotations
 
 from pydantic import BaseModel
 
@@ -69,7 +70,7 @@ class Node(MALBaseModel):
     """
     id: int
     title: str
-    main_picture: Asset
+    main_picture: Optional[Asset]
 
     def __str__(self):
         return self.title
@@ -258,7 +259,7 @@ class Broadcast(MALBaseModel):
 
     """
     day_of_the_week: str
-    start_time: datetime.time
+    start_time: Optional[datetime.time]
 
 
 class MyAnimeListStatus(MALBaseModel):
@@ -336,37 +337,37 @@ class AnimeObject(MALBaseModel):
     Model of anime fetched from myanimelist
 
     """
-    id: int
-    title: str
+    id: Optional[int]
+    title: Optional[str]
     main_picture: Optional[Asset]
     alternative_titles: Optional[dict]
-    start_date: Union[datetime.date, str] #  strptime(d['start_date'], '%Y-%m-%d').date()
+    start_date: Union[datetime.date, str, None] #  strptime(d['start_date'], '%Y-%m-%d').date()
     end_date: Union[datetime.date, str, None] #  strptime(d['end_date'], '%Y-%m-%d').date()
     synopsis: Optional[str]
     mean: Optional[float]
     rank: Optional[int]
     popularity: Optional[int]
-    num_list_users: int
-    num_scoring_users: int
+    num_list_users: Optional[int]
+    num_scoring_users: Optional[int]
     nsfw: Optional[Nsfw]
-    genres: List[Genre]
-    created_at: Union[datetime.datetime, str] #  strptime(d['created_at'], '%Y-%m-%dT%H:%M:%S%z')
-    updated_at: Union[datetime.datetime, str] #  strptime(d['updated_at'], '%Y-%m-%dT%H:%M:%S%z')
-    media_type: AnimeType
-    status: AnimeStatus
+    genres: Union[list[Genre], None] #  There are series that have no genres on database, like this: 'Katsudou Shashin'
+    created_at: Union[datetime.datetime, str, None] #  strptime(d['created_at'], '%Y-%m-%dT%H:%M:%S%z')
+    updated_at: Union[datetime.datetime, str, None] #  strptime(d['updated_at'], '%Y-%m-%dT%H:%M:%S%z')
+    media_type: Union[AnimeType, str, None]
+    status: Optional[AnimeStatus]
     my_list_status: Optional[MyAnimeListStatus]
-    num_episodes: int
+    num_episodes: Optional[int]
     start_season: Optional[AnimeSeason]
     broadcast: Optional[Broadcast]
-    source: Optional[Source]
+    source: Optional[Union[Source, str]]
     average_episode_duration: Optional[int]
     rating: Optional[Rating]
-    studios: List[Studio]
-    pictures: List[Asset]
+    studios: Optional[list[Studio]]
+    pictures: Optional[list[Asset]]
     background: Optional[str]
-    related_anime: List[Relation]
-    related_manga: List[Relation]
-    recommendations: List[Recommendation]
+    related_anime: Optional[list[Relation]]
+    related_manga: Optional[list[Relation]]
+    recommendations: Optional[list[Recommendation]]
 
     def __eq__(self, other):
         return self.id == other.id
@@ -412,13 +413,14 @@ class MyMangaListStatus(MALBaseModel):
     updated_at: Union[datetime.datetime, str] #  Union[datetime.datetime, str].strptime(updated_at, '%Y-%m-%dT%H:%M:%S%z')
     num_chapters_read: int
     num_volumes_read: int
+    # TODO check for possible fields parameter manipulation
     # Those are fields mentioned by documentation, but not present in response JSON
     # start_date: Union[datetime.date, str, None]
     # finish_date: Union[datetime.date, str, None]
     # priority: int
     # num_times_reread: int
     # reread_value: int
-    # tags: List[str]
+    # tags: list[str]
     # comments: str
 
 
@@ -439,32 +441,32 @@ class MangaObject(MALBaseModel):
     Model of manga fetched from myanimelist
 
     """
-    id: int
-    title: str
+    id: Optional[int]
+    title: Optional[str]
     main_picture: Optional[Asset]
     alternative_titles: Optional[dict]
-    start_date: Union[datetime.date, str, None]  # strptime(d['start_date'], '%Y-%m-%d').date()
-    end_date: Union[datetime.date, str, None]  # strptime(d['end_date'], '%Y-%m-%d').date()
+    start_date: Union[str, datetime.date, None]  # strptime(d['start_date'], '%Y-%m-%d').date()
+    end_date: Union[str, datetime.date, None]  # strptime(d['end_date'], '%Y-%m-%d').date()
     synopsis: Optional[str]
     mean: Optional[float]
     rank: Optional[int]
     popularity: Optional[int]
-    num_list_users: int
-    num_scoring_users: int
+    num_list_users: Optional[int]
+    num_scoring_users: Optional[int]
     nsfw: Optional[Nsfw]
-    genres: List[Genre]
-    created_at: Union[datetime.datetime, str]  # strptime(d['created_at'], '%Y-%m-%dT%H:%M:%S%z')
-    updated_at: Union[datetime.datetime, str]  # strptime(d['updated_at'], '%Y-%m-%dT%H:%M:%S%z')
-    media_type: MangaType
-    status: MangaStatus
+    genres: Optional[list[Genre]]
+    created_at: Union[datetime.datetime, str, None]  # strptime(d['created_at'], '%Y-%m-%dT%H:%M:%S%z')
+    updated_at: Union[datetime.datetime, str, None]  # strptime(d['updated_at'], '%Y-%m-%dT%H:%M:%S%z')
+    media_type: Optional[MangaType, str]
+    status: Optional[MangaStatus, str]
     my_list_status: Optional[MyMangaListStatus]
-    num_volumes: int
-    num_chapters: int
-    pictures: List[Asset]
+    num_volumes: Optional[int]
+    num_chapters: Optional[int]
+    pictures: Optional[list[Asset]]
     background: Optional[str]
-    related_anime: List[Relation]
-    related_manga: List[Relation]
-    recommendations: List[Recommendation]
+    related_anime: Optional[list[Relation]]
+    related_manga: Optional[list[Relation]]
+    recommendations: Optional[list[Recommendation]]
 
     def __eq__(self, other):
         return id == other.id

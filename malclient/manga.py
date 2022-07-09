@@ -1,5 +1,5 @@
-from .models import MangaObject, Node
-from typing import List
+from .Datamodels.models import MangaObject, Node
+from __future__ import annotations
 
 __manga_fields__ = [
             "id",
@@ -34,7 +34,7 @@ class Manga:
     def __init__(self):
         return
 
-    def search_manga(self, keyword: str, limit: int = 20, nsfw: bool = None, manga_fields=None) -> List[Node]:
+    def search_manga(self, keyword: str, limit: int = 20, nsfw: bool = None) -> list[Node]:
         """
         Lookup manga with keyword phrase on https://myanimelist.net
 
@@ -67,6 +67,21 @@ class Manga:
         """
         uri = f'manga/{manga_id}'
         params = {"fields": ','.join(__manga_fields__)}
+        data = self._api_handler.call(uri, params=params)
+        return MangaObject(**data)
+
+    def get_manga_fields(self, id: int, *, fields: list[str]) -> MangaObject:
+        """
+
+        Get specific fields from MAL manga entry with provided id
+
+        :param int id: id on https://myanimelist.net
+        :param list[str] fields: list of string field names
+        :returns: MangaObject for requested id
+        :rtype: MangaObject
+        """
+        uri = f'anime/{id}'
+        params = {'fields': 'genres'}
         data = self._api_handler.call(uri, params=params)
         return MangaObject(**data)
 

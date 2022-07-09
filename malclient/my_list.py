@@ -1,5 +1,6 @@
-from .models import *
 from typing import Union
+from .Datamodels.models import MyListSorting
+
 
 class MyList():
 
@@ -36,13 +37,15 @@ class MyList():
         uri = f'anime/{anime_id}/my_list_status'
         return (self._api_handler.call("delete"))
 
-    def get_user_anime_list(self, username="@me", *, sort: Union[MyListSorting, str] = None, status: str=None, limit: int = 100):
+    def get_user_anime_list(self, username="@me", *, sort: Union[MyListSorting, str] = None, status: str = None, limit=100, additional_fields=None):
+        if additional_fields is None:
+            additional_fields = []
         uri = f'users/{username}/animelist'
         if not sort:
             sort = MyListSorting.ListScore
         elif isinstance(sort, str):
             sort = MyListSorting(sort.lower())
-        params = {"sort": sort.value, "limit": limit, "fields": "list_status"}
+        params = {"sort": sort.value, "limit": limit, "fields": ",".join(["list_status"] + additional_fields)}
         if status is not None:
             params['status'] = status
         return self._api_handler.call(uri=uri, params=params)

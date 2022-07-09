@@ -1,6 +1,7 @@
-from typing import Optional, Literal, Union, List
+from typing import Optional, Literal, Union
+from __future__ import annotations
 
-from .models import AnimeObject, Node, Season, PagedResult, RankingType, Sorting
+from .Datamodels.models import AnimeObject, Node, Season, PagedResult, RankingType, Sorting, Genre
 
 __node_fields__ = ['id',
                    'title',
@@ -60,6 +61,21 @@ class Anime():
         data = self._api_handler.call(uri, params=params)
         return AnimeObject(**data)
 
+    def get_anime_fields(self, id: int, *, fields: list[str]) -> AnimeObject:
+        """
+
+        Get specific fields from MAL anime entry with provided id
+
+        :param int id: id on https://myanimelist.net
+        :param list[str] fields: list of string field names
+        :returns: AnimeObject for requested id
+        :rtype: AnimeObject
+        """
+        uri = f'anime/{id}'
+        params = {'fields': 'genres'}
+        data = self._api_handler.call(uri, params=params)
+        return AnimeObject(**data)
+
     # TODO anime_fields misses usage
     def search_anime(self, keyword: str, *, limit: int = 20, nsfw: Optional[bool] = None, anime_fields=None) -> PagedResult[Node]:
         """
@@ -83,12 +99,13 @@ class Anime():
         temp = self._api_handler.call(uri=uri, params=params)
         return PagedResult([Node(**temp_object) for temp_object in temp["data"]], temp["paging"])
 
-    def get_anime_ranking(self, *, ranking_type: Union[RankingType, str] = RankingType.All, limit: int = 50) -> PagedResult[Node]:
+    def get_anime_ranking(self, *, ranking_type: Union[RankingType, str] = RankingType.All, limit: int = 50, offset: int = 0) -> PagedResult[Node]:
         """
         Gets list of anime from MyAnimeList rankings
 
         :param Union[RankingType, str] ranking_type: [Optional] Name of ranking from which you want list to be fetched, default to Top Anime
         :param int limit: [Optional] Number of ranking entries to fetch, 50 by default
+        :param int offset: [Optional] Position from which ranking fetch will start
         :return: List of entries fetched from MyAnimeList with paging support
         :rtype: PagedResult[None]
         """
@@ -101,7 +118,8 @@ class Anime():
         params = {
             "ranking_type": ranking_type.value,
             "fields": ','.join(__node_fields__),
-            "limit": limit
+            "limit": limit,
+            'offset': offset,
         }
         temp = self._api_handler.call(uri=uri, params=params)
         return PagedResult([Node(**anime) for anime in temp["data"]], temp["paging"])

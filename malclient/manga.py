@@ -70,7 +70,7 @@ class Manga:
         data = self._api_handler.call(uri, params=params)
         return MangaObject(**data)
 
-    def get_manga_fields(self, id: int, *, fields: list[str]) -> MangaObject:
+    def get_manga_fields(self, id: int, fields: list[str]) -> MangaObject:
         """
 
         Get specific fields from MAL manga entry with provided id
@@ -80,8 +80,10 @@ class Manga:
         :returns: MangaObject for requested id
         :rtype: MangaObject
         """
+        if len(fields) == 0:
+            raise AttributeError("Fields attribute cannot be empty")
         uri = f'anime/{id}'
-        params = {'fields': 'genres'}
+        params = {'fields': ",".join(fields)}
         data = self._api_handler.call(uri, params=params)
         return MangaObject(**data)
 

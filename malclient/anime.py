@@ -61,7 +61,7 @@ class Anime():
         data = self._api_handler.call(uri, params=params)
         return AnimeObject(**data)
 
-    def get_anime_fields(self, id: int, *, fields: list[str]) -> AnimeObject:
+    def get_anime_fields(self, id: int, fields: list[str]) -> AnimeObject:
         """
 
         Get specific fields from MAL anime entry with provided id
@@ -71,8 +71,10 @@ class Anime():
         :returns: AnimeObject for requested id
         :rtype: AnimeObject
         """
+        if len(fields) == 0:
+            raise AttributeError("Fields attribute cannot be empty")
         uri = f'anime/{id}'
-        params = {'fields': 'genres'}
+        params = {'fields': ",".join(fields)}
         data = self._api_handler.call(uri, params=params)
         return AnimeObject(**data)
 

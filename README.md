@@ -6,7 +6,11 @@ Originally created by [@JFryy](https://github.com/JFryy/MAL-API-Client), dropped
 There is first version of docs available, [check it out](https://mal-api-client-upgraded.readthedocs.io)
 
 ## Installation
+**Python 3.9 or newer required**, this is due to changes in type hinting guidelines, for more info regarding this issue read [PEP 585](https://peps.python.org/pep-0585/)  
+Install latest stable version from [PyPI](https://pypi.org/project/malclient-upgraded/)  
+`pip install malclient-upgraded`  
 
+Or current unstable version directly from github:  
 `pip install git+https://github.com/ModerNews/MAL-API-Client-Upgraded`
 
 
@@ -92,14 +96,12 @@ my_status = {
 }
 client.update_manga_my_list_status(manga[0].id, my_status)
 ```
-### To Dos
-- [] Pagination support
-- [] Enumerators for statuses (completed, reading, watching, etc.)
-- [] Field filters for manga and anime queries
-- [] Rewrite boards (currently disabled)
-- [] Rewrite my list updaters
-- [] Probably something else that will pop out midways
+### Most Imoprtant To-Do's
+- [ ] Pagination support (in progress)
+- [ ] Rewrite enumerators (clean mess around naming, add missing ones)
+- [ ] Additional functions (for anime/manga details) and parameters (for GET lists, etc.) for fetching specific field-specific data
+- [ ] Rewrite boards (currently disabled)
+- [ ] Rewrite my list updaters
 
-## P.S.
-I'm looking forward to developing this library (even if myanimelist doesn't really look like developing API), and counting for your contributions  
-If anything bugs you, you can always reach me out at discord Gruzin#0911
+## P.S. 
+If anything bugs you, you can always reach me out at discord Gruzin#0911 as well

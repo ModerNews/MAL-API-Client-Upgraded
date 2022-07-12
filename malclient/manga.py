@@ -1,5 +1,5 @@
-from .Datamodels.models import MangaObject, Node
 from __future__ import annotations
+from .Datamodels.models import MangaObject, Node
 
 __manga_fields__ = [
             "id",

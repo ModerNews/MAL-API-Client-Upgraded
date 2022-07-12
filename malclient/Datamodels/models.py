@@ -1,7 +1,7 @@
+from __future__ import annotations
 import datetime
 from enum import Enum
 from typing import Union, Optional
-from __future__ import annotations
 
 from pydantic import BaseModel
 
@@ -457,8 +457,8 @@ class MangaObject(MALBaseModel):
     genres: Optional[list[Genre]]
     created_at: Union[datetime.datetime, str, None]  # strptime(d['created_at'], '%Y-%m-%dT%H:%M:%S%z')
     updated_at: Union[datetime.datetime, str, None]  # strptime(d['updated_at'], '%Y-%m-%dT%H:%M:%S%z')
-    media_type: Optional[MangaType, str]
-    status: Optional[MangaStatus, str]
+    media_type: Union[MangaType, str, None]
+    status: Union[MangaStatus, str, None]
     my_list_status: Optional[MyMangaListStatus]
     num_volumes: Optional[int]
     num_chapters: Optional[int]

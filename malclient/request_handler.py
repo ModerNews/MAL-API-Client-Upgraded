@@ -20,8 +20,6 @@ class APICaller(object):
         if response.status_code < 400:
             if method in ["get", "post", "patch", "put"]:
                 response_json = response.json()
-                # if our response is a list of json objects, lets return a list of objects for
-                # what we need.
                 if response_json and "data" in response_json:
                     list_response = []
                     for json_obj in response_json["data"]:
@@ -50,10 +48,10 @@ class APICaller(object):
                 raise Unauthorized(response)
             elif str(response.status_code) == "403" or str(response.status_code).lower() == "403 forbidden":
                 raise Forbidden(response)
-            elif str(response.status_code) == "404" or str(response.status_code).lower() == "404 not found":
+            elif str(response.dict(response.text)['message']) == "404" or str(response.status_code).lower() == "404 not found":
                 raise NotFound(response)
             else:
-                raise APIException(response.status_code, response.content, response)
+                raise APIException(response.status_code, json.loads(response.text)['message'], response)
 
 
 

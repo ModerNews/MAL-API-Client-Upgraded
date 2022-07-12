@@ -1,5 +1,5 @@
-from typing import Optional, Literal, Union
 from __future__ import annotations
+from typing import Optional, Literal, Union
 
 from .Datamodels.models import AnimeObject, Node, Season, PagedResult, RankingType, Sorting, Genre
 

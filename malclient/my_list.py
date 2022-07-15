@@ -1,5 +1,9 @@
 from typing import Union
+
 from .Datamodels.models import MyListSorting
+from .exceptions import MainAuthRequiredError
+
+__all__ = ["MyList"]
 
 
 class MyList():
@@ -28,12 +32,16 @@ class MyList():
         ```
 
         """
+        if not self.authorized:
+            raise MainAuthRequiredError()
         statuses = ["watching, completed, on_hold, dropped, plan_to_watch"]
         uri = f'anime/{anime_id}/my_list_status'
         return self._api_handler.call(method="patch", uri=uri, data=data)
 
     # need another function for adding manga to list
     def delete_my_anime_list_status(self, anime_id):
+        if not self.authorized:
+            raise MainAuthRequiredError()
         uri = f'anime/{anime_id}/my_list_status'
         return (self._api_handler.call("delete"))
 
@@ -51,6 +59,8 @@ class MyList():
         return self._api_handler.call(uri=uri, params=params)
 
     def get_user_info(self, user_id="@me"):
+        if not self.authorized:
+            raise MainAuthRequiredError()
         uri = f'users/{user_id}'
         params = {"fields": "anime_statistics"}
         return self._api_handler.call(uri)
@@ -73,6 +83,8 @@ class MyList():
         }
         ```
         """
+        if not self.authorized:
+            raise MainAuthRequiredError()
         uri = f'manga/{manga_id}/my_list_status'
         statuses = [
             "reading", "completed", "on_hold", "dropped", "plan_to_read"
@@ -80,6 +92,8 @@ class MyList():
         return self._api_handler.call(method="patch", uri=uri, data=data)
 
     def delete_my_manga_list_status(self, manga_id):
+        if not self.authorized:
+            raise MainAuthRequiredError()
         uri = f'manga/{manga_id}/my_list_status'
         return (self._api_handler.call("delete"))
 

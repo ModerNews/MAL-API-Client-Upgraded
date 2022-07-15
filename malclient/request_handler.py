@@ -48,7 +48,7 @@ class APICaller(object):
                 raise Unauthorized(response)
             elif str(response.status_code) == "403" or str(response.status_code).lower() == "403 forbidden":
                 raise Forbidden(response)
-            elif str(response.dict(response.text)['message']) == "404" or str(response.status_code).lower() == "404 not found":
+            elif str(response.status_code) == "404" or str(response.status_code).lower() == "404 not found":
                 raise NotFound(response)
             else:
                 raise APIException(response.status_code, json.loads(response.text)['message'], response)

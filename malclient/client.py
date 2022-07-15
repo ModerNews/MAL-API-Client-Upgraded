@@ -5,6 +5,8 @@ from .anime import Anime
 from .my_list import MyList
 from .boards import Boards
 from .manga import Manga
+from .exceptions import AuthorizationError
+
 import requests
 import logging
 import secrets
@@ -61,22 +63,40 @@ class Client(Anime, Manga, MyList):
 
     Base class for interacting with MyAnimeList REST API
 
+    :ivar client_id: string containing client_id obtained from [client configuration on MAL](https://myanimelist.net/apiconfig)
     :ivar access_token: string containing access token obtained through OAuth2
     :ivar refresh_token: string containing refresh token obtained through OAuth2
     """
-    def __init__(self, *, access_token: str, refresh_token: str = None, nsfw: bool = False):
+    def __init__(self, *, client_id: str = None, access_token: str = None, refresh_token: str = None, nsfw: bool = False):
         self.nsfw = nsfw
         self._base_url = "https://api.myanimelist.net/"
         self._version = "v2"
         self._base_url = self._base_url + f'{self._version}/'
-        self.bearer_token = access_token
+        self._bearer_token = access_token
+        self._client_id = client_id
         self.refresh_token = refresh_token
-        self.headers = {
-            'Content-Type': 'application/json',
-            'Authorization': f'Bearer {self.bearer_token}'
-        }
-        self._api_handler = APICaller(base_url=self._base_url,
-                                      headers=self.headers)
+        self.authorized = False
+        self._api_handler = None
+        self._connect_to_api()
+
+    def _connect_to_api(self):
+        if self._bearer_token is not None:
+            self.headers = {
+                'Content-Type': 'application/json',
+                'Authorization': f'Bearer {self._bearer_token}'
+            }
+            self._api_handler = APICaller(base_url=self._base_url,
+                                          headers=self.headers)
+            self.authorized = True
+        elif self._client_id is not None:
+            self.headers = {
+                'Content-Type': 'application/json',
+                'X-MAL-CLIENT-ID': self._client_id
+            }
+            self._api_handler = APICaller(base_url=self._base_url,
+                                          headers=self.headers)
+        else:
+            raise AuthorizationError()
 
     def refresh_bearer_token(self,
                              client_id: str,
@@ -93,7 +113,7 @@ class Client(Anime, Manga, MyList):
         base_url = "https://myanimelist.net/v1/"
         uri = "oauth2/token"
         headers = {
-            'Authorization': f'Bearer {self.bearer_token}',
+            'Authorization': f'Bearer {self._bearer_token}',
             'Content-Type': 'application/x-www-form-urlencoded',
             'Authorization': 'basic {}'
         }
@@ -109,7 +129,7 @@ class Client(Anime, Manga, MyList):
         response = api_handler.call(uri=uri, method="post", data=data)
         print("Refreshing token with client id and secret:")
         print(response)
-        self.bearer_token = response["access_token"]
+        self._bearer_token = response["access_token"]
         self.refresh_token = response["refresh_token"]
         self.headers = {
             'Content-Type': 'application/x-www-form-urlencoded',

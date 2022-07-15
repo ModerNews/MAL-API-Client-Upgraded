@@ -2,6 +2,9 @@ from __future__ import annotations
 from typing import Optional, Literal, Union
 
 from .Datamodels.models import AnimeObject, Node, Season, PagedResult, RankingType, Sorting, Genre
+from .exceptions import MainAuthRequiredError
+
+__all__ = ["Anime"]
 
 __node_fields__ = ['id',
                    'title',
@@ -171,6 +174,8 @@ class Anime():
         :return: List of entries fetched from MyAnimeList with paging support
         :rtype: PagedResult[None]
         """
+        if not self.authorized:
+            raise MainAuthRequiredError()
         uri = 'anime/suggestions'
         params = {"limit": limit}
 

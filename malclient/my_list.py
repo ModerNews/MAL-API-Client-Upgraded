@@ -1,12 +1,12 @@
 from typing import Union
 
-from .Datamodels.models import MyListSorting
+from .Datamodels import MyAnimeListSorting, MyMangaListSorting
 from .exceptions import MainAuthRequiredError
 
 __all__ = ["MyList"]
 
 
-class MyList():
+class MyList:
 
     def __init__(self):
         return
@@ -43,16 +43,16 @@ class MyList():
         if not self.authorized:
             raise MainAuthRequiredError()
         uri = f'anime/{anime_id}/my_list_status'
-        return (self._api_handler.call("delete"))
+        return self._api_handler.call("delete")
 
-    def get_user_anime_list(self, username="@me", *, sort: Union[MyListSorting, str] = None, status: str = None, limit=100, additional_fields=None):
+    def get_user_anime_list(self, username="@me", *, sort: Union[MyAnimeListSorting, str] = None, status: str = None, limit=100, additional_fields=None):
         if additional_fields is None:
             additional_fields = []
         uri = f'users/{username}/animelist'
         if not sort:
-            sort = MyListSorting.ListScore
+            sort = MyAnimeListSorting.ListScore
         elif isinstance(sort, str):
-            sort = MyListSorting(sort.lower())
+            sort = MyAnimeListSorting(sort.lower())
         params = {"sort": sort.value, "limit": limit, "fields": ",".join(["list_status"] + additional_fields)}
         if status is not None:
             params['status'] = status
@@ -95,7 +95,7 @@ class MyList():
         if not self.authorized:
             raise MainAuthRequiredError()
         uri = f'manga/{manga_id}/my_list_status'
-        return (self._api_handler.call("delete"))
+        return self._api_handler.call("delete")
 
     def get_user_manga_list(self, username="@me", sort=None, status=None, limit=100):
         uri = f'users/{username}/mangalist'

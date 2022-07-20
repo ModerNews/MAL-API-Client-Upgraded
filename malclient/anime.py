@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import Optional, Literal, Union
 
-from .Datamodels.models import AnimeObject, Node, Season, PagedResult, RankingType, Sorting, Genre
+from .Datamodels import Fields, AnimeObject, Node, Season, PagedResult, AnimeRankingType, SeasonalAnimeSorting
 from .exceptions import MainAuthRequiredError
 
 __all__ = ["Anime"]
@@ -44,8 +44,7 @@ __anime_fields__ = [
             "recommendations",
             "studios"]
 
-
-class Anime():
+class Anime:
     def __init__(self):
         return
 
@@ -102,9 +101,10 @@ class Anime():
             'nsfw': nsfw
         }
         temp = self._api_handler.call(uri=uri, params=params)
-        return PagedResult([Node(**temp_object) for temp_object in temp["data"]], temp["paging"])
+        r_class = Node if fields == Fields.node() else AnimeObject
+        return PagedResult([r_class(**anime) for anime in temp["data"]], temp['paging'])
 
-    def get_anime_ranking(self, *, ranking_type: Union[RankingType, str] = RankingType.All, limit: int = 50, offset: int = 0) -> PagedResult[Node]:
+    def get_anime_ranking(self, *, ranking_type: Union[AnimeRankingType, str] = AnimeRankingType.ALL, fields: Fields = Fields.node(), limit: int = 50, offset: int = 0) -> Union[PagedResult[Node], PagedResult[AnimeObject]]:
         """
         Gets list of anime from MyAnimeList rankings
 
@@ -116,8 +116,8 @@ class Anime():
         """
         if isinstance(ranking_type, str):
             try:
-                RankingType(ranking_type.lower())
-            except:
+                AnimeRankingType(ranking_type.lower())
+            except ValueError:
                 raise ValueError(f"ranking_type can't be '{ranking_type}'")
         uri = 'anime/ranking'
         params = {
@@ -127,11 +127,12 @@ class Anime():
             'offset': offset,
         }
         temp = self._api_handler.call(uri=uri, params=params)
-        return PagedResult([Node(**anime) for anime in temp["data"]], temp["paging"])
+        r_class = Node if fields == Fields.node() else AnimeObject
+        return PagedResult([r_class(**anime) for anime in temp["data"]], temp['paging'])
 
     SeasonT = Union[Season, Literal['winter', 'spring', 'summer', 'autumn']]
 
-    def get_seasonal_anime(self, season: SeasonT, year: int, *, sort: Union[Sorting, str] = Sorting.Score, limit: int = 50) -> PagedResult[Node]:
+    def get_seasonal_anime(self, season: SeasonT, year: int, *, sort: Union[SeasonalAnimeSorting, str] = SeasonalAnimeSorting.SCORE, fields: Fields = Fields.anime(), limit: int = 50) -> Union[PagedResult[Node], PagedResult[AnimeObject]]:
         """
         Gets list of anime from specified season
 
@@ -144,14 +145,14 @@ class Anime():
         """
         if isinstance(sort, str):
             try:
-                sort = Sorting(sort.lower())
-            except:
+                sort = SeasonalAnimeSorting(sort.lower())
+            except ValueError:
                 raise ValueError(f"sort can't be '{sort}'")
 
         if isinstance(season, str):
             try:
                 season = Season(season.lower())
-            except:
+            except ValueError:
                 raise ValueError(f"season can't be '{season}'")
 
         sort_options = ["anime_score", "anime_num_list_users"]
@@ -167,7 +168,7 @@ class Anime():
         temp = self._api_handler.call(uri=uri, params=params)
         return PagedResult(temp['data'], temp['paging'])
 
-    def get_suggested_anime(self, limit: int = 20) -> PagedResult[Node]:
+    def get_suggested_anime(self, *, fields: Fields = Fields.node(), limit: int = 20, offset: int = 0) -> Union[PagedResult[Node], PagedResult[AnimeObject]]:
         """
         Gets list of suggested anime suggested for user
 
@@ -177,7 +178,10 @@ class Anime():
         if not self.authorized:
             raise MainAuthRequiredError()
         uri = 'anime/suggestions'
-        params = {"limit": limit}
+        params = {"limit": limit,
+                  "offset": offset,
+                  "fields": fields.to_payload()}
 
         temp = self._api_handler.call(uri=uri, params=params)
-        return PagedResult(temp['data'], temp['paging'])
+        r_class = Node if fields == Fields.node() else AnimeObject
+        return PagedResult([r_class(**anime) for anime in temp["data"]], temp['paging'])

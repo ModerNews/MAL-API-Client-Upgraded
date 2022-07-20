@@ -165,7 +165,7 @@ class Fields(FieldsBase):
                                 "recommendations",
                                 "studios",
                                 "opening_theme",
-                                'ending_theme',])
+                                'ending_theme', ])
 
     @classmethod
     def manga(cls):
@@ -213,3 +213,48 @@ class AuthorFields(FieldsBase):
     @classmethod
     def empty(cls):
         return cls(first_name=False, last_name=False)
+
+
+class ListStatusFields(FieldsBase):
+    def __init__(self, **kwargs):
+        self.score: bool = kwargs.get('score', True)
+        self.status: bool = kwargs.get('status', True)
+        self.updated_at: bool = kwargs.get('updated_at', True)
+        self.start_date: bool = kwargs.get('start_date', False)
+        self.finish_date: bool = kwargs.get('finish_date', False)
+        self.priority: bool = kwargs.get('priority', False)
+        self.tags: bool = kwargs.get('tags', False)
+        self.comments: bool = kwargs.get('comments', False)
+
+        # manga only
+        self.is_rereading: bool = kwargs.get('is_rereading', False)
+        self.num_chapters_read: bool = kwargs.get('num_chapters_read', False)
+        self.num_volumes_read: bool = kwargs.get('num_volumes_read', False)
+        self.num_times_reread: bool = kwargs.get('num_times_reread', False)
+        self.reread_value: bool = kwargs.get('reread_value', False)
+
+        # anime only
+        self.num_episodes_watched: bool = kwargs.get('num_episodes_watched', False)
+        self.is_rewatching: bool = kwargs.get('is_rewatching', False)
+        self.num_times_rewatched: bool = kwargs.get('num_times_rewatched', False)
+        self.rewatch_value: bool = kwargs.get('rewatch_value', False)
+
+    @classmethod
+    def empty(cls):
+        return cls(score=False, status=False, updated_at=False)
+
+    @classmethod
+    def manga_base(cls):
+        return cls.from_list(['score', 'status', 'updated_at', 'is_rereading', 'num_chapters_read', 'num_volumes_read', 'start_date', 'finish_date'])
+
+    @classmethod
+    def manga_full(cls):
+        return cls.from_list(['score', 'status', 'updated_at', 'is_rereading', 'num_chapters_read', 'num_volumes_read', 'start_date', 'finish_date', 'priority', 'tags', 'comments', 'num_times_reread', 'reread_value'])
+
+    @classmethod
+    def anime_base(cls):
+        return cls.from_list(['score', 'status', 'updated_at', 'is_rewatching', 'num_episodes_watched'])
+
+    @classmethod
+    def anime_full(cls):
+        return cls.from_list(['score', 'status', 'updated_at', 'is_rewatching', 'num_episodes_watched', 'priority', 'tags', 'comments', 'num_times_rewatched', 'rewatch_value'])

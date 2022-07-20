@@ -1,5 +1,5 @@
 from __future__ import annotations
-from .Datamodels.models import MangaObject, Node
+from .Datamodels import MangaObject, Node, Fields, PagedResult
 
 __manga_fields__ = [
             "id",
@@ -54,7 +54,9 @@ class Manga:
             "fields": ','.join(__manga_fields__),
             'nsfw': nsfw
         }
-        return [Node(**temp_object) for temp_object in self._api_handler.call(uri, params=params)["data"]]
+        temp = self._api_handler.call(uri, params=params)
+        r_class = Node if fields == Fields.node() else MangaObject
+        return PagedResult([r_class(**manga) for manga in temp["data"]], temp['paging'])
 
     def get_manga_details(self, manga_id):
         """

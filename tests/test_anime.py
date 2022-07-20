@@ -5,8 +5,8 @@ from unittest import mock
 import malclient
 import pytest
 
-from malclient.Datamodels.models import Season, Sorting
-from malclient.anime import __anime_fields__
+from malclient.Datamodels import Season, Fields, SeasonalAnimeSorting
+# from malclient.anime import __anime_fields__
 
 ANIME_RESPONSE = {
     "id": 1,
@@ -79,7 +79,7 @@ def test_get_seasonal_anime_season_fail(self, client):
 @mock.patch("malclient.request_handler.APICaller.call", side_effect=mocked_client)
 def test_get_seasonal_anime_fields(self, client):
     response = client.get_seasonal_anime("summer", 2022, limit=1)
-    for field in __anime_fields__:
+    for field in Fields.anime().to_payload().split(','):
         if field not in [
             "pictures",
             "background",
@@ -98,20 +98,20 @@ def test_get_seasonal_anime_season_str_success(self, client):
 
 @mock.patch("malclient.request_handler.APICaller.call", side_effect=mocked_client)
 def test_get_seasonal_anime_season_obj_success(self, client):
-    response = client.get_seasonal_anime(Season.Summer, 2022, limit=1)
+    response = client.get_seasonal_anime(Season.SUMMER, 2022, limit=1)
     assert response == [ANIME_RESPONSE]
 
 
 @mock.patch("malclient.request_handler.APICaller.call", side_effect=mocked_client)
 def test_get_seasonal_anime_sort_str_fail(self, client):
     with pytest.raises(ValueError):
-        response = client.get_seasonal_anime(Season.Summer, 2022, sort="anime", limit=1)
+        response = client.get_seasonal_anime(Season.SUMMER, 2022, sort="anime", limit=1)
 
 
 @mock.patch("malclient.request_handler.APICaller.call", side_effect=mocked_client)
 def test_get_seasonal_anime_sort_obj_success(self, client):
     response = client.get_seasonal_anime(
-        Season.Summer, 2022, sort="anime_score", limit=1
+        Season.SUMMER, 2022, sort="anime_score", limit=1
     )
     assert response == [ANIME_RESPONSE]
 
@@ -119,6 +119,6 @@ def test_get_seasonal_anime_sort_obj_success(self, client):
 @mock.patch("malclient.request_handler.APICaller.call", side_effect=mocked_client)
 def test_get_seasonal_anime_sort_obj_success(self, client):
     response = client.get_seasonal_anime(
-        Season.Summer, 2022, sort=Sorting.User_Num, limit=1
+        Season.SUMMER, 2022, sort=SeasonalAnimeSorting.USER_NUM, limit=1
     )
     assert response == [ANIME_RESPONSE]

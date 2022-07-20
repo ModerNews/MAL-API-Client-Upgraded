@@ -6,43 +6,6 @@ from .exceptions import MainAuthRequiredError
 
 __all__ = ["Anime"]
 
-__node_fields__ = ['id',
-                   'title',
-                   'main_picture']
-
-# Fields that will be requested from myanimelist server by default
-__anime_fields__ = [
-            "id",
-            "title",
-            "main_picture",
-            "alternative_titles",
-            "start_date",
-            "end_date",
-            "synopsis",
-            "mean",
-            "rank",
-            "popularity",
-            "num_list_users",
-            "num_scoring_users",
-            "nsfw",
-            "created_at",
-            "updated_at",
-            "media_type",
-            "status",
-            "genres",
-            "my_list_status",
-            "num_episodes",
-            "start_season",
-            "broadcast",
-            "source",
-            "average_episode_duration",
-            "rating",
-            "pictures",
-            "background",
-            "related_anime",
-            "related_manga",
-            "recommendations",
-            "studios"]
 
 class Anime:
     def __init__(self):
@@ -59,11 +22,11 @@ class Anime:
         """
         id = str(id)
         uri = f'anime/{id}'
-        params = {'fields': ','.join(__anime_fields__), }
+        params = {'fields': Fields.anime().to_payload()}
         data = self._api_handler.call(uri, params=params)
         return AnimeObject(**data)
 
-    def get_anime_fields(self, id: int, fields: list[str]) -> AnimeObject:
+    def get_anime_fields(self, id: int, fields: Fields) -> AnimeObject:
         """
 
         Get specific fields from MAL anime entry with provided id
@@ -73,15 +36,12 @@ class Anime:
         :returns: AnimeObject for requested id
         :rtype: AnimeObject
         """
-        if len(fields) == 0:
-            raise AttributeError("Fields attribute cannot be empty")
         uri = f'anime/{id}'
-        params = {'fields': ",".join(fields)}
+        params = {'fields': fields.to_payload()}
         data = self._api_handler.call(uri, params=params)
         return AnimeObject(**data)
 
-    # TODO anime_fields misses usage
-    def search_anime(self, keyword: str, *, limit: int = 20, nsfw: Optional[bool] = None, anime_fields=None) -> PagedResult[Node]:
+    def search_anime(self, keyword: str, *, limit: int = 20, nsfw: Optional[bool] = None, fields: Fields = Fields.node()) -> Union[PagedResult[Node], PagedResult[AnimeObject]]:
         """
         Lookup anime with keyword phrase on https://myanimelist.net
 
@@ -97,7 +57,7 @@ class Anime:
         params = {
             "q": keyword,
             'limit': limit,
-            'fields': ','.join(__node_fields__),
+            'fields': fields.to_payload(),
             'nsfw': nsfw
         }
         temp = self._api_handler.call(uri=uri, params=params)
@@ -116,13 +76,13 @@ class Anime:
         """
         if isinstance(ranking_type, str):
             try:
-                AnimeRankingType(ranking_type.lower())
+                ranking_type = AnimeRankingType(ranking_type.lower())
             except ValueError:
                 raise ValueError(f"ranking_type can't be '{ranking_type}'")
         uri = 'anime/ranking'
         params = {
             "ranking_type": ranking_type.value,
-            "fields": ','.join(__node_fields__),
+            "fields": fields.to_payload(),
             "limit": limit,
             'offset': offset,
         }
@@ -155,18 +115,16 @@ class Anime:
             except ValueError:
                 raise ValueError(f"season can't be '{season}'")
 
-        sort_options = ["anime_score", "anime_num_list_users"]
-        if sort.value.lower() not in sort_options:
-            raise AttributeError('Sort must be "anime_score" or "anime_num_list_users"')
         uri = f'anime/season/{year}/{season.value}'
 
         params = {
             "sort": sort.value.lower(),
             "limit": limit,
-            "fields": ','.join(__anime_fields__)
+            "fields": fields.to_payload(),
         }
         temp = self._api_handler.call(uri=uri, params=params)
-        return PagedResult(temp['data'], temp['paging'])
+        r_class = Node if fields == Fields.node() else AnimeObject
+        return PagedResult([r_class(**anime) for anime in temp["data"]], temp['paging'])
 
     def get_suggested_anime(self, *, fields: Fields = Fields.node(), limit: int = 20, offset: int = 0) -> Union[PagedResult[Node], PagedResult[AnimeObject]]:
         """

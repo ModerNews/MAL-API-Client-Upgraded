@@ -1,40 +1,17 @@
 from __future__ import annotations
-from .Datamodels import MangaObject, Node, Fields, PagedResult
 
-__manga_fields__ = [
-            "id",
-            "title",
-            "main_picture",
-            "alternative_titles",
-            "start_date",
-            "end_date",
-            "synopsis",
-            "mean",
-            "rank",
-            "popularity",
-            "num_list_users",
-            "num_scoring_users",
-            "nsfw,created_at",
-            "updated_at",
-            "media_type,status",
-            "genres",
-            "my_list_status",
-            "num_volumes",
-            "num_chapters",
-            "authors{first_name,last_name}",
-            "pictures",
-            "background",
-            "related_anime",
-            "related_manga",
-            "recommendations",
-        ]
+from typing import Union
+
+from .Datamodels import MangaObject, Node, Fields, PagedResult, MangaRankingType
+
+__all__ = ["Manga"]
 
 
 class Manga:
     def __init__(self):
         return
 
-    def search_manga(self, keyword: str, limit: int = 20, nsfw: bool = None) -> list[Node]:
+    def search_manga(self, keyword: str, fields: Fields = Fields.node(), limit: int = 20, offset: int = 0, nsfw: bool = None) -> list[Node]:
         """
         Lookup manga with keyword phrase on https://myanimelist.net
 
@@ -51,14 +28,15 @@ class Manga:
         params = {
             "q": keyword,
             "limit": limit,
-            "fields": ','.join(__manga_fields__),
+            'offset': offset,
+            "fields": fields.to_payload(),
             'nsfw': nsfw
         }
         temp = self._api_handler.call(uri, params=params)
         r_class = Node if fields == Fields.node() else MangaObject
         return PagedResult([r_class(**manga) for manga in temp["data"]], temp['paging'])
 
-    def get_manga_details(self, manga_id):
+    def get_manga_details(self, manga_id: int):
         """
         Get full info about manga with provided id
 
@@ -68,11 +46,11 @@ class Manga:
         :rtype: MangaObject
         """
         uri = f'manga/{manga_id}'
-        params = {"fields": ','.join(__manga_fields__)}
+        params = {"fields": Fields.manga().to_payload()}
         data = self._api_handler.call(uri, params=params)
         return MangaObject(**data)
 
-    def get_manga_fields(self, id: int, fields: list[str]) -> MangaObject:
+    def get_manga_fields(self, id: int, fields: Fields) -> MangaObject:
         """
 
         Get specific fields from MAL manga entry with provided id
@@ -82,26 +60,25 @@ class Manga:
         :returns: MangaObject for requested id
         :rtype: MangaObject
         """
-        if len(fields) == 0:
-            raise AttributeError("Fields attribute cannot be empty")
         uri = f'anime/{id}'
-        params = {'fields': ",".join(fields)}
+        params = {'fields': fields.to_payload()}
         data = self._api_handler.call(uri, params=params)
         return MangaObject(**data)
 
-    # TODO objectify manga ranking
-    def get_manga_ranking(self, ranking_type="manga", limit=20):
+    def get_manga_ranking(self, ranking_type: Union[str, MangaRankingType] = MangaRankingType.MANGA, fields: Fields = Fields.manga(), limit=20) -> Union[PagedResult[Node], PagedResult[MangaObject]]:
         uri = 'manga/ranking'
-        ranking_types = [
-            "novels", "oneshots", "doujin", "manhwa", "manhua", "bypopularity",
-            "favorite"
-        ]
 
-        if ranking_type not in ranking_types:
-            return
+        if isinstance(ranking_type, str):
+            try:
+                ranking_type = MangaRankingType(ranking_type)
+            except ValueError:
+                raise ValueError(f"ranking_type can't be '{ranking_type}'")
+
         params = {
             "ranking_type": ranking_type,
             "limit": limit,
-            "fields": ','.join(self.manga_fields)
+            "fields": fields.to_payload()
         }
-        return self._api_handler.call(uri, params)
+        temp = self._api_handler.call(uri, params=params)
+        r_class = Node if fields == Fields.node() else MangaObject
+        return PagedResult([r_class(**manga) for manga in temp["data"]], temp['paging'])

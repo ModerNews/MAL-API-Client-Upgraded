@@ -97,9 +97,10 @@ my_status = {
 client.update_manga_my_list_status(manga[0].id, my_status)
 ```
 ### Most Imoprtant To-Do's
-- [ ] Pagination support (in progress)
-- [ ] Rewrite enumerators (clean mess around naming, add missing ones)
-- [ ] Additional functions (for anime/manga details) and parameters (for GET lists, etc.) for fetching specific field-specific data
+- [x] Pagination support (Will be implemented in next roll out)
+- [x] Rewrite enumerators (Will be implemented in next roll out)
+- [ ] Additional functions (for anime/manga details) and parameters (for GET lists, etc.) for fetching specific field-specific data (Will be implemented in next roll out)
+- [ ] Additional functions for things available through other endpoints than API itself 
 - [ ] Rewrite boards (currently disabled)
 - [ ] Rewrite my list updaters
 

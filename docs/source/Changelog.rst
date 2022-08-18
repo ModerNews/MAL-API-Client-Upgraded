@@ -1,6 +1,23 @@
 Changelog
 =========
 
+Version 1.2
+~~~~~~~~~~~
+* Reworked models:
+    * Added new enum for Seasons
+    * Added enum for Seasonal Anime Sorting
+    * Added enums for Anime and Manga ranking sorting
+    * Added enums for Manga and Anime list sorting
+* New Classes for fields management: `Fields`, `AuthorsFields`, `ListStatusFields`
+* Changed syntax for multiple methods:
+    * `Client.search_anime`
+    * `Client.search_manga`
+    * `Client.get_manga_ranking`
+* Added new methods for fields interaction:
+    * `Client.get_anime_fields`
+    * `Client.get_manga_fields`
+* Updated documentation
+
 Version 1.1
 ~~~~~~~~~~~
 * Introducing Sphinx documentation

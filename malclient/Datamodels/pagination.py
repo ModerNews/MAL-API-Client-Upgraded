@@ -4,7 +4,7 @@ from malclient import exceptions
 class PagedResult(list):
     """
 
-    List of objects with paging support
+    List of objects with support for fetching previous/next page from MAL
 
     """
     def __init__(self, seq, page_link: dict):

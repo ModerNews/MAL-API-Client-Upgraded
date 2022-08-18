@@ -19,8 +19,8 @@ def generate_token(client_id: str,
 
     Helper function to generate access token **do not use this to refresh token**
 
-    :ivar str client_id: your client id (available on myanimelist developer _page)
-    :ivar str client_secret: your client secret (available on myanimelist developer _page)
+    :ivar str client_id: your client id (available on myanimelist developer page)
+    :ivar str client_secret: your client secret (available on myanimelist developer page)
     :return: Freshly generated Access Token for your client
     :rtype: dict[str, str]
     """
@@ -30,7 +30,7 @@ def generate_token(client_id: str,
     # This is just to keep sure token is long enough, if you didn't change anything round here it should not raise an error
     assert 48 <= len(code_verifier) <= 128
 
-    print("Authorization is not fully userless, you will have to press 'ALLOW' and copy paste url that you will be redirected to")
+    print("Authorization is not fully automated, you will have to press 'ALLOW' and copy paste url that you will be redirected to")
     input("Press Enter to open authorization page...")
 
     authorization_url = f"https://myanimelist.net/v1/oauth2/authorize?response_type=code&client_id={client_id}&state=RequestID42&code_challenge={code_challenge}&code_challenge_method=plain"

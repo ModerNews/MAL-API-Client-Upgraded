@@ -1,7 +1,7 @@
 from types import MethodType, MethodWrapperType, BuiltinFunctionType
 from typing import Union
 
-__all__ = ['Fields', 'AuthorFields']
+__all__ = ['Fields', 'AuthorFields', 'ListStatusFields']
 
 
 class FieldsBase(object):
@@ -62,7 +62,7 @@ class FieldsBase(object):
     def empty(cls):
         """
         Generates empty fields object
-        Might be overriden by some classes, which have parameters set to True by default
+        Might be overridden by some classes, which have parameters set to True by default
         """
         return cls()
 
@@ -256,6 +256,9 @@ class AuthorFields(FieldsBase):
 
 
 class ListStatusFields(FieldsBase):
+    """
+    Helper fields class containing precise data for my_list_status
+    """
     def __init__(self, **kwargs):
         self.score: bool = kwargs.get('score', True)
         self.status: bool = kwargs.get('status', True)
@@ -285,16 +288,28 @@ class ListStatusFields(FieldsBase):
 
     @classmethod
     def manga_base(cls):
+        """
+        Base fields for manga list status
+        """
         return cls.from_list(['score', 'status', 'updated_at', 'is_rereading', 'num_chapters_read', 'num_volumes_read', 'start_date', 'finish_date'])
 
     @classmethod
     def manga_full(cls):
+        """
+        All fields for manga list status
+        """
         return cls.from_list(['score', 'status', 'updated_at', 'is_rereading', 'num_chapters_read', 'num_volumes_read', 'start_date', 'finish_date', 'priority', 'tags', 'comments', 'num_times_reread', 'reread_value'])
 
     @classmethod
     def anime_base(cls):
+        """
+        Base fields for anime list status
+        """
         return cls.from_list(['score', 'status', 'updated_at', 'is_rewatching', 'num_episodes_watched'])
 
     @classmethod
     def anime_full(cls):
+        """
+        All fields for anime list status
+        """
         return cls.from_list(['score', 'status', 'updated_at', 'is_rewatching', 'num_episodes_watched', 'priority', 'tags', 'comments', 'num_times_rewatched', 'rewatch_value'])

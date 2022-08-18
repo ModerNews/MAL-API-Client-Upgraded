@@ -108,6 +108,10 @@ class Broadcast(MALBaseModel):
 
 
 class Statistics(MALBaseModel):
+    """
+
+    Object representing list statistics of anime on MAL
+    """
     num_list_users: int
     watching: int
     completed: int

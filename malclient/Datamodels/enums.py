@@ -48,7 +48,7 @@ class AnimeRankingType(Enum):
     * **MOVIE** - Top Anime Movies
     * **SPECIAL** - Top Anime Specials
     * **POPULAR** - Top Anime by Popularity
-    * **FAVORITE** - Top Favorited Anime
+    * **FAVORITE** - Top Favorite Anime
     """
     ALL = 'all'
     AIRING = 'airing'

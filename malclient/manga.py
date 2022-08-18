@@ -15,12 +15,14 @@ class Manga:
         """
         Lookup manga with keyword phrase on https://myanimelist.net
 
-        :param keyword: string to look by
-        :param limit: number of queries returned
+        :param str keyword: string to look by
+        :param Fields fields: fields that will be returned by API in addition to default ones
+        :param int limit: number of queries returned
+        :param int offset: Position from which search results will be presented
         :param nsfw: boolean enabling/disabling nsfw filter
 
-        :returns: list of manga Node objects
-        :rtype: list[Node]
+        :returns: list of queries matching search keyword
+        :rtype: PagedResult
         """
         if nsfw is None:
             nsfw = self.nsfw
@@ -40,7 +42,7 @@ class Manga:
         """
         Get full info about manga with provided id
 
-        :param id: id on https://myanimelist.net
+        :param int manga_id: id on https://myanimelist.net
 
         :returns: MangaObject for requested id
         :rtype: MangaObject
@@ -50,22 +52,35 @@ class Manga:
         data = self._api_handler.call(uri, params=params)
         return MangaObject(**data)
 
-    def get_manga_fields(self, id: int, fields: Fields) -> MangaObject:
+    def get_manga_fields(self, manga_id: int, fields: Fields) -> MangaObject:
         """
 
         Get specific fields from MAL manga entry with provided id
 
-        :param int id: id on https://myanimelist.net
-        :param list[str] fields: list of string field names
+        :param int manga_id: id on https://myanimelist.net
+        :param Fields fields: Fields that will be returned with manga object
+
         :returns: MangaObject for requested id
         :rtype: MangaObject
         """
-        uri = f'anime/{id}'
+        uri = f'anime/{manga_id}'
         params = {'fields': fields.to_payload()}
         data = self._api_handler.call(uri, params=params)
         return MangaObject(**data)
 
-    def get_manga_ranking(self, ranking_type: Union[str, MangaRankingType] = MangaRankingType.MANGA, fields: Fields = Fields.manga(), limit=20) -> Union[PagedResult[Node], PagedResult[MangaObject]]:
+    def get_manga_ranking(self, ranking_type: Union[str, MangaRankingType] = MangaRankingType.MANGA, fields: Fields = Fields.manga(), limit: int = 20, offset: int = 0) -> Union[PagedResult[Node], PagedResult[MangaObject]]:
+        """
+
+        Get current manga ranking from MAL
+
+        :param MangaRankingType ranking_type: type of manga ranking that will be fetched from API, refer to MangaRankingType dataclass for more info
+        :param Fields fields: Fields that will be returned additionally with manga data
+        :param int limit: number of queries returned
+        :param int offset: Position from which search results will be presented
+
+        :returns: List of queries with pagination support
+        :rtype: PagedResult
+        """
         uri = 'manga/ranking'
 
         if isinstance(ranking_type, str):
@@ -77,7 +92,8 @@ class Manga:
         params = {
             "ranking_type": ranking_type,
             "limit": limit,
-            "fields": fields.to_payload()
+            "fields": fields.to_payload(),
+            'offset': offset,
         }
         temp = self._api_handler.call(uri, params=params)
         r_class = Node if fields == Fields.node() else MangaObject

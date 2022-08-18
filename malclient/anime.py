@@ -11,32 +11,33 @@ class Anime:
     def __init__(self):
         return
 
-    def get_anime_details(self, id: int) -> AnimeObject:
+    def get_anime_details(self, anime_id: int) -> AnimeObject:
         """
 
         Get full info about anime with provided id
 
-        :param int id: id on https://myanimelist.net
+        :param int anime_id: id on https://myanimelist.net
+
         :returns: AnimeObject for requested id
         :rtype: AnimeObject
         """
-        id = str(id)
-        uri = f'anime/{id}'
+        uri = f'anime/{str(anime_id)}'
         params = {'fields': Fields.anime().to_payload()}
         data = self._api_handler.call(uri, params=params)
         return AnimeObject(**data)
 
-    def get_anime_fields(self, id: int, fields: Fields) -> AnimeObject:
+    def get_anime_fields(self, anime_id: int, fields: Fields) -> AnimeObject:
         """
 
         Get specific fields from MAL anime entry with provided id
 
-        :param int id: id on https://myanimelist.net
-        :param list[str] fields: list of string field names
+        :param int anime_id: id on https://myanimelist.net
+        :param Fields fields: Fields returned alongside results
+
         :returns: AnimeObject for requested id
         :rtype: AnimeObject
         """
-        uri = f'anime/{id}'
+        uri = f'anime/{anime_id}'
         params = {'fields': fields.to_payload()}
         data = self._api_handler.call(uri, params=params)
         return AnimeObject(**data)
@@ -46,10 +47,12 @@ class Anime:
         Lookup anime with keyword phrase on https://myanimelist.net
 
         :param str keyword: string to look by
+        :param Fields fields: Fields returned alongside results
         :param int limit: number of queries returned
         :param bool nsfw: boolean enabling/disabling nsfw filter
-        :returns: list of anime Node objects
-        :rtype: list[Node]
+
+        :returns: list of lookup results with pagination support
+        :rtype: PagedResult
         """
         if nsfw is None:
             nsfw = self.nsfw
@@ -68,11 +71,13 @@ class Anime:
         """
         Gets list of anime from MyAnimeList rankings
 
-        :param Union[RankingType, str] ranking_type: [Optional] Name of ranking from which you want list to be fetched, default to Top Anime
+        :param AnimeRankingType ranking_type: [Optional] Name of ranking from which you want list to be fetched, default to Top Anime
+        :param Fields fields: Fields returned alongside results
         :param int limit: [Optional] Number of ranking entries to fetch, 50 by default
         :param int offset: [Optional] Position from which ranking fetch will start
+
         :return: List of entries fetched from MyAnimeList with paging support
-        :rtype: PagedResult[None]
+        :rtype: PagedResult
         """
         if isinstance(ranking_type, str):
             try:
@@ -92,16 +97,19 @@ class Anime:
 
     SeasonT = Union[Season, Literal['winter', 'spring', 'summer', 'autumn']]
 
-    def get_seasonal_anime(self, season: SeasonT, year: int, *, sort: Union[SeasonalAnimeSorting, str] = SeasonalAnimeSorting.SCORE, fields: Fields = Fields.anime(), limit: int = 50) -> Union[PagedResult[Node], PagedResult[AnimeObject]]:
+    def get_seasonal_anime(self, season: SeasonT, year: int, *, sort: Union[SeasonalAnimeSorting, str] = SeasonalAnimeSorting.SCORE, fields: Fields = Fields.anime(), limit: int = 50, offset: int = 0) -> Union[PagedResult[Node], PagedResult[AnimeObject]]:
         """
         Gets list of anime from specified season
 
         :param SeasonT season: Season of year to fetch
+        :param Fields fields: Fields returned alongside results
         :param int year: Year to fetch
-        :param Union[Sorting, str] sort: Sorting method for query, default to Score
-        :param int limit: [Optional] Number of series to fetch, 50 by default
+        :param SeasonalAnimeSorting sort: Sorting method for query, default to Score
+        :param int limit: Number of series to fetch, 50 by default
+        :param int offset: Position from which search results will be presented
+
         :return: List of entries fetched from MyAnimeList with paging support
-        :rtype: PagedResult[None]
+        :rtype: PagedResult
         """
         if isinstance(sort, str):
             try:
@@ -121,6 +129,7 @@ class Anime:
             "sort": sort.value.lower(),
             "limit": limit,
             "fields": fields.to_payload(),
+            'offset': offset,
         }
         temp = self._api_handler.call(uri=uri, params=params)
         r_class = Node if fields == Fields.node() else AnimeObject
@@ -129,6 +138,10 @@ class Anime:
     def get_suggested_anime(self, *, fields: Fields = Fields.node(), limit: int = 20, offset: int = 0) -> Union[PagedResult[Node], PagedResult[AnimeObject]]:
         """
         Gets list of suggested anime suggested for user
+
+        :param Fields fields: Fields returned alongside results
+        :param int limit: number of queries returned
+        :param int offset: Position from which search results will be presented
 
         :return: List of entries fetched from MyAnimeList with paging support
         :rtype: PagedResult[None]

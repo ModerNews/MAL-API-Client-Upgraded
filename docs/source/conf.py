@@ -12,7 +12,7 @@
 #
 import os
 import sys
-sys.path.insert(0, os.path.abspath('..'))
+sys.path.insert(0, os.path.abspath('../..'))
 
 
 # -- Project information -----------------------------------------------------
@@ -34,7 +34,8 @@ extensions = ['sphinx.ext.duration',
               'sphinx.ext.doctest',
               'sphinx.ext.autodoc',
               'enum_tools.autoenum',
-              'sphinxcontrib.autodoc_pydantic',]
+              'sphinxcontrib.autodoc_pydantic',
+              ]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -57,10 +58,12 @@ html_theme = 'alabaster'
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 
+autodoc_preserve_defaults = True
+
 autodoc_pydantic_model_show_config_summary = False
 autodoc_pydantic_model_summary_list_order = 'bysource'
 autodoc_pydantic_model_hide_paramlist = True
-autodoc_pydantic_model_signature_prefix = 'model'
+autodoc_pydantic_model_signature_prefix = 'class'
 autodoc_pydantic_settings_members = False
 autodoc_pydantic_model_undoc_members = False
 

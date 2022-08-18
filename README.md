@@ -77,10 +77,6 @@ print(repr(anime))
 anime = client.search_anime("Monogatari", limit=1)
 ```
 ### Most Imoprtant To-Do's
-- [x] Pagination support (Will be implemented in next roll out)
-- [x] Rewrite enumerators (Will be implemented in next roll out)
-- [ ] Additional functions (for anime/manga details) and parameters (for GET lists, etc.) for fetching specific field-specific data (Will be implemented in next roll out)
-- [ ] Additional functions for things available through other endpoints than API itself 
 - [ ] Rewrite boards (currently disabled)
 - [ ] Rewrite my list updaters
 

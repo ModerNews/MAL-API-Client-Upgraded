@@ -1,4 +1,4 @@
-class Boards():
+class Boards:
 
     def __init__(self):
         return

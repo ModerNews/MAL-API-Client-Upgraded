@@ -7,10 +7,10 @@ There is first version of docs available, [check it out](https://mal-api-client-
 
 ## Installation
 **Python 3.9 or newer required**, this is due to changes in type hinting guidelines, for more info regarding this issue read [PEP 585](https://peps.python.org/pep-0585/)  
-Install latest stable version from [PyPI](https://pypi.org/project/malclient-upgraded/)  
+Install the latest stable version from [PyPI](https://pypi.org/project/malclient-upgraded/)  
 `pip install malclient-upgraded`  
 
-Or current unstable version directly from github:  
+Or current unstable version directly from GitHub:  
 `pip install git+https://github.com/ModerNews/MAL-API-Client-Upgraded`
 
 
@@ -37,7 +37,7 @@ As mentioned previously, if your scared that your token will time out you can al
 client.refresh_bearer_token(
           client_id="<your-client-id>",
           client_secret="<your-client-secret>",
-          refresh_token="<your-refresh-token>"))
+          refresh_token="<your-refresh-token>")
 ```
 
 For any other issues regarding authentication, [please refer to the following guide](https://myanimelist.net/blog.php?eid=835707).
@@ -61,7 +61,7 @@ for item in anime:
     print(repr(item))
     
 # search anime, returns list
-manga = client.search_manfa("Monogatari", limit=20)
+manga = client.search_manga("Monogatari", limit=20)
 for item in manga:
     # prints only titles
     print(manga)
@@ -75,31 +75,8 @@ print(repr(anime))
 
 # Update anime List based off of search results
 anime = client.search_anime("Monogatari", limit=1)
-my_status = {
-    'status': 'watching',
-    'score': 7
-}
-status = client.update_anime_my_list_status(anime[0].id, my_status)
-
-# get authenticated user info
-print(client.get_user_info())
-
-# get user anime list (you can get other users by specifying username attribute)
-for anime in client.get_user_anime_list():
-    print(anime.title, anime.score)
-
-# Update manga list based off search results
-manga = client.search_manga('doro')
-my_status = {
-    'status': 'reading',
-    'score': 9
-}
-client.update_manga_my_list_status(manga[0].id, my_status)
 ```
 ### Most Imoprtant To-Do's
-- [ ] Pagination support (in progress)
-- [ ] Rewrite enumerators (clean mess around naming, add missing ones)
-- [ ] Additional functions (for anime/manga details) and parameters (for GET lists, etc.) for fetching specific field-specific data
 - [ ] Rewrite boards (currently disabled)
 - [ ] Rewrite my list updaters
 

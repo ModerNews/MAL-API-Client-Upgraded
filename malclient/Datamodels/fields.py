@@ -1,6 +1,7 @@
 from types import MethodType, MethodWrapperType, BuiltinFunctionType
+from typing import Union
 
-__all__ = ['Fields', 'AuthorFields']
+__all__ = ['Fields', 'AuthorFields', 'ListStatusFields']
 
 
 class FieldsBase(object):
@@ -38,7 +39,7 @@ class FieldsBase(object):
                 if value == value.empty():
                     continue
                 else:
-                    fields.append('authors{' + str(",".join([key for key, state in value.__dict__.items() if state])) + '}')
+                    fields.append(field[1:] + '{' + str(",".join([key for key, state in value.__dict__.items() if state])) + '}')
             elif value is True:
                 fields.append(field)
         return ','.join(fields)
@@ -61,7 +62,7 @@ class FieldsBase(object):
     def empty(cls):
         """
         Generates empty fields object
-        Might be overriden by some classes, which have parameters set to True by default
+        Might be overridden by some classes, which have parameters set to True by default
         """
         return cls()
 
@@ -75,7 +76,7 @@ class Fields(FieldsBase):
         # general
         self.id: bool = kwargs.get('id', True)
         self.title: bool = kwargs.get('title', True)
-        self.main_picture: bool = kwargs.get('main_picture', False)
+        self.main_picture: bool = kwargs.get('main_picture', True)
         self.alternative_titles: bool = kwargs.get('alternative_titles', False)
         self.start_date: bool = kwargs.get('start_date', False)
         self.end_date: bool = kwargs.get('end_date', False)
@@ -90,9 +91,9 @@ class Fields(FieldsBase):
         self.my_list_status: bool = kwargs.get('my_list_status', False)
         self.pictures: bool = kwargs.get('pictures', False)
         self.background: bool = kwargs.get('background', False)
-        self.related_anime: bool = kwargs.get('related_anime', False)
-        self.related_manga: bool = kwargs.get('related_manga', False)
-        self.recommendations: bool = kwargs.get('recommendations', False)
+        self._related_anime: bool = self._generate_subclass(Fields, kwargs, 'related_anime')
+        self._related_manga: bool = self._generate_subclass(Fields, kwargs, 'related_manga')
+        self._recommendations: bool = self._generate_subclass(Fields, kwargs, 'recommendations')
         self.nsfw: bool = kwargs.get('nsfw', False)
         self.created_at: bool = kwargs.get('created_at', False)
         self.media_type: bool = kwargs.get('media_type', False)
@@ -114,12 +115,47 @@ class Fields(FieldsBase):
         # manga related
         self.num_volumes: bool = kwargs.get('num_volumes', False)
         self.num_chapters: bool = kwargs.get('num_chapters', False)
-        self.authors: AuthorFields = AuthorFields(**kwargs.get('authors')) if isinstance(kwargs.get('authors'), dict) else kwargs.get('authors') if isinstance(kwargs.get('authors'), AuthorFields) else AuthorFields.empty() if kwargs.get('authors') is not True else AuthorFields.all()
+        self._authors: Union[AuthorFields, bool] = self._generate_subclass(AuthorFields, kwargs, 'authors')
         self.serialization: bool = kwargs.get('serialization', False)
+
+    def _generate_subclass(self, r_type, kwargs, key):
+        return r_type(**kwargs.get(key)) if isinstance(kwargs.get(key), dict) else kwargs.get(key) if isinstance(kwargs.get(key), r_type) else False if kwargs.get(key) is not True else r_type()
+
+    @property
+    def authors(self):
+        return self._authors
+
+    @authors.setter
+    def authors(self, value):
+        self._authors = self._generate_subclass(AuthorFields, {'authors': value}, 'authors')
+
+    @property
+    def related_anime(self):
+        return self._related_anime
+
+    @related_anime.setter
+    def related_anime(self, value):
+        self._related_anime = self._generate_subclass(Fields, {'related_anime': value}, 'related_anime')
+
+    @property
+    def related_manga(self):
+        return self._related_manga
+
+    @related_manga.setter
+    def related_manga(self, value):
+        self._related_manga = self._generate_subclass(Fields, {'related_manga': value}, 'related_manga')
+
+    @property
+    def recommendations(self):
+        return self._recommendations
+
+    @recommendations.setter
+    def recommendations(self, value):
+        self._recommendations = self._generate_subclass(Fields, {'recommendations': value}, 'recommendations')
 
     @classmethod
     def empty(cls):
-        return cls(id=False, title=False)
+        return cls(id=False, title=False, main_picture=False)
 
     @classmethod
     def node(cls):
@@ -165,7 +201,7 @@ class Fields(FieldsBase):
                                 "recommendations",
                                 "studios",
                                 "opening_theme",
-                                'ending_theme',])
+                                'ending_theme', ])
 
     @classmethod
     def manga(cls):
@@ -202,14 +238,78 @@ class Fields(FieldsBase):
                    serialization=True)
 
 
+# class RecursiveFieldFields(Fields):
+#
+#
+#
 class AuthorFields(FieldsBase):
     """
     Helper fields class containing info about manga author
     """
     def __init__(self, **kwargs):
-        self.first_name: bool = kwargs.get('first_name', False)
-        self.last_name: bool = kwargs.get('last_name', False)
+        self.first_name: bool = kwargs.get('first_name', True)
+        self.last_name: bool = kwargs.get('last_name', True)
 
     @classmethod
     def empty(cls):
         return cls(first_name=False, last_name=False)
+
+
+class ListStatusFields(FieldsBase):
+    """
+    Helper fields class containing precise data for my_list_status
+    """
+    def __init__(self, **kwargs):
+        self.score: bool = kwargs.get('score', True)
+        self.status: bool = kwargs.get('status', True)
+        self.updated_at: bool = kwargs.get('updated_at', True)
+        self.start_date: bool = kwargs.get('start_date', False)
+        self.finish_date: bool = kwargs.get('finish_date', False)
+        self.priority: bool = kwargs.get('priority', False)
+        self.tags: bool = kwargs.get('tags', False)
+        self.comments: bool = kwargs.get('comments', False)
+
+        # manga only
+        self.is_rereading: bool = kwargs.get('is_rereading', False)
+        self.num_chapters_read: bool = kwargs.get('num_chapters_read', False)
+        self.num_volumes_read: bool = kwargs.get('num_volumes_read', False)
+        self.num_times_reread: bool = kwargs.get('num_times_reread', False)
+        self.reread_value: bool = kwargs.get('reread_value', False)
+
+        # anime only
+        self.num_episodes_watched: bool = kwargs.get('num_episodes_watched', False)
+        self.is_rewatching: bool = kwargs.get('is_rewatching', False)
+        self.num_times_rewatched: bool = kwargs.get('num_times_rewatched', False)
+        self.rewatch_value: bool = kwargs.get('rewatch_value', False)
+
+    @classmethod
+    def empty(cls):
+        return cls(score=False, status=False, updated_at=False)
+
+    @classmethod
+    def manga_base(cls):
+        """
+        Base fields for manga list status
+        """
+        return cls.from_list(['score', 'status', 'updated_at', 'is_rereading', 'num_chapters_read', 'num_volumes_read', 'start_date', 'finish_date'])
+
+    @classmethod
+    def manga_full(cls):
+        """
+        All fields for manga list status
+        """
+        return cls.from_list(['score', 'status', 'updated_at', 'is_rereading', 'num_chapters_read', 'num_volumes_read', 'start_date', 'finish_date', 'priority', 'tags', 'comments', 'num_times_reread', 'reread_value'])
+
+    @classmethod
+    def anime_base(cls):
+        """
+        Base fields for anime list status
+        """
+        return cls.from_list(['score', 'status', 'updated_at', 'is_rewatching', 'num_episodes_watched'])
+
+    @classmethod
+    def anime_full(cls):
+        """
+        All fields for anime list status
+        """
+        return cls.from_list(['score', 'status', 'updated_at', 'is_rewatching', 'num_episodes_watched', 'priority', 'tags', 'comments', 'num_times_rewatched', 'rewatch_value'])

@@ -6,7 +6,9 @@ API Reference
 Base Class
 ~~~~~~~~~~
 
-.. autoclass:: malclient.Client
+.. py:currentmodule:: malclient
+
+.. autoclass:: Client
 
 
 Anime-related functions
@@ -18,18 +20,13 @@ Already finished:
 
 .. automethod:: Client.get_anime_details
 
+.. automethod:: Client.get_anime_fields
 
 .. automethod:: Client.search_anime
 
-Still waiting to finish them off:
-
-.. py:currentmodule:: malclient
-
 .. automethod:: Client.get_anime_ranking
 
-
 .. automethod:: Client.get_seasonal_anime
-
 
 .. automethod:: Client.get_suggested_anime
 
@@ -43,12 +40,9 @@ Already finished:
 
 .. automethod:: Client.get_manga_details
 
+.. automethod:: Client.get_manga_fields
 
 .. automethod:: Client.search_manga
-
-Still waiting to finish them off:
-
-.. py:currentmodule:: malclient
 
 .. automethod:: Client.get_manga_ranking
 
@@ -60,32 +54,10 @@ Forum boards stay pretty much untouch, either by me or previous developer, so th
 I will be working on bringing it back though.
 
 
-User Anime List Update
-~~~~~~~~~~~~~~~~~~~~~~
+User List
+~~~~~~~~~~
 
-Those still need some polishing, but are pretty much functional as far as I know
-
-.. py:currentmodule:: malclient
-
-.. automethod:: Client.update_my_anime_list_status
-    
-.. automethod:: Client.delete_my_anime_list_status
-
-.. automethod:: Client.get_user_anime_list
-
-
-User Manga List Update
-~~~~~~~~~~~~~~~~~~~~~~
-
-Those still need some polishing, but are pretty much functional as far as I know
-
-.. py:currentmodule:: malclient
-
-.. automethod:: Client.update_my_manga_list_status
-    
-.. automethod:: Client.delete_my_manga_list_status
-
-.. automethod:: Client.get_user_manga_list
+I looked through it, manga nad anime list are available in API, but they need to be rewritten
 
 
 Utility
@@ -94,6 +66,9 @@ Utility
 .. py:currentmodule:: malclient
 
 .. automethod:: Client.get_user_info
+
+.. autoclass:: PagedResult
+    :members:
 
 
 Exceptions

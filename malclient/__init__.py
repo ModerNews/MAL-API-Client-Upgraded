@@ -1,4 +1,3 @@
 from .client import Client, generate_token
-from .Datamodels.models import *
-from .Datamodels.Fields import *
+from .Datamodels import *
 from .exceptions import *

@@ -1,49 +1,28 @@
 from __future__ import annotations
-from .Datamodels.models import MangaObject, Node
 
-__manga_fields__ = [
-            "id",
-            "title",
-            "main_picture",
-            "alternative_titles",
-            "start_date",
-            "end_date",
-            "synopsis",
-            "mean",
-            "rank",
-            "popularity",
-            "num_list_users",
-            "num_scoring_users",
-            "nsfw,created_at",
-            "updated_at",
-            "media_type,status",
-            "genres",
-            "my_list_status",
-            "num_volumes",
-            "num_chapters",
-            "authors{first_name,last_name}",
-            "pictures",
-            "background",
-            "related_anime",
-            "related_manga",
-            "recommendations",
-        ]
+from typing import Union
+
+from .Datamodels import MangaObject, Node, Fields, PagedResult, MangaRankingType
+
+__all__ = ["Manga"]
 
 
 class Manga:
     def __init__(self):
         return
 
-    def search_manga(self, keyword: str, limit: int = 20, nsfw: bool = None) -> list[Node]:
+    def search_manga(self, keyword: str, fields: Fields = Fields.node(), limit: int = 20, offset: int = 0, nsfw: bool = None) -> list[Node]:
         """
         Lookup manga with keyword phrase on https://myanimelist.net
 
-        :param keyword: string to look by
-        :param limit: number of queries returned
+        :param str keyword: string to look by
+        :param Fields fields: fields that will be returned by API in addition to default ones
+        :param int limit: number of queries returned
+        :param int offset: Position from which search results will be presented
         :param nsfw: boolean enabling/disabling nsfw filter
 
-        :returns: list of manga Node objects
-        :rtype: list[Node]
+        :returns: list of queries matching search keyword
+        :rtype: PagedResult
         """
         if nsfw is None:
             nsfw = self.nsfw
@@ -51,55 +30,71 @@ class Manga:
         params = {
             "q": keyword,
             "limit": limit,
-            "fields": ','.join(__manga_fields__),
+            'offset': offset,
+            "fields": fields.to_payload(),
             'nsfw': nsfw
         }
-        return [Node(**temp_object) for temp_object in self._api_handler.call(uri, params=params)["data"]]
+        temp = self._api_handler.call(uri, params=params)
+        r_class = Node if fields == Fields.node() else MangaObject
+        return PagedResult([r_class(**manga) for manga in temp["data"]], temp['paging'])
 
-    def get_manga_details(self, manga_id):
+    def get_manga_details(self, manga_id: int):
         """
         Get full info about manga with provided id
 
-        :param id: id on https://myanimelist.net
+        :param int manga_id: id on https://myanimelist.net
 
         :returns: MangaObject for requested id
         :rtype: MangaObject
         """
         uri = f'manga/{manga_id}'
-        params = {"fields": ','.join(__manga_fields__)}
+        params = {"fields": Fields.manga().to_payload()}
         data = self._api_handler.call(uri, params=params)
         return MangaObject(**data)
 
-    def get_manga_fields(self, id: int, fields: list[str]) -> MangaObject:
+    def get_manga_fields(self, manga_id: int, fields: Fields) -> MangaObject:
         """
 
         Get specific fields from MAL manga entry with provided id
 
-        :param int id: id on https://myanimelist.net
-        :param list[str] fields: list of string field names
+        :param int manga_id: id on https://myanimelist.net
+        :param Fields fields: Fields that will be returned with manga object
+
         :returns: MangaObject for requested id
         :rtype: MangaObject
         """
-        if len(fields) == 0:
-            raise AttributeError("Fields attribute cannot be empty")
-        uri = f'anime/{id}'
-        params = {'fields': ",".join(fields)}
+        uri = f'anime/{manga_id}'
+        params = {'fields': fields.to_payload()}
         data = self._api_handler.call(uri, params=params)
         return MangaObject(**data)
 
-    # TODO objectify manga ranking
-    def get_manga_ranking(self, ranking_type="manga", limit=20):
-        uri = 'manga/ranking'
-        ranking_types = [
-            "novels", "oneshots", "doujin", "manhwa", "manhua", "bypopularity",
-            "favorite"
-        ]
+    def get_manga_ranking(self, ranking_type: Union[str, MangaRankingType] = MangaRankingType.MANGA, fields: Fields = Fields.manga(), limit: int = 20, offset: int = 0) -> Union[PagedResult[Node], PagedResult[MangaObject]]:
+        """
 
-        if ranking_type not in ranking_types:
-            return
+        Get current manga ranking from MAL
+
+        :param MangaRankingType ranking_type: type of manga ranking that will be fetched from API, refer to MangaRankingType dataclass for more info
+        :param Fields fields: Fields that will be returned additionally with manga data
+        :param int limit: number of queries returned
+        :param int offset: Position from which search results will be presented
+
+        :returns: List of queries with pagination support
+        :rtype: PagedResult
+        """
+        uri = 'manga/ranking'
+
+        if isinstance(ranking_type, str):
+            try:
+                ranking_type = MangaRankingType(ranking_type)
+            except ValueError:
+                raise ValueError(f"ranking_type can't be '{ranking_type}'")
+
         params = {
             "ranking_type": ranking_type,
             "limit": limit,
-            "fields": ','.join(self.manga_fields)
+            "fields": fields.to_payload(),
+            'offset': offset,
         }
-        return self._api_handler.call(uri, params)
+        temp = self._api_handler.call(uri, params=params)
+        r_class = Node if fields == Fields.node() else MangaObject
+        return PagedResult([r_class(**manga) for manga in temp["data"]], temp['paging'])

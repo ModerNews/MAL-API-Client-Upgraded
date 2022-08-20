@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap Portfolio Page Template</title>
+    <!-- Bootstrap -->
+    <link href="../static/css/bootstrap-4.3.1.css" rel="stylesheet">
+	<link href="../static/css/cookie.css" rel="stylesheet">
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <a class="navbar-brand" href="#">MAL API Client Upgraded</a>
+      <button class="navbar-toggler" type="button" dta-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+      </button>
+    </nav>
+    <section>
+      <div class="jumbotron text-center mt-2">
+        <div class="container">
+          <div class="row">
+            <div class="col-12">
+              <h1>MAL API CLIENT UPGRADED</h1>
+              <p>Log in to browse your anime recommendations</p>
+			  <button class="btn btn-primary btn-lg">Start Searching »</button><br>
+			  <button class="btn btn-secondary btn-sm mt-3">Anonymous Search »</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+	<section class="cookie">
+		<div class="txt"> 
+			<img id="close-cookies" class="close-cookies align-content-sm-end" alt="close square x" src="../static/images/x-square.svg"/><br>
+			<div class="cookie-agreement">
+				<p>
+				 By using MAL API Client Upgraded,<br>
+				 you agree to our <a href="#" target="_blank">Cookie Policy.</a>
+				</p>
+		    </div>
+		</div>
+		<div>
+			<button id="accept-cookies" class="accept-cookies btn btn-primary btn-sm">Accept</button>
+		</div>
+	</section>
+	<div style="height:25rem"></div>
+	<hr>
+	<footer class="text-center">
+      <div class="container">
+        <div class="row">
+          <div class="col-12">
+			<p>
+				Copyright <a href="https://github.com/ModerNews"><img src="../static/images/github.svg" alt="github icon" width="16" height="16"></a> ModerNews. All rights reserved
+				
+				<br>
+				<font size="-1">Page layout by <a href="https://github.com/Rafisto"><img src="../static/images/github.svg" alt="github icon" width="16" height="16"></a> Rafist0</font>
+				
+		  	</p>
+          </div>
+        </div>
+      </div> 
+	</footer>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="../static/js/jquery-3.3.1.min.js"></script>
+	<script src="../static/js/jquery.cookie.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="../static/js/popper.min.js"></script>
+    <script src="../static/js/bootstrap-4.3.1.js"></script>
+	<!-- Include cookie agreement JavaScript handler -->
+	<script src="../static/js/cookies.js"></script>
+  </body>
+</html>

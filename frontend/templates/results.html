@@ -7,7 +7,7 @@
     <title>Bootstrap Portfolio Page Template</title>
     <!-- Bootstrap -->
     <link href="../static/css/bootstrap-4.3.1.css" rel="stylesheet">
-	<link href="../static/css/cookie.css" rel="stylesheet">
+	<link href="../static/css/footer.css" rel="stylesheet">
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -21,33 +21,31 @@
         <div class="container">
           <div class="row">
             <div class="col-12">
-              <h1>RESULTS</h1>
-<!--			TODO: display 1 center everything else down in 4 grid-->
-<!--
-              <p>Log in to browse your anime recommendations</p>
-			  <button class="btn btn-primary btn-lg">Start Searching »</button><br>
-			  <button class="btn btn-secondary btn-sm mt-3">Anonymous Search »</button>
+              <h1>YOUR RECOMMENDATIONS</h1>
+			  <div id="top-recommendation" class="row" style="margin-left:auto; margin-right:auto; display:block">
+<!-- LARGE TEMPLATE
+				<figure>
+					<img class="img-fluid" src="../images/400x400.gif" width="300" height="400" alt="">
+					<figcaption>Main Title</figcaption>
+				</figure>
 -->
+			  </div>
+			  <hr>
+			  <div id = "recommendations" class="row">	
+<!-- SMALL TEMPLATE
+			  	<figure>
+    				<img src='../images/200x200.gif' width="200" height="300" alt='missing' />
+    				<figcaption>Caption goes here</figcaption>
+				</figure>
+-->
+			  </div>
+			  <hr>
             </div>
+          </div>
           </div>
         </div>
       </div>
     </section>
-	<section class="cookie">
-		<div class="txt"> 
-			<img id="close-cookies" class="close-cookies align-content-sm-end" alt="close square x" src="../static/images/x-square.svg"/><br>
-			<div class="cookie-agreement">
-				<p>
-				 By using MAL API Client Upgraded,<br>
-				 you agree to our <a href="#" target="_blank">Cookie Policy.</a>
-				</p>
-		    </div>
-		</div>
-		<div>
-			<button id="accept-cookies" class="accept-cookies btn btn-primary btn-sm">Accept</button>
-		</div>
-	</section>
-	<div style="height:25rem"></div>
 	<hr>
 	<footer class="text-center">
       <div class="container">
@@ -70,7 +68,7 @@
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="../static/js/popper.min.js"></script>
     <script src="../static/js/bootstrap-4.3.1.js"></script>
-	<!-- Include cookie agreement JavaScript handler -->
-	<script src="../static/js/cookies.js"></script>
+	<!-- Include results JavaScript loader -->
+	<script src="../static/js/results.js"></script>
   </body>
 </html>

@@ -1,0 +1,16 @@
+/* CSS Document */
+/* Flexbox */
+
+body{ height:100vh; margin:0; }
+
+header{ min-height:50px; }
+footer{ min-height:50px; }
+
+body{ 
+  display:flex; 
+  flex-direction:column; 
+}
+
+footer{
+  margin-top:auto; 
+}

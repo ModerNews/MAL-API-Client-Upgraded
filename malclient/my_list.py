@@ -1,6 +1,6 @@
-from typing import Union
+from typing import Union, Literal, Optional
 
-from .Datamodels import MyAnimeListSorting, MyMangaListSorting
+from .Datamodels import MyAnimeListSorting, MyMangaListSorting, MyAnimeListStatus, MyMangaListStatus
 from .exceptions import MainAuthRequiredError
 
 __all__ = ["MyList"]
@@ -11,32 +11,37 @@ class MyList:
     def __init__(self):
         return
 
-    def update_my_anime_list_status(self, anime_id, data):
+    def update_my_anime_list_status(self, anime_id, *,
+                                    status: Optional[Literal["watching", "completed", "on_hold", "dropped", "plan_to_watch"]] = None,
+                                    is_rewatching: Optional[bool] = None,
+                                    score: Optional[int] = None,
+                                    num_watched_episodes: Optional[int] = None,
+                                    priority: Optional[int] = None,
+                                    num_times_rewatched: Optional[int] = None,
+                                    rewatch_value: Optional[int] = None,
+                                    tags: Optional[str] = None,
+                                    comments: Optional[str] = None, **kwargs):
         """
 
         Updates myanimelist status for a given anime, takes payload as dictionary as argument.
-        Emit fields to not update. Returns response object.
-        example input for data:
-        ```json
-        data = {
-        'status': 'watching',
-        'is_rewatching': False,
-        'score': 0,
-        'watched_episodes': 0,
-        'priority': 0,
-        'num_times_rewatch': 0,
-        'rewatch_value': 0,
-        'tags': '',
-        'comments': ''
-        }
-        ```
+        Emit fields to not update. Returns updated entry from list.
 
         """
         if not self.authorized:
             raise MainAuthRequiredError()
-        statuses = ["watching, completed, on_hold, dropped, plan_to_watch"]
+        data = {
+            'status': status,
+            'is_rewatching': is_rewatching,
+            'score': score,
+            'num_watched_episodes': num_watched_episodes,
+            'priority': priority,
+            'num_times_rewatch': num_times_rewatched,
+            'rewatch_value': rewatch_value,
+            'tags': tags,
+            'comments': comments
+        }
         uri = f'anime/{anime_id}/my_list_status'
-        return self._api_handler.call(method="patch", uri=uri, data=data)
+        return MyAnimeListStatus(**self._api_handler.call(method="patch", uri=uri, data=data | kwargs))
 
     # need another function for adding manga to list
     def delete_my_anime_list_status(self, anime_id):
@@ -65,31 +70,38 @@ class MyList:
         params = {"fields": "anime_statistics"}
         return self._api_handler.call(uri)
 
-    def update_my_manga_list_status(self, manga_id, data):
+    def update_my_manga_list_status(self, manga_id, *,
+                                    status: Optional[Literal["reading", "completed", "on_hold", "dropped", "plan_to_read"]] = None,
+                                    is_rereading: Optional[bool] = None,
+                                    score: Optional[int] = None,
+                                    num_volumes_read: Optional[int] = None,
+                                    num_chapters_read: Optional[int] = None,
+                                    priority: Optional[int] = None,
+                                    num_times_reread: Optional[int] = None,
+                                    reread_value: Optional[int] = None,
+                                    tags: Optional[str] = None,
+                                    comments: Optional[str] = None, **kwargs):
         """
 
         Updates myanimelist status for a given manga, takes payload as dictionary as argument.
-        Emit fields to not update. Returns response object.
-        example input for data:
-        ```json
-        data = {
-        'status': 'watching',
-        'is_rereading': False,
-        'score': 0,
-        'num_volumes_read': 0,
-        'num_chapters_read': 0,
-        'priority': 0,
-        'comments': ''
-        }
-        ```
+        Emit fields to not update. Returns updated entry from list.
         """
         if not self.authorized:
             raise MainAuthRequiredError()
         uri = f'manga/{manga_id}/my_list_status'
-        statuses = [
-            "reading", "completed", "on_hold", "dropped", "plan_to_read"
-        ]
-        return self._api_handler.call(method="patch", uri=uri, data=data)
+        data = {
+            'status': status,
+            'is_rereading': is_rereading,
+            'score': score,
+            'num_volumes_read': num_volumes_read,
+            'num_chapters_read': num_chapters_read,
+            'priority': priority,
+            'num_times_reread': num_times_reread,
+            'reread_value': reread_value,
+            'tags': tags,
+            'comments': comments
+        }
+        return MyMangaListStatus(**self._api_handler.call(method="patch", uri=uri, data=data | kwargs))
 
     def delete_my_manga_list_status(self, manga_id):
         if not self.authorized:

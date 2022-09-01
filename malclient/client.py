@@ -79,23 +79,21 @@ class Client(Anime, Manga, MyList):
         self._connect_to_api()
 
     def _connect_to_api(self):
+        self.headers = {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        }
         if self._bearer_token is not None:
-            self.headers = {
-                'Content-Type': 'application/json',
-                'Authorization': f'Bearer {self._bearer_token}'
-            }
+            self.headers['Authorization'] = f'Bearer {self._bearer_token}'
             self._api_handler = APICaller(base_url=self._base_url,
                                           headers=self.headers)
             self.authorized = True
         elif self._client_id is not None:
-            self.headers = {
-                'Content-Type': 'application/json',
-                'X-MAL-CLIENT-ID': self._client_id
-            }
-            self._api_handler = APICaller(base_url=self._base_url,
-                                          headers=self.headers)
+            self.headers['X-MAL-CLIENT-ID'] = self._client_id
         else:
             raise AuthorizationError()
+
+        self._api_handler = APICaller(base_url=self._base_url,
+                                      headers=self.headers)
 
     def refresh_bearer_token(self,
                              client_id: str,

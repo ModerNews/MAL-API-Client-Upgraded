@@ -1,4 +1,8 @@
 import re
+import secrets
+import os
+import datetime
+import logging
 
 from .request_handler import APICaller
 from .anime import Anime
@@ -6,9 +10,6 @@ from .my_list import MyList
 # from .boards import Boards
 from .manga import Manga
 from .exceptions import AuthorizationError
-
-import secrets
-import os
 
 __all__ = ['generate_token', 'Client']
 
@@ -94,6 +95,17 @@ class Client(Anime, Manga, MyList):
 
         self._api_handler = APICaller(base_url=self._base_url,
                                       headers=self.headers)
+
+    def setup_logger(self,*, format: str = None, filename: str = None, log_level: logging = logging.INFO):
+        if format is None:
+            format = "%(levelname)s | %(asctime)s | %(message)s"
+        now = datetime.datetime.now()
+        if filename is None:
+            filename = f"malclient_log_{now.strftime('%Y-%m-%d_%H-%M')}.log"
+        with open(filename, "a+") as file:
+            file.write("#Software: Malclient-Upgraded 1.2.5\n")
+            file.write(f"#Start-Date: {now.strftime('%Y-%m-%d %H:%M:%S.%f %Z')}\n")
+        logging.basicConfig(filename=filename, level=log_level, format=format)
 
     def refresh_bearer_token(self,
                              client_id: str,

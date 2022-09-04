@@ -318,36 +318,40 @@ class ListStatusFields(FieldsBase):
 
 class UserFields(FieldsBase):
     def __init__(self, **kwargs):
-        self.id: bool = kwargs.get("id", False)
-        self.name: bool = kwargs.get("name", False)
-        self.picture: bool = kwargs.get("picture", False)
-        self.gender: bool = kwargs.get("gender", False)
+        self.id: bool = kwargs.get("id", True)
+        self.name: bool = kwargs.get("name", True)
+        self.picture: bool = kwargs.get("picture", True)
+        self.gender: bool = kwargs.get("gender", True)
         self.birthday: bool = kwargs.get("birthday", False)
-        self.location: bool = kwargs.get("location", False)
-        self.joined_at: bool = kwargs.get("joined_at", False)
-        self.anime_statistics: AnimeStatisticsFields = self._generate_subclass(AnimeStatisticsFields, kwargs, 'anime_statistics')
+        self.location: bool = kwargs.get("location", True)
+        self.joined_at: bool = kwargs.get("joined_at", True)
+        self.anime_statistics: bool = kwargs.get("anime_statistics", True)
         self.time_zone: bool = kwargs.get("time_zone", False)
         self.is_supporter: bool = kwargs.get("is_supporter", False)
 
     @classmethod
     def basic(cls):
-        return cls.from_list(["id", "name", "picture", "anime_statistics"])
+        return cls(id=True,
+                   name=True,
+                   picture=True,
+                   anime_statistics=True)
 
 
-class AnimeStatisticsFields(FieldsBase):
-    def __init__(self, **kwargs):
-        self.num_items_watching: bool = kwargs.get("num_items_watching", False)
-        self.num_items_completed: bool = kwargs.get("num_items_completed", False)
-        self.num_items_on_hold: bool = kwargs.get("num_items_on_hold", False)
-        self.num_items_dropped: bool = kwargs.get("num_items_dropped", False)
-        self.num_items_plan_to_watch: bool = kwargs.get("num_items_plan_to_watch", False)
-        self.num_items: bool = kwargs.get("num_items", False)
-        self.num_days_watched: bool = kwargs.get("num_days_watched", False)
-        self.num_days_watching: bool = kwargs.get("num_days_watching", False)
-        self.num_days_completed: bool = kwargs.get("num_days_completed", False)
-        self.num_days_on_hold: bool = kwargs.get("num_days_on_hold", False)
-        self.num_days_dropped: bool = kwargs.get("num_days_dropped", False)
-        self.num_days: bool = kwargs.get("num_days", False)
-        self.num_episodes: bool = kwargs.get("num_episodes", False)
-        self.num_times_rewatched: bool = kwargs.get("num_times_rewatched", False)
-        self.mean_score: bool = kwargs.get("mean_score", False)
+# Deprecated - This serves no purpose, you can't specify fields for this parameter
+# class AnimeStatisticsFields(FieldsBase):
+#     def __init__(self, **kwargs):
+#         self.num_items_watching: bool = kwargs.get("num_items_watching", False)
+#         self.num_items_completed: bool = kwargs.get("num_items_completed", False)
+#         self.num_items_on_hold: bool = kwargs.get("num_items_on_hold", False)
+#         self.num_items_dropped: bool = kwargs.get("num_items_dropped", False)
+#         self.num_items_plan_to_watch: bool = kwargs.get("num_items_plan_to_watch", False)
+#         self.num_items: bool = kwargs.get("num_items", False)
+#         self.num_days_watched: bool = kwargs.get("num_days_watched", False)
+#         self.num_days_watching: bool = kwargs.get("num_days_watching", False)
+#         self.num_days_completed: bool = kwargs.get("num_days_completed", False)
+#         self.num_days_on_hold: bool = kwargs.get("num_days_on_hold", False)
+#         self.num_days_dropped: bool = kwargs.get("num_days_dropped", False)
+#         self.num_days: bool = kwargs.get("num_days", False)
+#         self.num_episodes: bool = kwargs.get("num_episodes", False)
+#         self.num_times_rewatched: bool = kwargs.get("num_times_rewatched", False)
+#         self.mean_score: bool = kwargs.get("mean_score", False)

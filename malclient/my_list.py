@@ -1,6 +1,6 @@
 from typing import Union, Literal, Optional
 
-from .Datamodels import MyAnimeListSorting, MyMangaListSorting, MyAnimeListStatus, MyMangaListStatus
+from .Datamodels import MyAnimeListSorting, MyMangaListSorting, MyAnimeListStatus, MyMangaListStatus, ListStatusFields, Fields, UserFields
 from .exceptions import MainAuthRequiredError
 
 __all__ = ["MyList"]
@@ -11,7 +11,7 @@ class MyList:
     def __init__(self):
         return
 
-    def update_my_anime_list_status(self, anime_id, *,
+    def update_my_anime_list_status(self, anime_id: int, *,
                                     status: Optional[Literal["watching", "completed", "on_hold", "dropped", "plan_to_watch"]] = None,
                                     is_rewatching: Optional[bool] = None,
                                     score: Optional[int] = None,
@@ -44,31 +44,40 @@ class MyList:
         return MyAnimeListStatus(**self._api_handler.call(method="patch", uri=uri, data=data | kwargs))
 
     # need another function for adding manga to list
-    def delete_my_anime_list_status(self, anime_id):
+    def delete_my_anime_list_status(self, anime_id: int):
         if not self.authorized:
             raise MainAuthRequiredError()
         uri = f'anime/{anime_id}/my_list_status'
-        return self._api_handler.call("delete")
+        return self._api_handler.call(method="delete", uri=uri)
 
-    def get_user_anime_list(self, username="@me", *, sort: Union[MyAnimeListSorting, str] = None, status: str = None, limit=100, additional_fields=None):
-        if additional_fields is None:
-            additional_fields = []
+    def get_user_anime_list(self, username: str ="@me", *,
+                            sort: Union[MyAnimeListSorting, str, None] = None,
+                            status: Optional[str] = None,
+                            limit: int = 100,
+                            offset: int = 0,
+                            list_status_fields: ListStatusFields = ListStatusFields.all(),
+                            anime_fields: Fields = Fields.node()):
         uri = f'users/{username}/animelist'
         if not sort:
-            sort = MyAnimeListSorting.ListScore
+            sort = MyAnimeListSorting.LIST_SCORE
         elif isinstance(sort, str):
             sort = MyAnimeListSorting(sort.lower())
-        params = {"sort": sort.value, "limit": limit, "fields": ",".join(["list_status"] + additional_fields)}
-        if status is not None:
-            params['status'] = status
+
+        params = {
+            "sort": sort.value,
+            "limit": limit,
+            "fields": list_status_fields.to_payload() + anime_fields.to_payload(),
+            "status": status,
+            "offset": offset
+        }
         return self._api_handler.call(uri=uri, params=params)
 
-    def get_user_info(self, user_id="@me"):
+    def get_user_info(self, user_id: str = "@me", fields: UserFields = UserFields.basic()):
         if not self.authorized:
             raise MainAuthRequiredError()
         uri = f'users/{user_id}'
-        params = {"fields": "anime_statistics"}
-        return self._api_handler.call(uri)
+        params = {"fields": fields.to_payload()}
+        return self._api_handler.call(uri, params=params)
 
     def update_my_manga_list_status(self, manga_id, *,
                                     status: Optional[Literal["reading", "completed", "on_hold", "dropped", "plan_to_read"]] = None,
@@ -107,17 +116,23 @@ class MyList:
         if not self.authorized:
             raise MainAuthRequiredError()
         uri = f'manga/{manga_id}/my_list_status'
-        return self._api_handler.call("delete")
+        return self._api_handler.call(method="delete", uri=uri)
 
-    def get_user_manga_list(self, username="@me", sort=None, status=None, limit=100):
+    def get_user_manga_list(self, username: str ="@me", *,
+                            sort: Union[MyMangaListSorting, str] = MyMangaListSorting.LIST_SCORE,
+                            status: Optional[str] = None,
+                            limit: int = 100,
+                            offset: int = 0,
+                            list_status_fields: ListStatusFields = ListStatusFields.all(),
+                            manga_fields: Fields = Fields.node()):
         uri = f'users/{username}/mangalist'
-        sort_options = [
-            "list_score", "list_updated_at", "manga_title", "manga_start_date",
-            "manga_id"
-        ]
-        if sort not in sort_options:
-            sort = "list_score"
-        params = {"sort": sort, "limit": limit, "fields": "list_status"}
-        if status is not None:
-            params['status'] = status
+        if isinstance(sort, str):
+            sort = MyMangaListSorting(sort.lower())
+        params = {
+            "sort": sort.value,
+            "limit": limit,
+            "fields": list_status_fields.to_payload() + manga_fields.to_payload(),
+            "status": status,
+            "offset": offset,
+        }
         return self._api_handler.call(uri=uri, params=params)

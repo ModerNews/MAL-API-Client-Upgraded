@@ -1,6 +1,27 @@
 Changelog
 =========
 
+
+Version 1.2.5
+~~~~~~~~~~~~~
+* Reworked functions for all User List methods:
+    * `Client.get_user_anime_list` now takes additional arguments for fields, and offset, returns list of AnimeObject with paging support
+    * `Client.get_user_manga_list` now takes additional arguments for fields, and offset, returns list of MangaObject with paging support
+    * `Client.update_user_anime_list_status` now takes parts of payload as keyword-only argument instead of taking payload json, returns MyAnimeListStatus object
+    * `Client.update_user_manga_list_status` now takes parts of payload as keyword-only argument instead of taking payload json, returns MyMangaListStatus object
+* Reworked `Client.get_user_info` now takes new fields argument, returns User object
+* Created new objects:
+    * `User`
+    * `UserAnimeStatistics`
+    * `UserFields`
+* Fixed Bugs
+    * `Client.delete_user_anime_list_status` not working at all
+    * `Client.delete_user_manga_list_status` not working at all
+    * `Client.update_user_anime_list_status` not updating values `issue #13 <https://github.com/ModerNews/MAL-API-Client-Upgraded/issues/13>`_
+    * `Client.update_user_manga_list_status` not updating values `issue #13 <https://github.com/ModerNews/MAL-API-Client-Upgraded/issues/13>`_
+* Introduced new logging system
+
+
 Version 1.2
 ~~~~~~~~~~~
 * Reworked models:

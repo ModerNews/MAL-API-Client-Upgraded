@@ -26,6 +26,18 @@ class MyList:
         Updates myanimelist status for a given anime, takes payload as dictionary as argument.
         Emit fields to not update. Returns updated entry from list.
 
+        :param int anime_id: id of anime you want to update
+        :param Literal["watching", "completed", "on_hold", "dropped", "plan_to_watch"] status: Watching status of series
+        :param bool is_rewatching: Defines if series is watched multiple times by user
+        :param int score: score in 1 to 10 scale
+        :param int num_watched_episodes: Number of episodes watched by user
+        :param int priority: Priority level to watch this anime
+        :param int num_times_rewatched: Number of how many times you've re-watched this series, this should not include first time you completed this series
+        :param int rewatch_value: How likely are you to re-watch this series
+        :param str tags: Tags you're willing to give to this series
+        :param str comments: Additional comments you'd like to leave under this series
+        :returns: Updated entry
+        :rtype: MyAnimeListStatus
         """
         if not self.authorized:
             raise MainAuthRequiredError()
@@ -48,6 +60,11 @@ class MyList:
 
     # need another function for adding manga to list
     def delete_my_anime_list_status(self, anime_id: int):
+        """
+        Deletes entry from list for given anime
+
+        :params int manga_id: ID number for anime you want to delete
+        """
         if not self.authorized:
             raise MainAuthRequiredError()
         uri = f'anime/{anime_id}/my_list_status'
@@ -58,9 +75,22 @@ class MyList:
                             status: Optional[str] = None,
                             limit: int = 100,
                             offset: int = 0,
-                            list_status_fields: ListStatusFields = ListStatusFields.all(),
-                            anime_fields: Fields = Fields.node()):
+                            list_status_fields: ListStatusFields = ListStatusFields.anime_base(),
+                            fields: Fields = Fields.from_list(['id', 'title', 'main_picture', 'my_list_status'])):
+        """
+        Fetches anime list for given user
+
+        :params MyAnimeListSorting sort: Method using which entries will be sorted
+        :params str status: Only entries with provided status will be returned
+        :params int limit: Number of entries returned
+        :params int offset: Position starting from which entries will be fetched
+        :params ListStatusFields list_status_fields: Fields returned inside my_list_status field in entry
+        :params Fields fields: Fields returned alongside each entry
+        :returns: List of objects containing manga information for entries on users' manga list
+        :rtype: PagedResult[AnimeObject]
+        """
         uri = f'users/{username}/animelist'
+        fields.my_list_status = list_status_fields
         if not sort:
             sort = MyAnimeListSorting.LIST_SCORE
         elif isinstance(sort, str):
@@ -69,14 +99,22 @@ class MyList:
         params = {
             "sort": sort.value,
             "limit": limit,
-            "fields": list_status_fields.to_payload() + anime_fields.to_payload(),
+            "fields": fields.to_payload(),
             "status": status,
             "offset": offset
         }
         temp = self._api_handler.call(uri=uri, params=params)
         return PagedResult([AnimeObject(**entry) for entry in temp['data']], temp['paging'])
 
-    def get_user_info(self, user_id: str = "@me", fields: UserFields = UserFields.basic()):
+    def get_user_info(self, user_id: Union[str, int] = "@me", fields: UserFields = UserFields.basic()):
+        """
+        Gets full information about mentioned user, currently you can fetch info only about authenticated user
+
+        :params str user_id: ID of user you want to fetch data for, currently only supports value @me
+        :params UserFields fields: Fields to be fetched alongside main data
+        :returns: Data for authenticated user
+        :rtype: User
+        """
         if not self.authorized:
             raise MainAuthRequiredError()
         uri = f'users/{user_id}'
@@ -98,6 +136,20 @@ class MyList:
 
         Updates myanimelist status for a given manga, takes payload as dictionary as argument.
         Emit fields to not update. Returns updated entry from list.
+
+        :param int manga_id: id of manga you want to update
+        :param Literal["watching", "completed", "on_hold", "dropped", "plan_to_watch"] status: Watching status of series
+        :param bool is_rereading: Defines if series is read multiple times by user
+        :param int score: score in 1 to 10 scale
+        :param int num_volumes_read: Number of volumes read by user
+        :param int num_chapters_read: Number of chapters read by user
+        :param int priority: Priority level to watch this anime
+        :param int num_times_reread: Number of how many times you've re-read this series, this should not include first time you completed this series
+        :param int reread_value: How likely are you to re-read this series
+        :param str tags: Tags you're willing to give to this series
+        :param str comments: Additional comments you'd like to leave under this series
+        :returns: Updated entry
+        :rtype: MyMangaListStatus
         """
         if not self.authorized:
             raise MainAuthRequiredError()
@@ -116,7 +168,12 @@ class MyList:
         }
         return MyMangaListStatus(**self._api_handler.call(method="patch", uri=uri, data=data | kwargs))
 
-    def delete_my_manga_list_status(self, manga_id):
+    def delete_my_manga_list_status(self, manga_id: int):
+        """
+        Deletes entry from list for given manga
+
+        :params int manga_id: ID number for manga you want to delete
+        """
         if not self.authorized:
             raise MainAuthRequiredError()
         uri = f'manga/{manga_id}/my_list_status'
@@ -127,15 +184,28 @@ class MyList:
                             status: Optional[str] = None,
                             limit: int = 100,
                             offset: int = 0,
-                            list_status_fields: ListStatusFields = ListStatusFields.all(),
-                            manga_fields: Fields = Fields.node()):
+                            list_status_fields: ListStatusFields = ListStatusFields.manga_base(),
+                            fields: Fields = Fields.from_list(['id', 'title', 'main_picture'])):
+        """
+        Fetches manga list for given user
+
+        :params MyMangaListSorting sort: Method using which entries will be sorted
+        :params str status: Only entries with provided status will be returned
+        :params int limit: Number of entries returned
+        :params int offset: Position starting from which entries will be fetched
+        :params ListStatusFields list_status_fields: Fields returned inside my_list_status field in entry
+        :params Fields fields: Fields returned alongside each entry
+        :returns: List of objects containing manga information for entries on users manga list
+        :rtype: PagedResult[MangaObject]
+        """
         uri = f'users/{username}/mangalist'
+        fields.my_list_status = list_status_fields
         if isinstance(sort, str):
             sort = MyMangaListSorting(sort.lower())
         params = {
             "sort": sort.value,
             "limit": limit,
-            "fields": list_status_fields.to_payload() + manga_fields.to_payload(),
+            "fields": fields.to_payload(),
             "status": status,
             "offset": offset,
         }

@@ -1,6 +1,6 @@
 from typing import Union, Literal, Optional
 
-from .Datamodels import MyAnimeListSorting, MyMangaListSorting, MyAnimeListStatus, MyMangaListStatus, ListStatusFields, Fields, UserFields
+from .Datamodels import MyAnimeListSorting, MyMangaListSorting, MyAnimeListStatus, MyMangaListStatus, Fields, UserFields, User, MangaObject, AnimeObject, PagedResult, ListStatusFields
 from .exceptions import MainAuthRequiredError
 
 __all__ = ["MyList"]
@@ -29,6 +29,9 @@ class MyList:
         """
         if not self.authorized:
             raise MainAuthRequiredError()
+        if score is not None:
+            if 0 > score > 10:
+                raise ValueError("Score must be in range 1 - 10")
         data = {
             'status': status,
             'is_rewatching': is_rewatching,
@@ -70,14 +73,15 @@ class MyList:
             "status": status,
             "offset": offset
         }
-        return self._api_handler.call(uri=uri, params=params)
+        temp = self._api_handler.call(uri=uri, params=params)
+        return PagedResult([AnimeObject(**entry) for entry in temp['data']], temp['paging'])
 
     def get_user_info(self, user_id: str = "@me", fields: UserFields = UserFields.basic()):
         if not self.authorized:
             raise MainAuthRequiredError()
         uri = f'users/{user_id}'
         params = {"fields": fields.to_payload()}
-        return self._api_handler.call(uri, params=params)
+        return User(**self._api_handler.call(uri, params=params))
 
     def update_my_manga_list_status(self, manga_id, *,
                                     status: Optional[Literal["reading", "completed", "on_hold", "dropped", "plan_to_read"]] = None,
@@ -135,4 +139,5 @@ class MyList:
             "status": status,
             "offset": offset,
         }
-        return self._api_handler.call(uri=uri, params=params)
+        temp = self._api_handler.call(uri=uri, params=params)
+        return PagedResult([MangaObject(**entry) for entry in temp['data']], temp['paging'])

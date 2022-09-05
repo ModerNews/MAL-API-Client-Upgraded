@@ -92,7 +92,8 @@ class Fields(FieldsBase):
         self.num_scoring_users: bool = kwargs.get('num_scoring_users', False)
         self.updated_at: bool = kwargs.get('updated_at', False)
         self.genres: bool = kwargs.get('genres', False)
-        self.my_list_status: bool = kwargs.get('my_list_status', False)
+        # self.my_list_status: bool = kwargs.get('my_list_status', False)
+        self._my_list_status: ListStatusFields = self._generate_subclass(ListStatusFields, kwargs, 'my_list_status')
         self.pictures: bool = kwargs.get('pictures', False)
         self.background: bool = kwargs.get('background', False)
         self._related_anime: bool = self._generate_subclass(Fields, kwargs, 'related_anime')
@@ -153,6 +154,14 @@ class Fields(FieldsBase):
     @recommendations.setter
     def recommendations(self, value):
         self._recommendations = self._generate_subclass(Fields, {'recommendations': value}, 'recommendations')
+
+    @property
+    def my_list_status(self):
+        return self._my_list_status
+
+    @my_list_status.setter
+    def my_list_status(self, value):
+        self._my_list_status: ListStatusFields = self._generate_subclass(ListStatusFields, {'my_list_status': value}, 'my_list_status')
 
     @classmethod
     def empty(cls):

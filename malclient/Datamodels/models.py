@@ -8,7 +8,7 @@ from .enums import *
 
 
 __all__ = ['Asset', 'Node', 'AnimeSeason', 'Genre', 'Studio', 'Broadcast', 'Statistics', 'Relation', 'Recommendation',
-           'MyMangaListStatus', 'MyAnimeListStatus', 'AnimeObject', 'MangaObject']
+           'MyMangaListStatus', 'MyAnimeListStatus', 'AnimeObject', 'MangaObject', 'UserAnimeStatistics', "User"]
 
 
 class MALBaseModel(BaseModel):
@@ -152,19 +152,19 @@ class MyMangaListStatus(MALBaseModel):
     Status from users manga list
 
     """
-    score: int
-    status: str
-    is_rereading: bool
-    updated_at: Union[datetime.datetime, str]
-    num_chapters_read: int
-    num_volumes_read: int
+    score: Optional[int]
+    status: Optional[str]
+    is_rereading: Optional[bool]
+    updated_at: Union[datetime.datetime, str, None]
+    num_chapters_read: Optional[int]
+    num_volumes_read: Optional[int]
     start_date: Union[datetime.date, str, None]
     finish_date: Union[datetime.date, str, None]
-    priority: int
-    num_times_reread: int
-    reread_value: int
-    tags: list[str]
-    comments: str
+    priority: Optional[int]
+    num_times_reread: Optional[int]
+    reread_value: Optional[int]
+    tags: Optional[list[str]]
+    comments: Optional[str]
 
 
 class MyAnimeListStatus(MALBaseModel):
@@ -267,3 +267,34 @@ class MangaObject(MALBaseModel):
 
     def __str__(self):
         return self.title
+
+
+class UserAnimeStatistics(MALBaseModel):
+    num_items_watching: int
+    num_items_completed: int
+    num_items_on_hold: int
+    num_items_dropped: int
+    num_items_plan_to_watch: int
+    num_items: int
+    num_days_watched: float
+    num_days_watching: float
+    num_days_completed: float
+    num_days_on_hold: float
+    num_days_dropped: float
+    num_days: float
+    num_episodes: int
+    num_times_rewatched: int
+    mean_score: float
+
+
+class User(MALBaseModel):
+    id: int
+    name: str
+    picture: str
+    gender: Optional[str]
+    birthday: Union[datetime.date, str, None]
+    location: Optional[str]
+    joined_at: Union[datetime.datetime, str, None]
+    time_zone: Optional[str]
+    is_supporter: Optional[bool]
+    anime_statistics: Optional[UserAnimeStatistics]

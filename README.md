@@ -23,6 +23,7 @@ import malclient
 
 print(malclient.generate_token("<YOUR_CLIENT_ID>", "<YOUR_CLIENT_SECRET>"))
 ```
+
 Although remember to call it only once and, then use the token generated this way, optionally with `Client.refresh_bearer_token` method  
 Once an access token is retrieved, you can simply authenticate with this api with the following:
 ```python
@@ -75,6 +76,7 @@ print(repr(anime))
 # Update anime List based off of search results
 anime = client.search_anime("Monogatari", limit=1)
 ```
+
 ### Most Imoprtant To-Do's
 - [ ] Rewrite boards (currently disabled)
 - [ ] Rewrite my list updaters

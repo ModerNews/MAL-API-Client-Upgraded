@@ -10,11 +10,11 @@ Base Class
 
 .. autoclass:: Client
 
+.. automethod:: Client.get_user_info
+
 
 Anime-related functions
 ~~~~~~~~~~~~~~~~~~~~~~~
-
-Already finished:
 
 .. py:currentmodule:: malclient
 
@@ -33,8 +33,6 @@ Already finished:
 
 Manga-related functions
 ~~~~~~~~~~~~~~~~~~~~~~~
-
-Already finished:
 
 .. py:currentmodule:: malclient
 
@@ -57,15 +55,25 @@ I will be working on bringing it back though.
 User List
 ~~~~~~~~~~
 
-I looked through it, manga nad anime list are available in API, but they need to be rewritten
+.. py:currentmodule:: malclient
+
+.. automethod:: Client.update_my_anime_list_status
+
+.. automethod:: Client.delete_my_anime_list_status
+
+.. automethod:: Client.get_user_anime_list
+
+.. automethod:: Client.update_my_manga_list_status
+
+.. automethod:: Client.delete_my_manga_list_status
+
+.. automethod:: Client.get_user_manga_list
 
 
 Utility
 ~~~~~~~
 
 .. py:currentmodule:: malclient
-
-.. automethod:: Client.get_user_info
 
 .. autoclass:: PagedResult
     :members:

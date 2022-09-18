@@ -79,6 +79,14 @@ Manga Specific
 .. autoenum:: MyMangaListSorting
     :members:
 
+
+User
+~~~~
+
+.. autopydantic_model:: User
+
+.. autopydantic_model:: UserAnimeStatistics
+
 Fields
 ~~~~~~
 

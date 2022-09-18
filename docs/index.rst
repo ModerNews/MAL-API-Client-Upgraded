@@ -24,6 +24,7 @@ Documentation Tree
    Authorization <Helper_Methods>
    API Reference <API_Reference>
    Data Models <Models>
+   Logging module <Logging>
    Changelog <Changelog>
 
 

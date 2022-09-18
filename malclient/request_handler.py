@@ -1,5 +1,6 @@
 import requests
 from .exceptions import *
+import logging
 
 __all__ = ['APICaller']
 
@@ -12,6 +13,7 @@ class APICaller(object):
     def call(self, uri, method="get", params=None, *args, **kwargs):
         requester = getattr(requests, method.lower())
         url = self._base_url + uri
+        logging.info(f"{method.upper()} {url} Query Parameters: {params}")
         response = requester(url=url,
                              headers=self._headers,
                              params=params,
@@ -42,6 +44,7 @@ class APICaller(object):
             elif method == "delete":
                 return response.status_code
         else:
+            logging.error(f"{method.upper()} {url} {response.status_code} {json.loads(response.text)['error']}: {json.loads(response.text)['message']}")
             if str(response.status_code) == "400" or str(response.status_code).lower() == "400 bad request":
                 raise BadRequest(response)
             elif str(response.status_code) == "401" or str(response.status_code).lower() == "401 unauthorized":

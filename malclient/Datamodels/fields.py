@@ -1,7 +1,7 @@
 from types import MethodType, MethodWrapperType, BuiltinFunctionType
 from typing import Union
 
-__all__ = ['Fields', 'AuthorFields', 'ListStatusFields']
+__all__ = ['Fields', 'AuthorFields', 'ListStatusFields', 'UserFields']
 
 
 class FieldsBase(object):
@@ -43,6 +43,10 @@ class FieldsBase(object):
             elif value is True:
                 fields.append(field)
         return ','.join(fields)
+
+    def _generate_subclass(self, r_type, kwargs, key):
+        return r_type(**kwargs.get(key)) if isinstance(kwargs.get(key), dict) else kwargs.get(key) if isinstance(
+            kwargs.get(key), r_type) else False if kwargs.get(key) is not True else r_type()
 
     @classmethod
     def from_list(cls, field_list: list[str]):
@@ -88,7 +92,8 @@ class Fields(FieldsBase):
         self.num_scoring_users: bool = kwargs.get('num_scoring_users', False)
         self.updated_at: bool = kwargs.get('updated_at', False)
         self.genres: bool = kwargs.get('genres', False)
-        self.my_list_status: bool = kwargs.get('my_list_status', False)
+        # self.my_list_status: bool = kwargs.get('my_list_status', False)
+        self._my_list_status: ListStatusFields = self._generate_subclass(ListStatusFields, kwargs, 'my_list_status')
         self.pictures: bool = kwargs.get('pictures', False)
         self.background: bool = kwargs.get('background', False)
         self._related_anime: bool = self._generate_subclass(Fields, kwargs, 'related_anime')
@@ -117,9 +122,6 @@ class Fields(FieldsBase):
         self.num_chapters: bool = kwargs.get('num_chapters', False)
         self._authors: Union[AuthorFields, bool] = self._generate_subclass(AuthorFields, kwargs, 'authors')
         self.serialization: bool = kwargs.get('serialization', False)
-
-    def _generate_subclass(self, r_type, kwargs, key):
-        return r_type(**kwargs.get(key)) if isinstance(kwargs.get(key), dict) else kwargs.get(key) if isinstance(kwargs.get(key), r_type) else False if kwargs.get(key) is not True else r_type()
 
     @property
     def authors(self):
@@ -152,6 +154,14 @@ class Fields(FieldsBase):
     @recommendations.setter
     def recommendations(self, value):
         self._recommendations = self._generate_subclass(Fields, {'recommendations': value}, 'recommendations')
+
+    @property
+    def my_list_status(self):
+        return self._my_list_status
+
+    @my_list_status.setter
+    def my_list_status(self, value):
+        self._my_list_status: ListStatusFields = self._generate_subclass(ListStatusFields, {'my_list_status': value}, 'my_list_status')
 
     @classmethod
     def empty(cls):
@@ -313,3 +323,44 @@ class ListStatusFields(FieldsBase):
         All fields for anime list status
         """
         return cls.from_list(['score', 'status', 'updated_at', 'is_rewatching', 'num_episodes_watched', 'priority', 'tags', 'comments', 'num_times_rewatched', 'rewatch_value'])
+
+
+class UserFields(FieldsBase):
+    def __init__(self, **kwargs):
+        self.id: bool = kwargs.get("id", True)
+        self.name: bool = kwargs.get("name", True)
+        self.picture: bool = kwargs.get("picture", True)
+        self.gender: bool = kwargs.get("gender", True)
+        self.birthday: bool = kwargs.get("birthday", False)
+        self.location: bool = kwargs.get("location", True)
+        self.joined_at: bool = kwargs.get("joined_at", True)
+        self.anime_statistics: bool = kwargs.get("anime_statistics", True)
+        self.time_zone: bool = kwargs.get("time_zone", False)
+        self.is_supporter: bool = kwargs.get("is_supporter", False)
+
+    @classmethod
+    def basic(cls):
+        return cls(id=True,
+                   name=True,
+                   picture=True,
+                   anime_statistics=True)
+
+
+# Deprecated - This serves no purpose, you can't specify fields for this parameter
+# class AnimeStatisticsFields(FieldsBase):
+#     def __init__(self, **kwargs):
+#         self.num_items_watching: bool = kwargs.get("num_items_watching", False)
+#         self.num_items_completed: bool = kwargs.get("num_items_completed", False)
+#         self.num_items_on_hold: bool = kwargs.get("num_items_on_hold", False)
+#         self.num_items_dropped: bool = kwargs.get("num_items_dropped", False)
+#         self.num_items_plan_to_watch: bool = kwargs.get("num_items_plan_to_watch", False)
+#         self.num_items: bool = kwargs.get("num_items", False)
+#         self.num_days_watched: bool = kwargs.get("num_days_watched", False)
+#         self.num_days_watching: bool = kwargs.get("num_days_watching", False)
+#         self.num_days_completed: bool = kwargs.get("num_days_completed", False)
+#         self.num_days_on_hold: bool = kwargs.get("num_days_on_hold", False)
+#         self.num_days_dropped: bool = kwargs.get("num_days_dropped", False)
+#         self.num_days: bool = kwargs.get("num_days", False)
+#         self.num_episodes: bool = kwargs.get("num_episodes", False)
+#         self.num_times_rewatched: bool = kwargs.get("num_times_rewatched", False)
+#         self.mean_score: bool = kwargs.get("mean_score", False)

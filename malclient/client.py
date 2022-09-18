@@ -1,4 +1,8 @@
 import re
+import secrets
+import os
+import datetime
+import logging
 
 from .request_handler import APICaller
 from .anime import Anime
@@ -7,10 +11,7 @@ from .my_list import MyList
 from .manga import Manga
 from .exceptions import AuthorizationError
 
-import secrets
-import os
-
-__all__ = ['generate_token', 'Client']
+__all__ = ['generate_token', 'Client', 'setup_logging']
 
 
 def generate_token(client_id: str,
@@ -56,6 +57,24 @@ def generate_token(client_id: str,
     return api_handler.call(uri=uri, method="post", data=data)
 
 
+def setup_logging(*, format: str = None, filename: str = None, log_level: logging = logging.INFO):
+    """
+    This is helper function for setting up request logging, all parameters are optional and function may be executed as is
+    :param str format: Python Logging library format in which each event will be logged
+    :param str filename: filename under which log will be saved, default if malclient_log_{date}.log
+    :param log_level: Messages which are less severe than log-level will be ignored, most request have level INFO
+    """
+    if format is None:
+        format = "%(levelname)s | %(asctime)s | %(message)s"
+    now = datetime.datetime.now()
+    if filename is None:
+        filename = f"malclient_log_{now.strftime('%Y-%m-%d_%H-%M')}.log"
+    with open(filename, "a+") as file:
+        file.write("#Software: Malclient-Upgraded 1.2.5\n")
+        file.write(f"#Start-Date: {now.strftime('%Y-%m-%d %H:%M:%S.%f %Z')}\n")
+    logging.basicConfig(filename=filename, level=log_level, format=format)
+
+
 class Client(Anime, Manga, MyList):
     """
 
@@ -79,23 +98,21 @@ class Client(Anime, Manga, MyList):
         self._connect_to_api()
 
     def _connect_to_api(self):
+        self.headers = {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        }
         if self._bearer_token is not None:
-            self.headers = {
-                'Content-Type': 'application/json',
-                'Authorization': f'Bearer {self._bearer_token}'
-            }
+            self.headers['Authorization'] = f'Bearer {self._bearer_token}'
             self._api_handler = APICaller(base_url=self._base_url,
                                           headers=self.headers)
             self.authorized = True
         elif self._client_id is not None:
-            self.headers = {
-                'Content-Type': 'application/json',
-                'X-MAL-CLIENT-ID': self._client_id
-            }
-            self._api_handler = APICaller(base_url=self._base_url,
-                                          headers=self.headers)
+            self.headers['X-MAL-CLIENT-ID'] = self._client_id
         else:
             raise AuthorizationError()
+
+        self._api_handler = APICaller(base_url=self._base_url,
+                                      headers=self.headers)
 
     def refresh_bearer_token(self,
                              client_id: str,

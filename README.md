@@ -24,6 +24,7 @@ Or current unstable version directly from GitHub:
 ## Authentication
 Client library uses OAuth2 authorization, all you need to do is register your app [here](https://myanimelist.net/apiconfig).
 Main auth requires access token:
+
 ```python
 import malclient
 
@@ -31,6 +32,7 @@ malclient.client(access_token=token)
 ```
 
 Alternatively can authenticate using your client ID
+
 ```python
 import malclient
 
@@ -45,9 +47,11 @@ import malclient
 
 print(malclient.generate_token("<YOUR_CLIENT_ID>", "<YOUR_CLIENT_SECRET>"))
 ```
+
 Although remember to call it only once and, then use the token generated this way, optionally with `Client.refresh_bearer_token` method  
 
 As mentioned previously, if you're scared that your token will time out you can also utilize `Client.refresh_bearer_token` function
+
 ```python
 client.refresh_bearer_token(
           client_id="<your-client-id>",
@@ -91,6 +95,7 @@ print(repr(anime))
 # Update anime List based off of search results
 anime = client.search_anime("Monogatari", limit=1)
 ```
+
 ### Most Imoprtant To-Do's
 - [ ] Rewrite boards (currently disabled)
 - [ ] Implement additional search endpoint

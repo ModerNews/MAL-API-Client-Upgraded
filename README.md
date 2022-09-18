@@ -29,7 +29,6 @@ Once an access token is retrieved, you can simply authenticate with this api wit
 import malclient
 
 client = malclient.Client(access_token="<YOUR_ACCESS_TOKEN>")
-
 ```
 
 As mentioned previously, if your scared that your token will time out you can also utilize `Client.refresh_bearer_token` function

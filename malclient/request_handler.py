@@ -24,18 +24,21 @@ class APICaller(object):
                 response_json = response.json()
                 if response_json and "data" in response_json:
                     list_response = []
-                    for json_obj in response_json["data"]:
-                        new_dict = {}
-                        if "node" in json_obj:
-                            for i in json_obj["node"]:
-                                new_dict[i] = json_obj["node"][i]
-                        if "list_status" in json_obj:
-                            for i in json_obj["list_status"]:
-                                new_dict[i] = json_obj["list_status"][i]
-                        if "ranking" in json_obj:
-                            for i in json_obj["ranking"]:
-                                new_dict[i] = json_obj["ranking"][i]
-                        list_response.append(new_dict)
+                    if isinstance(response_json["data"], list):
+                        for json_obj in response_json["data"]:
+                            new_dict = {}
+                            if "node" in json_obj:
+                                for i in json_obj["node"]:
+                                    new_dict[i] = json_obj["node"][i]
+                            if "list_status" in json_obj:
+                                for i in json_obj["list_status"]:
+                                    new_dict[i] = json_obj["list_status"][i]
+                            if "ranking" in json_obj:
+                                for i in json_obj["ranking"]:
+                                    new_dict[i] = json_obj["ranking"][i]
+                            list_response.append(new_dict if new_dict != {} else json_obj)
+                    elif isinstance(response_json["data"], dict):
+                        list_response = response_json["data"]
                     if "paging" in response_json:
                         list_response = {"data": list_response, "paging": response_json["paging"]}
                     return list_response

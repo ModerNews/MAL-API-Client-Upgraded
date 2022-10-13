@@ -5,16 +5,20 @@ from typing import Union, Optional
 from pydantic import BaseModel, HttpUrl
 
 from .enums import *
-
+from .pagination import PagedResult
+from ..exceptions import NotFound
 
 __all__ = ['Asset', 'Node', 'AnimeSeason', 'Genre', 'Studio', 'Broadcast', 'Statistics', 'Relation', 'Recommendation',
-           'MyMangaListStatus', 'MyAnimeListStatus', 'AnimeObject', 'MangaObject', 'UserAnimeStatistics', "User"]
+           'MyMangaListStatus', 'MyAnimeListStatus', 'AnimeObject', 'MangaObject', 'UserAnimeStatistics', "User",
+           'ForumTopicDetail', 'ForumTopic', 'ForumCategory', 'ForumAuthor', 'ForumPoll', 'ForumPollOption',
+           'ForumPost', 'ForumBoard', 'ForumSubboard']
 
 
 class MALBaseModel(BaseModel):
     """
     Helper model class used to generate all models used by this API
     """
+
     class Config:
         arbitrary_types_allowed = True
 
@@ -298,3 +302,92 @@ class User(MALBaseModel):
     time_zone: Optional[str]
     is_supporter: Optional[bool]
     anime_statistics: Optional[UserAnimeStatistics]
+
+
+class ForumAuthor(MALBaseModel):
+    id: int
+    name: str
+    forum_avator: Optional[str]  # It is not a typo, goddamn MAL
+
+
+class ForumTopicDetail(PagedResult):
+    def __init__(self, title: str = None, posts: list[dict] = None, polls: list[dict] = None, paging_data: dict = {}):
+        self.title = title
+        self.posts = [ForumPost(**post) for post in posts] if posts else None
+        self.polls = [ForumPoll(**poll) for poll in polls] if polls else None
+        self._data = {
+            'base_class': ForumTopicDetail,
+            'next': paging_data.get("next", None),
+            'previous': paging_data.get("previous", None)
+        }
+
+    def fetch_next_page(self, client):
+        try:
+            assert self._data['next'] is not None
+            result = client._api_handler.call(uri=self._data['next'].replace(client._base_url, ''))
+        except AssertionError:
+            raise NotFound("There is no next page for this query")
+        return ForumTopicDetail(paging_data=result['paging'], **result['data'])
+
+    def fetch_previous_page(self, client):
+        try:
+            assert self._data['previous'] is not None
+            result = client._api_handler.call(uri=self._data['previous'].replace(client._base_url, ''))
+        except AssertionError:
+            raise NotFound("There is no next page for this query")
+        return ForumTopicDetail(paging_data=result['paging'], **result['data'])
+
+    def __repr__(self):
+        return self.title + ", " + repr(self.posts) + ", " + repr(self.polls)
+
+    def __str__(self):
+        return self.__repr__()
+
+
+class ForumTopic(MALBaseModel):
+    id: int
+    title: str
+    created_at: Union[datetime.datetime, str]
+    created_by: ForumAuthor
+    number_of_posts: int
+    last_post_created_at: Union[datetime.date, str]
+    is_locked: bool
+
+
+class ForumPollOption(MALBaseModel):
+    id: int
+    text: str
+    votes: int
+
+
+class ForumPoll(MALBaseModel):
+    id: int
+    question: str
+    close: bool
+    options: list[ForumPollOption]
+
+
+class ForumPost(MALBaseModel):
+    id: int
+    number: int
+    created_at: Union[datetime.datetime, str]
+    created_by: ForumAuthor
+    body: str
+    signature: str
+
+
+class ForumSubboard(MALBaseModel):
+    id: int
+    title: str
+
+
+class ForumBoard(MALBaseModel):
+    id: int
+    title: str
+    description: str
+    subboards: list[ForumSubboard]
+
+
+class ForumCategory(MALBaseModel):
+    title: str
+    boards: list[ForumBoard]

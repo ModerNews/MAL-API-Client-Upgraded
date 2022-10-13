@@ -7,9 +7,9 @@ import logging
 from .request_handler import APICaller
 from .anime import Anime
 from .my_list import MyList
-# from .boards import Boards
 from .manga import Manga
 from .exceptions import AuthorizationError
+from .boards import Boards
 
 __all__ = ['generate_token', 'Client', 'setup_logging']
 
@@ -75,7 +75,7 @@ def setup_logging(*, format: str = None, filename: str = None, log_level: loggin
     logging.basicConfig(filename=filename, level=log_level, format=format)
 
 
-class Client(Anime, Manga, MyList):
+class Client(Anime, Manga, MyList, Boards):
     """
 
     Base class for interacting with MyAnimeList REST API

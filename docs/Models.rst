@@ -226,7 +226,9 @@ Fields
         :widths: 25 50
         :header-rows: 1
 
-        * - score
+        * - Field name
+          - Description
+        * - Score
           - Number of points given
         * - status
           - Status on list
@@ -269,3 +271,28 @@ Fields
         * - reread_value
           - | How likely is user to reread this series
             | Available only for manga entries
+
+
+Forums
+~~~~~~
+
+.. py:currentmodule: malclient
+
+.. autopydantic_model:: ForumTopic
+
+.. autopydantic_model:: ForumCategory
+
+.. autoclass:: ForumTopicDetail
+    :members:
+
+.. autopydantic_model:: ForumBoard
+
+.. autopydantic_model:: ForumSubboard
+
+.. autopydantic_model:: ForumAuthor
+
+.. autopydantic_model:: ForumPost
+
+.. autopydantic_model:: ForumPoll
+
+.. autopydantic_model:: ForumPollOption

@@ -1,3 +1,4 @@
+import datetime
 from typing import Union, Literal, Optional
 
 from .Datamodels import MyAnimeListSorting, MyMangaListSorting, MyAnimeListStatus, MyMangaListStatus, Fields, UserFields, User, MangaObject, AnimeObject, PagedResult, ListStatusFields
@@ -13,6 +14,8 @@ class MyList:
 
     def update_my_anime_list_status(self, anime_id: int, *,
                                     status: Optional[Literal["watching", "completed", "on_hold", "dropped", "plan_to_watch"]] = None,
+                                    start_date: Optional[datetime.date] = None,
+                                    finish_date: Optional[datetime.date] = None,
                                     is_rewatching: Optional[bool] = None,
                                     score: Optional[int] = None,
                                     num_watched_episodes: Optional[int] = None,
@@ -28,6 +31,8 @@ class MyList:
 
         :param int anime_id: id of anime you want to update
         :param Literal["watching", "completed", "on_hold", "dropped", "plan_to_watch"] status: Watching status of series
+        :params datetime.date start_date: Start watching date
+        :params datetime.date finish_date: Finish watching date
         :param bool is_rewatching: Defines if series is watched multiple times by user
         :param int score: score in 1 to 10 scale
         :param int num_watched_episodes: Number of episodes watched by user
@@ -46,6 +51,8 @@ class MyList:
                 raise ValueError("Score must be in range 1 - 10")
         data = {
             'status': status,
+            'start_date': start_date.strftime('%Y-%m-%d'),
+            'finish_date': finish_date.strftime('%Y-%m-%d'),
             'is_rewatching': is_rewatching,
             'score': score,
             'num_watched_episodes': num_watched_episodes,
@@ -123,6 +130,8 @@ class MyList:
 
     def update_my_manga_list_status(self, manga_id, *,
                                     status: Optional[Literal["reading", "completed", "on_hold", "dropped", "plan_to_read"]] = None,
+                                    start_date: Optional[datetime.date] = None,
+                                    finish_date: Optional[datetime.date] = None,
                                     is_rereading: Optional[bool] = None,
                                     score: Optional[int] = None,
                                     num_volumes_read: Optional[int] = None,
@@ -139,6 +148,8 @@ class MyList:
 
         :param int manga_id: id of manga you want to update
         :param Literal["watching", "completed", "on_hold", "dropped", "plan_to_watch"] status: Watching status of series
+        :params datetime.date start_date: Start reading date
+        :params datetime.date finish_date: Finish reading date
         :param bool is_rereading: Defines if series is read multiple times by user
         :param int score: score in 1 to 10 scale
         :param int num_volumes_read: Number of volumes read by user
@@ -156,6 +167,8 @@ class MyList:
         uri = f'manga/{manga_id}/my_list_status'
         data = {
             'status': status,
+            'start_date': start_date.strftime('%Y-%m-%d'),
+            'finish_date': finish_date.strftime('%Y-%m-%d'),
             'is_rereading': is_rereading,
             'score': score,
             'num_volumes_read': num_volumes_read,

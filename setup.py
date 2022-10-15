@@ -5,9 +5,9 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="malclient-upgraded",
-    version="1.2.5",
+    version="1.3",
     author="ModerNews",
-    author_email="",
+    author_email="polski.gruzin.biz@gmail.com",
     description=
     "Modified and rewritten using modern models version of James Fotherby malclient",
     long_description=long_description,

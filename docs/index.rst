@@ -9,9 +9,9 @@ Install
 
 It's very simple, all you need to do is type:
 
-```
-pip install malclient-upgraded
-```
+
+``pip install malclient-upgraded``
+
 
 Then, if you're new you should check out info on :doc:`authorizing with MyAnimeList REST API <Helper_Methods>`,
 as it's quite complicated for new users.

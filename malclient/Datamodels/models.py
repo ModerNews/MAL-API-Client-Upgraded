@@ -311,6 +311,13 @@ class ForumAuthor(MALBaseModel):
 
 
 class ForumTopicDetail(PagedResult):
+    """
+    Object represents details about forum topic on MAL, has paging support for list of posts
+
+    :ivar str title: Forum topic Title
+    :ivar list[ForumPost] posts: List of posts in forum topic, with paging support
+    :ivar list[ForumPoll] polls: List of polls available in forum topic
+    """
     def __init__(self, title: str = None, posts: list[dict] = None, polls: list[dict] = None, paging_data: dict = {}):
         self.title = title
         self.posts = [ForumPost(**post) for post in posts] if posts else None
@@ -322,6 +329,13 @@ class ForumTopicDetail(PagedResult):
         }
 
     def fetch_next_page(self, client):
+        """
+        Fetches next page of posts, parameters (limit) stay unchanged
+
+        :param Client client: Client with which will be used for fetch
+        :returns: New Forum Topic Detail object containing next page of posts
+        :rtype: FormTopicDetail
+        """
         try:
             assert self._data['next'] is not None
             result = client._api_handler.call(uri=self._data['next'].replace(client._base_url, ''))
@@ -330,6 +344,13 @@ class ForumTopicDetail(PagedResult):
         return ForumTopicDetail(paging_data=result['paging'], **result['data'])
 
     def fetch_previous_page(self, client):
+        """
+        Fetches previous page of posts, parameters (limit) stay unchanged
+
+        :param Client client: Client with which will be used for fetch
+        :returns: New Forum Topic Detail object containing next page of posts
+        :rtype: FormTopicDetail
+        """
         try:
             assert self._data['previous'] is not None
             result = client._api_handler.call(uri=self._data['previous'].replace(client._base_url, ''))
@@ -342,6 +363,11 @@ class ForumTopicDetail(PagedResult):
 
     def __str__(self):
         return self.__repr__()
+
+    def __eq__(self, other):
+        if type(self) == type(other):
+            return self.title == other.title and self.posts == other.posts
+        return False
 
 
 class ForumTopic(MALBaseModel):

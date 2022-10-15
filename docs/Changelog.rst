@@ -1,6 +1,28 @@
 Changelog
 =========
 
+Version 1.3
+~~~~~~~~~~~
+* Introduced forum boards handlers
+    * Client.get_forum_boards()
+    * Client.get_forum_topic_details()
+    * Client.get_forum_topics()
+* Created new forum related objects:
+    * ForumTopicDetail:
+    * ForumTopic
+    * ForumCategory
+    * ForumBoard
+    * ForumSubboard
+    * ForumPost
+    * ForumPoll
+    * ForumAuthor
+    * ForumPollOption
+* Added paging support for ForumTopicDetail
+* BugFix: Paged dictionaries return only keys
+* Fixed Issue #14 - implemented start_date and finish_date fields for manga and anime list updaters
+
+
+
 
 Version 1.2.5
 ~~~~~~~~~~~~~

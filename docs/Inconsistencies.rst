@@ -4,7 +4,8 @@
 Inconsistencies
 ===============
 .. warning::
-    Take note that what I described underneath are only mine and other peoples findings - they might not contain full information or be outdated
+    | Take note that what I described underneath are only mine and other peoples findings - they might not contain full information or be outdated
+    | Special thanks to MAL Forums users Skylake, Uchuu, DiamondTMZ, KasuteDev and others for providing those informations
 
 | Unfortunately official API docs contain multiple mistakes and inconsistencies, of course they account for what is available in wrapper.
     If you'll find out about something that's not documented and not published in wrapper please let me know:

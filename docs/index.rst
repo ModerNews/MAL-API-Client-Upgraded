@@ -1,11 +1,12 @@
+===============================================
 Welcome to MAL Client Upgraded's documentation!
 ===============================================
 
 This is official documentation for malclient-upgraded, I'm still working on it (especially enums require rework) but here's
 pretty much everything you need to know about this wrapper
 
-Install
-=======
+Installation
+============
 
 It's very simple, all you need to do is type:
 
@@ -21,7 +22,6 @@ Documentation Tree
 ==================
 .. toctree::
 
-   Authorization <Helper_Methods>
    API Reference <API_Reference>
    Data Models <Models>
    Inconsistencies <Inconsistencies>

@@ -1,3 +1,4 @@
+===========
 Data Models
 ===========
 
@@ -6,7 +7,7 @@ Data Models
     For more info refer to `Inconsistencies <Inconsistencies.html>`_
 
 Universal
-~~~~~~~~~
+=========
 
 .. py:currentmodule:: malclient
 
@@ -26,7 +27,7 @@ Universal
 
 
 Anime Specific
-~~~~~~~~~~~~~~
+==============
 
 .. autopydantic_model:: AnimeObject
 
@@ -58,7 +59,7 @@ Anime Specific
 
 
 Manga Specific
-~~~~~~~~~~~~~~
+==============
 
 .. autopydantic_model:: MangaObject
 
@@ -74,14 +75,14 @@ Manga Specific
 
 
 User
-~~~~
+====
 
 .. autopydantic_model:: User
 
 .. autopydantic_model:: UserAnimeStatistics
 
 Fields
-~~~~~~
+======
 
 .. autoclass:: Fields
     :members:
@@ -267,7 +268,7 @@ Fields
 
 
 Forums
-~~~~~~
+======
 
 .. py:currentmodule: malclient
 

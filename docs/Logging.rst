@@ -1,5 +1,6 @@
+=======
 Logging
--------
+=======
 
 Introduced in version 1.2.5 was logging module.
 Log file registers all requests sent by your client to Myanimelist API,

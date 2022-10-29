@@ -1,18 +1,19 @@
 .. _Inconsistencies:
 
+===============
 Inconsistencies
 ===============
+.. warning::
+    Take note that what I described underneath are only mine and other peoples findings - they might not contain full information or be outdated
 
 | Unfortunately official API docs contain multiple mistakes and inconsistencies, of course they account for what is available in wrapper.
     If you'll find out about something that's not documented and not published in wrapper please let me know:
 | **Discord:** Gruzin#0911
 | **MAL Forums:** `Official api feed <https://myanimelist.net/forum/?topicid=2006357>`_
 
-.. warning::
-    Take note that what I described underneath are only mine and other peoples findings - they might not contain full information or be outdated
+MangaType
+=========
 
-Anime and Manga Objects
-~~~~~~~~~~~~~~~~~~~~~~~
 **MangaType** enum has additional value `light_novel` not mentioned in docs,
 example entries:
 
@@ -34,6 +35,9 @@ example entries:
             "media_type": "light_novel"
         }
 
+AnimeSource
+===========
+
 **AnimeSource** enum, representing source field for anime can have values `web_novel`, `mixed_media`, examples:
 
 .. collapse:: AnimeSource Example
@@ -54,9 +58,8 @@ example entries:
             "source": "mixed_media"
         }
 
-    .. code-block:: bash
-
-        curl GET https://api.myanimelist.net/v2/manga/656?fields=status
+MangaStatus
+===========
 
 **MangaStatus** enum, representing status field for manga entries can take `on_hiatus` or `discontinued` as values.
 
@@ -94,6 +97,9 @@ example entries:
             "status": "discontinued"
         }
 
+OP and ED Themes
+================
+
 Anime queries take `opening_themes` and `ending_themes` as possible field parameters, not present in docs.
 
 .. collapse:: Themes Example
@@ -128,10 +134,19 @@ Anime queries take `opening_themes` and `ending_themes` as possible field parame
             ]
         }
 
+Broken Relations
+================
+
 You cannot fetch `related_manga` for `Client.get_anime_details()` and `Client.get_anime_fields()` functions, despite being documented, they are non-existent in practice.
 Same thing goes for `related_anime` field in `Client.get_manga_details()` and `Client.get_manga_fields()`.
 
+Sorting by ID
+=============
+
 For **MyAnimeListSorting** and **MyMangaListSorting** enums value `ID` is disabled, despite being present in documentation, trying to sort with it raises `400 Bad Request` Error.
+
+Number Favorites
+================
 
 Anime and manga endpoints take additional fields parameter `num_favorites` which isn't mentioned in docs
 
@@ -169,7 +184,8 @@ Anime and manga endpoints take additional fields parameter `num_favorites` which
             "num_favorites": 3002
         }
 
-
+Relation Types
+==============
 
 **RelationType** enum, representing `related_anime.relation_type` or `related_manga.relation_type`, takes values not mentioned in docs: `spin_off` and `character`
 

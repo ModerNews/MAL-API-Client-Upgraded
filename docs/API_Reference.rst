@@ -1,20 +1,20 @@
+==============
 API Reference
 ==============
 
 .. _Client:
 
 Base Class
-~~~~~~~~~~
+==========
 
 .. py:currentmodule:: malclient
 
 .. autoclass:: Client
-
-.. automethod:: Client.get_user_info
+    :members:
 
 
 Anime-related functions
-~~~~~~~~~~~~~~~~~~~~~~~
+=======================
 
 .. note::
     Currently `related_manga` field doesn't contain any  data - it is known bug, for more info refer to `Inconsistencies <Inconsistencies.html>`_ page
@@ -38,7 +38,7 @@ Anime-related functions
 
 
 Manga-related functions
-~~~~~~~~~~~~~~~~~~~~~~~
+=======================
 
 .. note::
     Currently `related_anime` field doesn't contain any  data - it is known bug, for more info refer to `Inconsistencies <Inconsistencies.html>`_ page
@@ -62,14 +62,14 @@ Manga-related functions
 
 
 Forum Boards
-~~~~~~~~~~~~
+============
 
 Forum boards stay pretty much untouch, either by me or previous developer, so there is nothing available at the moment
 I will be working on bringing it back though.
 
 
 User List
-~~~~~~~~~~
+==========
 
 .. py:currentmodule:: malclient
 
@@ -87,7 +87,7 @@ User List
 
 
 Utility
-~~~~~~~
+=======
 
 .. py:currentmodule:: malclient
 
@@ -96,7 +96,7 @@ Utility
 
 
 Exceptions
-~~~~~~~~~~
+==========
 
 .. py:currentmodule:: malclient
 

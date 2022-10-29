@@ -63,7 +63,7 @@ class Boards:
         """
         if not(query or board_id or subboard_id or topic_user_name or user_name):
             raise AttributeError("You need to provide one of those: q, board_id, subboard_id, topic_user_name, user_name")
-        uri = f'forum/topics'
+        uri = 'forum/topics'
         params = {'board_id': board_id,
                   'subboard_id': subboard_id,
                   'limit': limit,

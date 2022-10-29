@@ -1,6 +1,10 @@
 Data Models
 ===========
 
+.. warning::
+    Those models may or may note comply with MAL API official documentation.
+    For more info refer to `Inconsistencies <Inconsistencies.html>`_
+
 Universal
 ~~~~~~~~~
 

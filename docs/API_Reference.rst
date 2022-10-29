@@ -16,6 +16,9 @@ Base Class
 Anime-related functions
 ~~~~~~~~~~~~~~~~~~~~~~~
 
+.. note::
+    Currently `related_manga` field doesn't contain any  data - it is known bug, for more info refer to `Inconsistencies <Inconsistencies.html>`_ page
+
 .. py:currentmodule:: malclient
 
 .. automethod:: Client.get_anime_details
@@ -23,6 +26,9 @@ Anime-related functions
 .. automethod:: Client.get_anime_fields
 
 .. automethod:: Client.search_anime
+
+.. note::
+    Search query `q` must be string at least 3 and not longer than 64 characters
 
 .. automethod:: Client.get_anime_ranking
 
@@ -34,6 +40,13 @@ Anime-related functions
 Manga-related functions
 ~~~~~~~~~~~~~~~~~~~~~~~
 
+.. note::
+    Currently `related_anime` field doesn't contain any  data - it is known bug, for more info refer to `Inconsistencies <Inconsistencies.html>`_ page
+
+.. warning::
+    Requesting `alternative_titles` field for some mangas may return `400 Bad Request` Error.
+    Apparently this is caused by invalid unicode formatting and nothing can be done wrapper-side.
+
 .. py:currentmodule:: malclient
 
 .. automethod:: Client.get_manga_details
@@ -41,6 +54,9 @@ Manga-related functions
 .. automethod:: Client.get_manga_fields
 
 .. automethod:: Client.search_manga
+
+.. note::
+    Search query `q` must be string at least 3 and not longer than 64 characters
 
 .. automethod:: Client.get_manga_ranking
 

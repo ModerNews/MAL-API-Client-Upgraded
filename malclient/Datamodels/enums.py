@@ -22,6 +22,17 @@ class RelationType(Enum):
 
     Enumerator representing possible relation types between anime and/or manga:
 
+    * **SEQUEL** - Sequel
+    * **PREQUEL** - Prequel
+    * **ALT_SETTING** - Alternative Setting
+    * **ALT_VERSION** - Alternative Version
+    * **SIDE_STORY** - Side Story
+    * **PARENT_STORY** - Parent Story
+    * **SUMMARY** - Summary
+    * **FULL_STORY** - Full Story
+    * **SPIN_OFF** - Spin-Off
+    * **CHARACTER** - Character
+    * **OTHER** - Other
     """
     SEQUEL = "sequel"
     PREQUEL = "prequel"
@@ -40,6 +51,7 @@ class AnimeRankingType(Enum):
     """
 
     Representation of possible values for anime ranking type
+
     * **ALL** - Top Anime Series
     * **AIRING** - Top Airing Anime
     * **UPCOMING** - Top Upcoming Anime
@@ -65,6 +77,7 @@ class MangaRankingType(Enum):
     """
 
     Representation of possible values for manga ranking type
+
     * **ALL** - All
     * **MANGA** - Top Manga
     * **NOVELS** - Top Novels
@@ -90,6 +103,7 @@ class SeasonalAnimeSorting(Enum):
     """
 
     Representation of seasonal anime sorting
+
     * **SCORE** - Sorted by score
     * **USER_NUM** - Sorted by number of users in list
     """
@@ -101,6 +115,7 @@ class MyAnimeListSorting(Enum):
     """
 
     Sorting options for User Anime List
+
     * **LIST_SCORE** - Sorted by score given by user
     * **LAST_UPDATE** - Sorted by most recently updated
     * **TITLE** - Sorted by title
@@ -111,13 +126,14 @@ class MyAnimeListSorting(Enum):
     LAST_UPDATE = 'list_updated_at'
     TITLE = "anime_title"
     START_DATE = "anime_start_date"
-    ID = "anime_id"
+    # ID = "anime_id"
 
 
 class MyMangaListSorting(Enum):
     """
 
     Sorting options for User Manga List
+
     * **LIST_SCORE** - Sorted by score given by user
     * **LAST_UPDATE** - Sorted by most recently updated
     * **TITLE** - Sorted by title
@@ -128,7 +144,7 @@ class MyMangaListSorting(Enum):
     LAST_UPDATE = 'list_updated_at'
     TITLE = "manga_title"
     START_DATE = "manga_start_date"
-    ID = "manga_id"
+    # ID = "manga_id"
 
 
 class Rating(Enum):
@@ -178,6 +194,8 @@ class MangaStatus(Enum):
     FINISHED = 'finished'
     PUBLISHING = 'currently_publishing'
     NOT_PUBLISHED = 'not_yet_published'
+    ON_HIATUS = 'on_hiatus'
+    DISCONTINUED = 'discontinued'
 
 
 class AnimeType(Enum):
@@ -214,6 +232,7 @@ class MangaType(Enum):
     * **DOUJIN** - self-published manga
     * **MANHWA** - Korean comic
     * **MANHUA** - Chinese comic
+    * **LIGHT_NOVEL** - Light novel
     * **OEL** - Original English-Language Manga
     """
     UNKNOWN = "unknown"
@@ -224,6 +243,7 @@ class MangaType(Enum):
     MANHWA = "manhwa"
     MANHUA = "manhua"
     OEL = "oel"
+    LIGHT_NOVEL = 'light_novel'
 
 
 class AnimeSource(Enum):
@@ -237,6 +257,7 @@ class AnimeSource(Enum):
     MANGA = "manga"
     MANGA_4_KOMA = "4_koma_manga"
     WEB_MANGA = "web_manga"
+    WEB_NOVEL = "web_novel"
     DIGITAL_MANGA = "digital_manga"
     NOVEL = "novel"
     LIGHT_NOVEL = "light_novel"
@@ -247,3 +268,4 @@ class AnimeSource(Enum):
     PICTURE_BOOK = "picture_book"
     RADIO = "radio"
     MUSIC = "music"
+    MIXED_MEDIA = "mixed_media"

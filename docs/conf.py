@@ -17,12 +17,12 @@ sys.path.insert(0, os.path.abspath('..'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'MAL Client Upgraded'
+project = 'Malclient-Upgraded'
 copyright = '2022, ModerNews'
 author = 'ModerNews'
 
 # The full version, including alpha/beta/rc tags
-release = '1.0'
+release = '1.3'
 
 
 # -- General configuration ---------------------------------------------------
@@ -34,6 +34,7 @@ extensions = ['sphinx.ext.duration',
               'sphinx.ext.doctest',
               'sphinx.ext.autodoc',
               'enum_tools.autoenum',
+              'sphinx_toolbox.collapse',
               'sphinxcontrib.autodoc_pydantic',
               'sphinxawesome_theme',
               ]

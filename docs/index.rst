@@ -24,9 +24,9 @@ Documentation Tree
    Authorization <Helper_Methods>
    API Reference <API_Reference>
    Data Models <Models>
+   Inconsistencies <Inconsistencies>
    Logging module <Logging>
    Changelog <Changelog>
-
 
 
 Indices and tables

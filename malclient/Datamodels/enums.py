@@ -11,6 +11,9 @@ class Nsfw(Enum):
 
     Enumerator representing nsfw stages:
 
+    * **WHITE** - White
+    * **GRAY** - Gray
+    * **BLACK** - Black
     """
     WHITE = 'white'
     GRAY = 'gray'
@@ -179,6 +182,9 @@ class AnimeStatus(Enum):
 
     Enumerating representing current anime status
 
+    * **FINISHED** - Finished Airing
+    * **AIRING** - Currently Airing
+    * **NOT_AIRED** - Not Yet Aired
     """
     FINISHED = 'finished_airing'
     AIRING = 'currently_airing'
@@ -190,6 +196,11 @@ class MangaStatus(Enum):
 
     Enumerating representing current manga status
 
+    * **FINISHED** - Finished
+    * **PUBLISHING** - Currently Publishing
+    * **NOT_PUBLISHED** - Not Yet Published
+    * **ON_HIATUS** - On Break
+    * **DISCONTINUED** - Discontinued
     """
     FINISHED = 'finished'
     PUBLISHING = 'currently_publishing'
@@ -204,12 +215,12 @@ class AnimeType(Enum):
     Enumerator representing anime type:
 
     * **Unknown**
-    * **TV** - streamed in Japanese TV
+    * **TV** - Streamed in Japanese TV
     * **OVA** - Original Video Animation
-    * **Movie** - animated movie
-    * **Special** - special for anime
-    * **ONA** - Original Net Anime
-    * **Music** - music anime
+    * **Movie** - Animated Movie
+    * **Special** - Special for an anime
+    * **ONA** - Original Net Anime (f.e. Netflix Originals)
+    * **Music** - Music Anime
     """
     UNKNOWN = "unknown"
     TV = "tv"
@@ -225,14 +236,14 @@ class MangaType(Enum):
 
     Enumerator representing type of manga
 
-    * **UNKNOWN**
-    * **MANGA**
-    * **NOVEL**
-    * **ONE_SHOT**
-    * **DOUJIN** - self-published manga
+    * **UNKNOWN** - Unknown
+    * **MANGA** - Manga
+    * **NOVEL** - Novel
+    * **ONE_SHOT** = One-Shot
+    * **DOUJIN** - Self-published Manga
     * **MANHWA** - Korean comic
     * **MANHUA** - Chinese comic
-    * **LIGHT_NOVEL** - Light novel
+    * **LIGHT_NOVEL** - Light Novel
     * **OEL** - Original English-Language Manga
     """
     UNKNOWN = "unknown"
@@ -250,6 +261,24 @@ class AnimeSource(Enum):
     """
 
     Enumerator representing source of anime
+    
+    * **OTHER** - Other
+    * **ORIGINAL** - Original
+    * **MANGA** - Manga
+    * **MANGA_4_KOMA** - 4-Koma, comedic manga format
+    * **WEB_MANGA** - Web Manga
+    * **WEB_NOVEL** - Web Novel
+    * **DIGITAL_MANGA** - Digital Manga
+    * **NOVEL** - Novel
+    * **LIGHT_NOVEL** - Light Novel
+    * **VISUAL_NOVEL** - Text-based video game
+    * **GAME** - Game
+    * **CARD_GAME** - Card Game
+    * **BOOK** - Book
+    * **PICTURE_BOOK** - Picture Book
+    * **RADIO** - Radio
+    * **MUSIC** - Music
+    * **MIXED_MEDIA** - Mixed Media
 
     """
     OTHER = "other"

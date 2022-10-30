@@ -3,6 +3,7 @@ import secrets
 import os
 import datetime
 import logging
+from typing import Optional
 
 from .request_handler import APICaller
 from .anime import Anime
@@ -11,36 +12,35 @@ from .manga import Manga
 from .exceptions import AuthorizationError
 from .boards import Boards
 
-__all__ = ['generate_token', 'Client', 'setup_logging']
+__all__ = ['Client', 'setup_logging', 'generate_authorization_url', 'fetch_token_schema_2']
 
 
-def generate_token(client_id: str,
-                   client_secret: str) -> dict[str, str]:
+def generate_authorization_url(client_id: str, *,
+                               code_verifier: Optional[str] = None) -> [str, str]:
+    if code_verifier is None:
+        token = secrets.token_urlsafe(100)
+        code_verifier = code_challenge = token[:128]
+
+    assert 48 <= len(code_verifier) <= 128
+
+    authorization_url = f"https://myanimelist.net/v1/oauth2/authorize?response_type=code&client_id={client_id}&state=RequestID42&code_challenge={code_challenge}&code_challenge_method=plain"
+    return authorization_url, code_verifier
+
+
+def fetch_token_schema_2(client_id: str,
+                        client_secret: str,
+                        code_verifier: str,
+                        code: str) -> dict[str, str]:
     """
 
     Helper function to generate access token **do not use this to refresh token**
+    Function follows MAL auth schema 2
 
     :ivar str client_id: your client id (available on myanimelist developer page)
     :ivar str client_secret: your client secret (available on myanimelist developer page)
     :return: Freshly generated Access Token for your client
     :rtype: dict[str, str]
     """
-    token = secrets.token_urlsafe(100)
-    code_verifier = code_challenge = token[:128]
-
-    # This is just to keep sure token is long enough, if you didn't change anything round here it should not raise an error
-    assert 48 <= len(code_verifier) <= 128
-
-    print("Authorization is not fully automated, you will have to press 'ALLOW' and copy paste url that you will be redirected to")
-    input("Press Enter to open authorization page...")
-
-    authorization_url = f"https://myanimelist.net/v1/oauth2/authorize?response_type=code&client_id={client_id}&state=RequestID42&code_challenge={code_challenge}&code_challenge_method=plain"
-    os.system(f"explorer \"{authorization_url}\"")
-    print(f"If opening url failed enter it manually into your browser:\n{authorization_url}")
-    code_url = input("Paste url you were redirected to\n")
-    code = re.search(r"(?<=code=)(\w+)", code_url).group()
-
-    assert code
 
     base_url = "https://myanimelist.net/v1/"
     uri = "oauth2/token"
@@ -56,6 +56,9 @@ def generate_token(client_id: str,
 
     return api_handler.call(uri=uri, method="post", data=data)
 
+# TODO Scheme 1 (Is it even possible)
+# def fetch_token_schema_1(client_id: str,
+#                          )
 
 def setup_logging(*, format: str = None, filename: str = None, log_level: logging = logging.INFO):
     """
@@ -96,6 +99,18 @@ class Client(Anime, Manga, MyList, Boards):
         self._api_handler = None
         self.headers = {}
         self._connect_to_api()
+
+    @classmethod
+    def generate_new_token(cls, client_id: str, client_secret: str, *, code_verifier: str = None):
+        auth_url, code_verifier = generate_authorization_url(client_id, code_verifier=code_verifier)
+        # TODO Linux integration
+        os.system(f"explorer \"{auth_url}\"")
+        print(f"If opening url failed enter it manually into your browser:\n{auth_url}")
+        code_url = input("Paste url you were redirected to\n")
+        code = re.search(r"(?<=code=)(\w+)", code_url).group()
+
+        data = fetch_token_schema_2(client_id, client_secret, code_verifier, code)
+        return cls(access_token=data['access_token'], refresh_token=data['refresh_token'])
 
     def _connect_to_api(self):
         self.headers = {

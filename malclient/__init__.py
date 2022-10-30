@@ -1,3 +1,3 @@
-from .client import Client, generate_token, setup_logging
+from .client import Client, setup_logging
 from .Datamodels import *
 from .exceptions import *

@@ -83,7 +83,8 @@ class MyList:
                             limit: int = 100,
                             offset: int = 0,
                             list_status_fields: ListStatusFields = ListStatusFields.anime_base(),
-                            fields: Fields = Fields.from_list(['id', 'title', 'main_picture', 'my_list_status'])):
+                            fields: Fields = Fields.from_list(['id', 'title', 'main_picture', 'my_list_status']),
+                            nsfw: bool = None):
         """
         Fetches anime list for given user
 
@@ -93,6 +94,8 @@ class MyList:
         :params int offset: Position starting from which entries will be fetched
         :params ListStatusFields list_status_fields: Fields returned inside my_list_status field in entry
         :params Fields fields: Fields returned alongside each entry
+        :param bool nsfw: If set to True results with nsfw grade 'gray' and 'black' will also be fetched, if omitted it will be inherited from Client class
+
         :returns: List of objects containing manga information for entries on users' manga list
         :rtype: PagedResult[AnimeObject]
         """
@@ -108,7 +111,8 @@ class MyList:
             "limit": limit,
             "fields": fields.to_payload(),
             "status": status,
-            "offset": offset
+            "offset": offset,
+            "nsfw": nsfw if nsfw is not None else self.nsfw
         }
         temp = self._api_handler.call(uri=uri, params=params)
         return PagedResult([AnimeObject(**entry) for entry in temp['data']], temp['paging'])
@@ -198,7 +202,8 @@ class MyList:
                             limit: int = 100,
                             offset: int = 0,
                             list_status_fields: ListStatusFields = ListStatusFields.manga_base(),
-                            fields: Fields = Fields.from_list(['id', 'title', 'main_picture'])):
+                            fields: Fields = Fields.from_list(['id', 'title', 'main_picture']),
+                            nsfw: bool = None):
         """
         Fetches manga list for given user
 
@@ -208,6 +213,8 @@ class MyList:
         :params int offset: Position starting from which entries will be fetched
         :params ListStatusFields list_status_fields: Fields returned inside my_list_status field in entry
         :params Fields fields: Fields returned alongside each entry
+        :param bool nsfw: If set to True results with nsfw grade 'gray' and 'black' will also be fetched, if omitted it will be inherited from Client class
+
         :returns: List of objects containing manga information for entries on users manga list
         :rtype: PagedResult[MangaObject]
         """
@@ -221,6 +228,7 @@ class MyList:
             "fields": fields.to_payload(),
             "status": status,
             "offset": offset,
+            "nfsw": nsfw if nsfw is not None else self.nsfw
         }
         temp = self._api_handler.call(uri=uri, params=params)
         return PagedResult([MangaObject(**entry) for entry in temp['data']], temp['paging'])

@@ -97,7 +97,7 @@ class Anime:
 
     SeasonT = Union[Season, Literal['winter', 'spring', 'summer', 'autumn']]
 
-    def get_seasonal_anime(self, season: SeasonT, year: int, *, sort: Union[SeasonalAnimeSorting, str] = SeasonalAnimeSorting.SCORE, fields: Fields = Fields.anime(), limit: int = 50, offset: int = 0) -> Union[PagedResult[Node], PagedResult[AnimeObject]]:
+    def get_seasonal_anime(self, season: SeasonT, year: int, *, sort: Union[SeasonalAnimeSorting, str] = SeasonalAnimeSorting.SCORE, fields: Fields = Fields.anime(), limit: int = 50, offset: int = 0, nsfw: bool = None) -> Union[PagedResult[Node], PagedResult[AnimeObject]]:
         """
         Gets list of anime from specified season
 
@@ -107,6 +107,7 @@ class Anime:
         :param SeasonalAnimeSorting sort: Sorting method for query, default to Score
         :param int limit: Number of series to fetch, 50 by default
         :param int offset: Position from which search results will be presented
+        :param bool nsfw: If set to True results with nsfw grade 'gray' and 'black' will also be fetched, if omitted it will be inherited from Client class
 
         :return: List of entries fetched from MyAnimeList with paging support
         :rtype: PagedResult
@@ -130,18 +131,20 @@ class Anime:
             "limit": limit,
             "fields": fields.to_payload(),
             'offset': offset,
+            "nsfw": nsfw if nsfw is not None else self.nsfw
         }
         temp = self._api_handler.call(uri=uri, params=params)
         r_class = Node if fields == Fields.node() else AnimeObject
         return PagedResult([r_class(**anime) for anime in temp["data"]], temp['paging'])
 
-    def get_suggested_anime(self, *, fields: Fields = Fields.node(), limit: int = 20, offset: int = 0) -> Union[PagedResult[Node], PagedResult[AnimeObject]]:
+    def get_suggested_anime(self, *, fields: Fields = Fields.node(), limit: int = 20, offset: int = 0, nsfw: bool = None) -> Union[PagedResult[Node], PagedResult[AnimeObject]]:
         """
         Gets list of suggested anime suggested for user
 
         :param Fields fields: Fields returned alongside results
         :param int limit: number of queries returned
         :param int offset: Position from which search results will be presented
+        :param bool nsfw: If set to True results with nsfw grade 'gray' and 'black' will also be fetched, if omitted it will be inherited from Client class
 
         :return: List of entries fetched from MyAnimeList with paging support
         :rtype: PagedResult[None]
@@ -151,7 +154,8 @@ class Anime:
         uri = 'anime/suggestions'
         params = {"limit": limit,
                   "offset": offset,
-                  "fields": fields.to_payload()}
+                  "fields": fields.to_payload(),
+                  "nsfw": nsfw if nsfw is not None else self.nsfw}
 
         temp = self._api_handler.call(uri=uri, params=params)
         r_class = Node if fields == Fields.node() else AnimeObject

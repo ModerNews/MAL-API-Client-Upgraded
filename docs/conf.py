@@ -17,12 +17,12 @@ sys.path.insert(0, os.path.abspath('..'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'MAL Client Upgraded'
+project = 'Malclient-Upgraded'
 copyright = '2022, ModerNews'
 author = 'ModerNews'
 
 # The full version, including alpha/beta/rc tags
-release = '1.0'
+release = '1.3'
 
 
 # -- General configuration ---------------------------------------------------
@@ -34,7 +34,9 @@ extensions = ['sphinx.ext.duration',
               'sphinx.ext.doctest',
               'sphinx.ext.autodoc',
               'enum_tools.autoenum',
+              'sphinx_toolbox.collapse',
               'sphinxcontrib.autodoc_pydantic',
+              'sphinxawesome_theme',
               ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -45,17 +47,10 @@ templates_path = ['_templates']
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
-
-# -- Options for HTML output -------------------------------------------------
-
-# The theme to use for HTML and HTML Help pages.  See the documentation for
-# a list of builtin themes.
-#
-html_theme = 'alabaster'
-
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
+html_theme = "sphinxawesome_theme"
 html_static_path = ['_static']
 
 autodoc_preserve_defaults = True

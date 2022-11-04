@@ -113,9 +113,10 @@ class Fields(FieldsBase):
         self.average_episode_duration: bool = kwargs.get('average_episode_duration', False)
         self.rating: bool = kwargs.get('rating', False)
         self.studios: bool = kwargs.get('studios', False)
-        self.opening_themes: bool = kwargs.get('opening_theme', False)
-        self.ending_themes: bool = kwargs.get('ending_theme', False)
+        self.opening_themes: bool = kwargs.get('opening_themes', False)
+        self.ending_themes: bool = kwargs.get('ending_themes', False)
         self.statistics: bool = kwargs.get('statistics', False)
+        self.videos: bool = kwargs.get('videos', False)
 
         # manga related
         self.num_volumes: bool = kwargs.get('num_volumes', False)
@@ -211,7 +212,8 @@ class Fields(FieldsBase):
                                 "recommendations",
                                 "studios",
                                 "opening_theme",
-                                'ending_theme', ])
+                                'ending_theme',
+                                'videos',])
 
     @classmethod
     def manga(cls):

@@ -1,8 +1,13 @@
+===========
 Data Models
 ===========
 
+.. warning::
+    Those models may or may note comply with MAL API official documentation.
+    For more info refer to `Inconsistencies <Inconsistencies.html>`_
+
 Universal
-~~~~~~~~~
+=========
 
 .. py:currentmodule:: malclient
 
@@ -14,22 +19,19 @@ Universal
 
 .. autopydantic_model:: Relation
 
-.. autoenum:: RelationType
-    :members:
+.. autoclass:: RelationType
 
-.. autoenum:: Nsfw
-    :members:
+.. autoclass:: Nsfw
 
 .. autopydantic_model:: Recommendation
 
 
 Anime Specific
-~~~~~~~~~~~~~~
+==============
 
 .. autopydantic_model:: AnimeObject
 
-.. autoenum:: AnimeStatus
-    :members:
+.. autoclass:: AnimeStatus
 
 .. autoclass:: AnimeType
 
@@ -43,26 +45,21 @@ Anime Specific
 
 .. autopydantic_model:: AnimeSeason
 
-.. autoenum:: Season
-    :members:
+.. autoclass:: Season
 
-.. autoenum:: AnimeSource
-    :members:
+.. autoclass:: AnimeSource
 
 .. autopydantic_model:: Studio
 
-.. autoenum:: AnimeRankingType
-    :members:
+.. autoclass:: AnimeRankingType
 
-.. autoenum:: SeasonalAnimeSorting
-    :members:
+.. autoclass:: SeasonalAnimeSorting
 
-.. autoenum:: MyAnimeListSorting
-    :members:
+.. autoclass:: MyAnimeListSorting
 
 
 Manga Specific
-~~~~~~~~~~~~~~
+==============
 
 .. autopydantic_model:: MangaObject
 
@@ -70,25 +67,22 @@ Manga Specific
 
 .. autopydantic_model:: MyMangaListStatus
 
-.. autoenum:: MangaStatus
-    :members:
+.. autoclass:: MangaStatus
 
-.. autoenum:: MangaRankingType
-    :members:
+.. autoclass:: MangaRankingType
 
-.. autoenum:: MyMangaListSorting
-    :members:
+.. autoclass:: MyMangaListSorting
 
 
 User
-~~~~
+====
 
 .. autopydantic_model:: User
 
 .. autopydantic_model:: UserAnimeStatistics
 
 Fields
-~~~~~~
+======
 
 .. autoclass:: Fields
     :members:
@@ -179,10 +173,10 @@ Fields
         * - studios
           - | list of studios creating this anime
             | Available only for anime entries
-        * - opening_theme
+        * - opening_themes
           - | List of opening songs
             | Available only for anime entries
-        * - ending_theme
+        * - ending_themes
           - | List of ending songs
             | Available only for anime entries
         * - statistics
@@ -226,7 +220,9 @@ Fields
         :widths: 25 50
         :header-rows: 1
 
-        * - score
+        * - Field name
+          - Description
+        * - Score
           - Number of points given
         * - status
           - Status on list
@@ -269,3 +265,27 @@ Fields
         * - reread_value
           - | How likely is user to reread this series
             | Available only for manga entries
+
+
+Forums
+======
+
+.. py:currentmodule: malclient
+
+.. autopydantic_model:: ForumTopic
+
+.. autopydantic_model:: ForumCategory
+
+.. autoclass:: ForumTopicDetail
+
+.. autopydantic_model:: ForumBoard
+
+.. autopydantic_model:: ForumSubboard
+
+.. autopydantic_model:: ForumAuthor
+
+.. autopydantic_model:: ForumPost
+
+.. autopydantic_model:: ForumPoll
+
+.. autopydantic_model:: ForumPollOption

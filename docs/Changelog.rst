@@ -1,8 +1,9 @@
+=========
 Changelog
 =========
 
 Version 1.3
-~~~~~~~~~~~
+===========
 * Introduced forum boards handlers
     * Client.get_forum_boards()
     * Client.get_forum_topic_details()
@@ -25,7 +26,7 @@ Version 1.3
 
 
 Version 1.2.5
-~~~~~~~~~~~~~
+=============
 * Reworked functions for all User List methods:
     * `Client.get_user_anime_list` now takes additional arguments for fields, and offset, returns list of AnimeObject with paging support
     * `Client.get_user_manga_list` now takes additional arguments for fields, and offset, returns list of MangaObject with paging support
@@ -45,7 +46,7 @@ Version 1.2.5
 
 
 Version 1.2
-~~~~~~~~~~~
+===========
 * Reworked models:
     * Added new enum for Seasons
     * Added enum for Seasonal Anime Sorting
@@ -62,7 +63,7 @@ Version 1.2
 * Updated documentation
 
 Version 1.1
-~~~~~~~~~~~
+===========
 * Introducing Sphinx documentation
 * Renamed multiple functions
     * `Client.update_anime_my_list_status` to `Client.update_my_anime_list_status`
@@ -74,7 +75,7 @@ Version 1.1
 * Fixed `Client.refresh_bearer_token` not working
 
 Version 1.0
-~~~~~~~~~~~
+===========
 * New function `generate_token` used for generating access token (as it`s complicated task for user)
 * `get_anime`, `search_anime`, `get_manga` and `search_manga` now return pydantic models instead of JSON dictionaries or ResponseJSON helper class
 * Introducing multiple new pydantic models in models.py: `Genre`, `Asset`, `Nsfw`, `Broadcast`, `Node`, `Relation`, `RelationType`, `AnimeListStatus`, `Rating`, `Recommendation`, `Season`, `Studio`, `Author`, `MyAnimeListStatus`, `AnimeType`, `AnimeStatus`, `Source`, `AnimeObject`, `MyMangaListStatus`, `MangaType`, `MangaStatus`, `MangaObject`

@@ -186,6 +186,21 @@ class MyAnimeListStatus(MALBaseModel):
     finish_date: Union[datetime.date, str, None]
 
 
+class Video(MALBaseModel):
+    """
+
+    Class containing information about video attached to anime, f.e. PV
+
+    """
+    id: int
+    title: str
+    url: HttpUrl
+    created_at: datetime.datetime
+    updated_at: datetime.datetime
+    thumbnail: HttpUrl
+
+
+
 class AnimeObject(MALBaseModel):
     """
 
@@ -224,6 +239,7 @@ class AnimeObject(MALBaseModel):
     related_manga: Optional[list[Relation]]
     recommendations: Optional[list[Recommendation]]
     statistics: Optional[Statistics]
+    videos: Optional[list[Video]]
 
     def __eq__(self, other):
         return self.id == other.id

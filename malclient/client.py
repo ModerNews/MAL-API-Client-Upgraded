@@ -102,6 +102,16 @@ class Client(Anime, Manga, MyList, Boards):
 
     @classmethod
     def generate_new_token(cls, client_id: str, client_secret: str, *, code_verifier: str = None):
+        """
+
+        Helps you create new Client instance using client id and secret, auth scheme 2
+
+        :param str client_id: ID from myanimelist
+        :param str client_secret: Secret from myanimlist
+        :param str code_verifier: code verifier used for request 48 to 128 characters, if left empty new verifier will be generated for you
+        :returns: new Client instance
+        :r_type: Client
+        """
         auth_url, code_verifier = generate_authorization_url(client_id, code_verifier=code_verifier)
         # TODO Linux integration
         os.system(f"explorer \"{auth_url}\"")
@@ -110,6 +120,7 @@ class Client(Anime, Manga, MyList, Boards):
         code = re.search(r"(?<=code=)(\w+)", code_url).group()
 
         data = fetch_token_schema_2(client_id, client_secret, code_verifier, code)
+        print(data)
         return cls(access_token=data['access_token'], refresh_token=data['refresh_token'])
 
     def _connect_to_api(self):

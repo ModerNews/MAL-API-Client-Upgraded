@@ -12,8 +12,6 @@ Base Class
 .. autoclass:: Client
     :members:
 
-.. autofunction:: generate_token
-
 Anime-related functions
 =======================
 

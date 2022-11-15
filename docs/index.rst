@@ -26,11 +26,11 @@ Documentation Tree
 .. toctree::
 
     Quickstart <Quickstart>
-    Data Models <Models>
-    Logging module <Logging>
     Authorization <Authorization>
-    Inconsistencies <Inconsistencies>
+    Data Models <Models>
     API Reference <API_Reference>
+    Logging module <Logging>
+    Inconsistencies <Inconsistencies>
     Changelog <Changelog>
 
 

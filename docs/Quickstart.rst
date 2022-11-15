@@ -5,6 +5,10 @@ Quickstart Guide
 .. warning::
     This documentation is currently undergoing maintenance and big changes, if you find any mistakes and/or errors please create PR's or issues on `project's github <https://github.com/ModerNews/MAL-API-Client-Upgraded>`_
 
+.. _Create App:
+
+Creating Application
+====================
 
 Wrapper Authorization
 =====================

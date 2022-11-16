@@ -10,6 +10,29 @@ Quickstart Guide
 Creating Application
 ====================
 
+| Application creation process is simple, interface is available `here <https://myanimelist.net/apiconfig>`_.
+| If you see 404 page, go into your profile settings and pick :code:`API` tab
+
+.. image:: _static/img/mal_settings.png
+    :alt: Settings page tabs
+
+On :code:`API` tab pick :code:`Create ID` button:
+
+.. image:: _static/img/app_panel.png
+
+You will be redirected to the page:
+
+.. image:: _static/img/create_app.png
+
+| In field :code:`App Type` you want to pick web, only in this scenario both client id and secret will be issued.
+| Both fields :code:`App Redirect URL` and :code:`Homepage URL` are required, if you don't have any page for your app you might just type in :code:`http://localhost`.
+| Fill out rest like you want, and submit your app to MAL.
+| When redirected back to API panel you will see your new app on list, after pressing :code:`edit` button you will find out two fields were filled out additionally:
+
+.. image:: _static/img/app_data.png
+
+Those are :code:`Client ID` and :code:`Client Secret`. You want to write that down, as you will need it in next steps.
+
 Wrapper Authorization
 =====================
 

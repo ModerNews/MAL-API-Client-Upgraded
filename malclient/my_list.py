@@ -115,7 +115,7 @@ class MyList:
             "nsfw": nsfw if nsfw is not None else self.nsfw
         }
         temp = self._api_handler.call(uri=uri, params=params)
-        return PagedResult([AnimeObject(**entry) for entry in temp['data']], temp['paging'])
+        return PagedResult([AnimeObject(**entry) for entry in temp['data']], temp['paging']) if len(temp['data']) != 0 else None
 
     def get_user_info(self, user_id: Union[str, int] = "@me", fields: UserFields = UserFields.basic()):
         """
@@ -231,4 +231,4 @@ class MyList:
             "nfsw": nsfw if nsfw is not None else self.nsfw
         }
         temp = self._api_handler.call(uri=uri, params=params)
-        return PagedResult([MangaObject(**entry) for entry in temp['data']], temp['paging'])
+        return PagedResult([MangaObject(**entry) for entry in temp['data']], temp['paging']) if len(temp['data']) != 0 else None

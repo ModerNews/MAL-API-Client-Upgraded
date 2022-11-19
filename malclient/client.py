@@ -16,21 +16,23 @@ __all__ = ['Client', 'setup_logging', 'generate_authorization_url', 'fetch_token
 
 
 def generate_authorization_url(client_id: str, *,
-                               code_verifier: Optional[str] = None) -> [str, str]:
+                               code_verifier: Optional[str] = None,
+                               redirect_uri: Optional[str] = None) -> [str, str]:
     if code_verifier is None:
         token = secrets.token_urlsafe(100)
         code_verifier = code_challenge = token[:128]
 
     assert 48 <= len(code_verifier) <= 128
 
-    authorization_url = f"https://myanimelist.net/v1/oauth2/authorize?response_type=code&client_id={client_id}&state=RequestID42&code_challenge={code_challenge}&code_challenge_method=plain"
+    authorization_url = f"https://myanimelist.net/v1/oauth2/authorize?response_type=code&client_id={client_id}&state=RequestID42&code_challenge={code_challenge}&code_challenge_method=plain&redirect_uri={redirect_uri}"
     return authorization_url, code_verifier
 
 
 def fetch_token_schema_2(client_id: str,
                         client_secret: str,
                         code_verifier: str,
-                        code: str) -> dict[str, str]:
+                        code: str,
+                        redirect_uri : Optional[str] = None) -> dict[str, str]:
     """
 
     Helper function to generate access token **do not use this to refresh token**
@@ -51,9 +53,9 @@ def fetch_token_schema_2(client_id: str,
         "client_secret": client_secret,
         "code": code,
         "code_verifier": code_verifier,
-        "grant_type": "authorization_code"
+        "grant_type": "authorization_code",
+        'redirect_uri': redirect_uri,
     }
-
     return api_handler.call(uri=uri, method="post", data=data)
 
 # TODO Scheme 1 (Is it even possible)
@@ -101,15 +103,15 @@ class Client(Anime, Manga, MyList, Boards):
         self._connect_to_api()
 
     @classmethod
-    def generate_new_token(cls, client_id: str, client_secret: str, *, code_verifier: str = None):
-        auth_url, code_verifier = generate_authorization_url(client_id, code_verifier=code_verifier)
+    def generate_new_token(cls, client_id: str, client_secret: str, *, code_verifier: str = None, redirect_uri: Optional[str] = None):
+        auth_url, code_verifier = generate_authorization_url(client_id, code_verifier=code_verifier, redirect_uri=redirect_uri)
         # TODO Linux integration
         os.system(f"explorer \"{auth_url}\"")
         print(f"If opening url failed enter it manually into your browser:\n{auth_url}")
         code_url = input("Paste url you were redirected to\n")
         code = re.search(r"(?<=code=)(\w+)", code_url).group()
 
-        data = fetch_token_schema_2(client_id, client_secret, code_verifier, code)
+        data = fetch_token_schema_2(client_id, client_secret, code_verifier, code, redirect_uri)
         return cls(access_token=data['access_token'], refresh_token=data['refresh_token'])
 
     def _connect_to_api(self):

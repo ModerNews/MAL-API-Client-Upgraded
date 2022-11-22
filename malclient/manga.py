@@ -90,7 +90,7 @@ class Manga:
                 raise ValueError(f"ranking_type can't be '{ranking_type}'")
 
         params = {
-            "ranking_type": ranking_type,
+            "ranking_type": ranking_type.value,
             "limit": limit,
             "fields": fields.to_payload(),
             'offset': offset,

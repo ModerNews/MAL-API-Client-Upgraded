@@ -124,6 +124,10 @@ class Fields(FieldsBase):
         self._authors: Union[AuthorFields, bool] = self._generate_subclass(AuthorFields, kwargs, 'authors')
         self.serialization: bool = kwargs.get('serialization', False)
 
+        # endpoint specific
+        self._list_status: Union[ListStatusFields, bool] = self._generate_subclass(ListStatusFields, kwargs, 'list_status')
+        # self._list_status: bool = kwargs.get('ranking', False)
+
     @property
     def authors(self):
         return self._authors
@@ -131,6 +135,14 @@ class Fields(FieldsBase):
     @authors.setter
     def authors(self, value):
         self._authors = self._generate_subclass(AuthorFields, {'authors': value}, 'authors')
+
+    @property
+    def list_status(self):
+        return self._list_status
+
+    @list_status.setter
+    def list_status(self, value):
+        self._list_status = self._generate_subclass(AuthorFields, {'list_status': value}, 'list_status')
 
     @property
     def related_anime(self):
@@ -272,59 +284,46 @@ class ListStatusFields(FieldsBase):
     Helper fields class containing precise data for my_list_status
     """
     def __init__(self, **kwargs):
-        self.score: bool = kwargs.get('score', True)
-        self.status: bool = kwargs.get('status', True)
-        self.updated_at: bool = kwargs.get('updated_at', True)
-        self.start_date: bool = kwargs.get('start_date', False)
-        self.finish_date: bool = kwargs.get('finish_date', False)
         self.priority: bool = kwargs.get('priority', False)
         self.tags: bool = kwargs.get('tags', False)
         self.comments: bool = kwargs.get('comments', False)
 
-        # manga only
-        self.is_rereading: bool = kwargs.get('is_rereading', False)
-        self.num_chapters_read: bool = kwargs.get('num_chapters_read', False)
-        self.num_volumes_read: bool = kwargs.get('num_volumes_read', False)
         self.num_times_reread: bool = kwargs.get('num_times_reread', False)
         self.reread_value: bool = kwargs.get('reread_value', False)
 
-        # anime only
-        self.num_episodes_watched: bool = kwargs.get('num_episodes_watched', False)
-        self.is_rewatching: bool = kwargs.get('is_rewatching', False)
         self.num_times_rewatched: bool = kwargs.get('num_times_rewatched', False)
         self.rewatch_value: bool = kwargs.get('rewatch_value', False)
+
+        # DEPRECATED FIELDS - Always present in request
+        # self.score: bool = kwargs.get('score', True)
+        # self.status: bool = kwargs.get('status', True)
+        # self.updated_at: bool = kwargs.get('updated_at', True)
+        # self.start_date: bool = kwargs.get('start_date', False)
+        # self.finish_date: bool = kwargs.get('finish_date', False)
+        # self.is_rereading: bool = kwargs.get('is_rereading', False)
+        # self.num_chapters_read: bool = kwargs.get('num_chapters_read', False)
+        # self.num_volumes_read: bool = kwargs.get('num_volumes_read', False)
+        # self.num_episodes_watched: bool = kwargs.get('num_episodes_watched', False)
+        # self.is_rewatching: bool = kwargs.get('is_rewatching', False)
 
     @classmethod
     def empty(cls):
         return cls(score=False, status=False, updated_at=False)
 
-    @classmethod
-    def manga_base(cls):
-        """
-        Base fields for manga list status
-        """
-        return cls.from_list(['score', 'status', 'updated_at', 'is_rereading', 'num_chapters_read', 'num_volumes_read', 'start_date', 'finish_date'])
 
     @classmethod
     def manga_full(cls):
         """
         All fields for manga list status
         """
-        return cls.from_list(['score', 'status', 'updated_at', 'is_rereading', 'num_chapters_read', 'num_volumes_read', 'start_date', 'finish_date', 'priority', 'tags', 'comments', 'num_times_reread', 'reread_value'])
-
-    @classmethod
-    def anime_base(cls):
-        """
-        Base fields for anime list status
-        """
-        return cls.from_list(['score', 'status', 'updated_at', 'is_rewatching', 'num_episodes_watched'])
+        return cls.from_list(['priority', 'tags', 'comments', 'num_times_reread', 'reread_value'])
 
     @classmethod
     def anime_full(cls):
         """
         All fields for anime list status
         """
-        return cls.from_list(['score', 'status', 'updated_at', 'is_rewatching', 'num_episodes_watched', 'priority', 'tags', 'comments', 'num_times_rewatched', 'rewatch_value'])
+        return cls.from_list(['priority', 'tags', 'comments', 'num_times_rewatched', 'rewatch_value'])
 
 
 class UserFields(FieldsBase):

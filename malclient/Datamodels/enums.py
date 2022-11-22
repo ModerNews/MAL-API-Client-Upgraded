@@ -228,7 +228,7 @@ class AnimeType(Enum):
     MOVIE = 'movie'
     SPECIAL = 'special'
     ONA = 'ona'
-    MUSIC = 'Music'
+    MUSIC = 'music'
 
 
 class MangaType(Enum):

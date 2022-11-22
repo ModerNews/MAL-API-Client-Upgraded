@@ -200,16 +200,37 @@ class Video(MALBaseModel):
     thumbnail: HttpUrl
 
 
+class Magazine(MALBaseModel):
+    id: int
+    name: str
 
-class AnimeObject(MALBaseModel):
+
+class Serialization(MALBaseModel):
+    node: Magazine
+    role: Optional[str]
+
+
+class PersonBase(MALBaseModel):
+    id: int
+    first_name: str
+    last_name: str
+
+
+class MangaAuthor(MALBaseModel):
+    node: PersonBase
+    role: str
+
+
+class RankingObject(MALBaseModel):
+    rank: int
+
+
+class MalEntryObject(Node):
     """
 
-    Model of anime fetched from myanimelist
+    Base model for both anime and manga entries
 
     """
-    id: Optional[int]
-    title: Optional[str]
-    main_picture: Optional[Asset]
     alternative_titles: Optional[dict]
     start_date: Union[datetime.date, str, None]
     end_date: Union[datetime.date, str, None]
@@ -220,10 +241,37 @@ class AnimeObject(MALBaseModel):
     num_list_users: Optional[int]
     num_scoring_users: Optional[int]
     nsfw: Optional[Nsfw]
-    genres: Union[list[Genre], None]  # There are series that have no genres on database, like this: 'Katsudou Shashin'
+    genres: Optional[list[Genre]]
     created_at: Union[datetime.datetime, str, None]
     updated_at: Union[datetime.datetime, str, None]
-    media_type: Union[AnimeType, str, None]
+    media_type: Union[AnimeType, MangaType, None]
+    status: Union[AnimeStatus, MangaStatus, None]
+    my_list_status: Union[MyAnimeListStatus, MyMangaListStatus, None]
+    pictures: Optional[list[Asset]]
+    background: Optional[str]
+    related_anime: Optional[list[Relation]]
+    related_manga: Optional[list[Relation]]
+    recommendations: Optional[list[Recommendation]]
+    list_status: Optional[Union[MyAnimeListStatus, MyMangaListStatus]]  # IMPORTANT: This is not the same as my_anime_list_status, this is for my_lsit endpoints only
+    ranking: Optional[RankingObject]
+
+    def __eq__(self, other):
+        return self.id == other.id
+
+    def __str__(self):
+        return self.title
+
+    def __repr__(self):
+        return self.__str__()
+
+
+class AnimeObject(MalEntryObject):
+    """
+
+    Model of anime fetched from myanimelist
+
+    """
+    media_type: Optional[AnimeType]
     status: Optional[AnimeStatus]
     my_list_status: Optional[MyAnimeListStatus]
     num_episodes: Optional[int]
@@ -233,60 +281,26 @@ class AnimeObject(MALBaseModel):
     average_episode_duration: Optional[int]
     rating: Optional[Rating]
     studios: Optional[list[Studio]]
-    pictures: Optional[list[Asset]]
-    background: Optional[str]
-    related_anime: Optional[list[Relation]]
-    related_manga: Optional[list[Relation]]
-    recommendations: Optional[list[Recommendation]]
     statistics: Optional[Statistics]
     videos: Optional[list[Video]]
-
-    def __eq__(self, other):
-        return self.id == other.id
-
-    def __str__(self):
-        return self.title
+    list_status: Union[MyAnimeListStatus, None]  # IMPORTANT: This is not the same as my_anime_list_status, this is for my_lsit endpoints only
 
 
-class MangaObject(MALBaseModel):
+class MangaObject(MalEntryObject):
     """
 
     Model of manga fetched from myanimelist
     Some fields may not be mentioned in official documentation
 
     """
-    id: Optional[int]
-    title: Optional[str]
-    main_picture: Optional[Asset]
-    alternative_titles: Optional[dict]
-    start_date: Union[str, datetime.date, None]  # strptime(d['start_date'], '%Y-%m-%d').date()
-    end_date: Union[str, datetime.date, None]  # strptime(d['end_date'], '%Y-%m-%d').date()
-    synopsis: Optional[str]
-    mean: Optional[float]
-    rank: Optional[int]
-    popularity: Optional[int]
-    num_list_users: Optional[int]
-    num_scoring_users: Optional[int]
-    nsfw: Optional[Nsfw]
-    genres: Optional[list[Genre]]
-    created_at: Union[datetime.datetime, str, None]  # strptime(d['created_at'], '%Y-%m-%dT%H:%M:%S%z')
-    updated_at: Union[datetime.datetime, str, None]  # strptime(d['updated_at'], '%Y-%m-%dT%H:%M:%S%z')
     media_type: Union[MangaType, str, None]
     status: Union[MangaStatus, str, None]
     my_list_status: Optional[MyMangaListStatus]
     num_volumes: Optional[int]
     num_chapters: Optional[int]
-    pictures: Optional[list[Asset]]
-    background: Optional[str]
-    related_anime: Optional[list[Relation]]
-    related_manga: Optional[list[Relation]]
-    recommendations: Optional[list[Recommendation]]
-
-    def __eq__(self, other):
-        return id == other.id
-
-    def __str__(self):
-        return self.title
+    authors: Optional[list[MangaAuthor]]
+    serialization: Optional[list[Serialization]]
+    list_status: Union[MyMangaListStatus, None]  # IMPORTANT: This is not the same as my_anime_list_status, this is for my_lsit endpoints only
 
 
 class UserAnimeStatistics(MALBaseModel):

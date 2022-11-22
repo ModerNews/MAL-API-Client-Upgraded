@@ -82,7 +82,7 @@ class MyList:
                             status: Optional[str] = None,
                             limit: int = 100,
                             offset: int = 0,
-                            list_status_fields: ListStatusFields = ListStatusFields.anime_base(),
+                            list_status_fields: ListStatusFields = True,
                             fields: Fields = Fields.from_list(['id', 'title', 'main_picture', 'my_list_status']),
                             nsfw: bool = None):
         """
@@ -100,7 +100,7 @@ class MyList:
         :rtype: PagedResult[AnimeObject]
         """
         uri = f'users/{username}/animelist'
-        fields.my_list_status = list_status_fields
+        fields.list_status = list_status_fields
         if not sort:
             sort = MyAnimeListSorting.LIST_SCORE
         elif isinstance(sort, str):
@@ -201,7 +201,7 @@ class MyList:
                             status: Optional[str] = None,
                             limit: int = 100,
                             offset: int = 0,
-                            list_status_fields: ListStatusFields = ListStatusFields.manga_base(),
+                            list_status_fields: ListStatusFields = True,
                             fields: Fields = Fields.from_list(['id', 'title', 'main_picture']),
                             nsfw: bool = None):
         """

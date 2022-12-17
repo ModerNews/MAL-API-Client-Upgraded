@@ -134,7 +134,8 @@ class Client(Anime, Manga, MyList, Boards):
     def refresh_bearer_token(self,
                              client_id: str,
                              client_secret: str,
-                             refresh_token: str) -> None:
+                             refresh_token: str,
+                             print_response: bool = True) -> None:
         """
 
         Function to automatically refresh your clients bearer token (as for now there is no such thing as lifetime token)
@@ -142,6 +143,7 @@ class Client(Anime, Manga, MyList, Boards):
         :param str client_id: Your client id number
         :param str client_secret: Your client secret
         :param str refresh_token: Your refresh token
+        :param bool print_response: Should the response json be printed or not
         """
         base_url = "https://myanimelist.net/v1/"
         uri = "oauth2/token"
@@ -160,8 +162,9 @@ class Client(Anime, Manga, MyList, Boards):
 
         # print response json of authentication, reinstantiate caller method.
         response = api_handler.call(uri=uri, method="post", data=data)
-        print("Refreshing token with client id and secret:")
-        print(response)
+        if print_response:
+            print("Refreshing token with client id and secret:")
+            print(response)
         self._bearer_token = response["access_token"]
         self.refresh_token = response["refresh_token"]
         self.headers = {

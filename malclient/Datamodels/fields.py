@@ -142,7 +142,7 @@ class Fields(FieldsBase):
 
     @list_status.setter
     def list_status(self, value):
-        self._list_status = self._generate_subclass(AuthorFields, {'list_status': value}, 'list_status')
+        self._list_status = self._generate_subclass(ListStatusFields, {'list_status': value}, 'list_status')
 
     @property
     def related_anime(self):

@@ -184,7 +184,11 @@ class MyAnimeListStatus(MALBaseModel):
     num_episodes_watched: int
     start_date: Union[datetime.date, str, None]
     finish_date: Union[datetime.date, str, None]
-
+    priority: Optional[int]
+    num_times_rewatched: Optional[int]
+    rewatch_value: Optional[int]
+    tags: Optional[list[str]]
+    comments: Optional[str]
 
 class Video(MALBaseModel):
     """
@@ -223,6 +227,7 @@ class MangaAuthor(MALBaseModel):
 
 class RankingObject(MALBaseModel):
     rank: int
+    previous_rank: int  # docs states that this exist, did not find it in response yet
 
 
 class MalEntryObject(Node):

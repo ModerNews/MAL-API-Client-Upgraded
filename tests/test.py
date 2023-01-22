@@ -1,7 +1,8 @@
 import malclient
+import os
 
-client = malclient.Client(access_token='eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6IjRkMmU0NTVjYjY3Yjc4ZGIwMGVmNjRhYjU3Y2I1ZGVlMjZkYjRjYTIzZDU1NTU4MjY0OWM4YTVjOGZmMDQwYjgzMmQ2MWVhZDRhZTYxYTZhIn0.eyJhdWQiOiI0ODU2M2I5MDYzMTBkM2ZkYjRjZWZhMWMxODc3YmZjMyIsImp0aSI6IjRkMmU0NTVjYjY3Yjc4ZGIwMGVmNjRhYjU3Y2I1ZGVlMjZkYjRjYTIzZDU1NTU4MjY0OWM4YTVjOGZmMDQwYjgzMmQ2MWVhZDRhZTYxYTZhIiwiaWF0IjoxNjY4ODk5NjA0LCJuYmYiOjE2Njg4OTk2MDQsImV4cCI6MTY3MTQ5MTYwNCwic3ViIjoiMTA4MzEzMzAiLCJzY29wZXMiOltdfQ.LgLRM4m_8R30hHMOW_vd8aVS2wBWjAppICTtT92SztTDBJ7myuDDON3Dw1-yNRNeaFK1FDNZzTPGfaPJUxYr_rMads5ILWiiwwWrhG-OCjyPC8F8S34XiommD7w7sQzJMSQeqzNTTExuMUgzCv7DaTYocMpSDL0V41T6KuhBB7nWL9dCDFJl2RqUCkKsxRFLq7tQ_oTgxxi7SIf8z6ARZPJlzNsCi0h0DrZLDCLmDoUxQ6c1ZhtD2r4MJeZ-wOQS1l1THXb2819AKTgCR37IssIDTrgmwz5wW526I63ntm6Bxm43Ifb0ii902sSHG6tCIt_TaVz60uuLVQwfkC1QIA',
-                          refresh_token='def502002311d3d0573e52c4c0e96f2e4a5c36f255be4e649d280e6b9110385808a4f8c84243f63d71c56cc68c1afb18800c20b4e7739532db4ac21689833a198b7eab6c969a6d419dc530488e2acbc0ff17e36b450c55615541ac8d94b5ca46582b98c2a6f100f927e59ee891ba38b943e97fe681d55dcaad0ed6bd230d60e092fb9eac418cba6ae2618440aee77b7f71bd1422c0b3bd7785a0c0b4334cf8d84a2b8dee1a192be35b618db56a87b02bdb823d55c44019fe97ae5e141704f660620b358a4d610055cc95aa02983cd2b2f28dd96180d5070dca0ac13f95cdc493dd88a9b315be8a82933bb02e3327980ecc874f841fa3fe50541ee6c400e463b6f56838b386e62f8a3fa4b019ee133cf7fd440cfbf5db6f2d1d12903e29923e324adbf1a26c6e62666e30dae08b8e32adde8078958a22b1aae3a6858e2ef3880746cad56e315e7a5324fcfb1b39478b3a3eb77320c62d1d3a5eac0098c13cb9ae93d5e0569ece91a166ff87bb0960b4ba609257dd43932f431858ce96f4d28a234a36b0ea59078693a8')
+client = malclient.Client(access_token=os.getenv("access_token"),
+                          refresh_token=os.getenv("refresh_token"))
 
 fields = malclient.Fields.all()
 
@@ -9,7 +10,7 @@ anime1 = client.search_anime('Fate')
 anime2 = client.get_anime_fields(10087, fields=fields)
 anime3 = client.get_anime_ranking(ranking_type='bypopularity', fields=fields)
 anime4 = client.get_user_anime_list('michalwrpo')
-anime5 = client.get_user_anime_list('Rafist0', status='on_hold')
+anime5 = client.get_user_anime_list('Rafist0', status='completed', fields=fields, list_status_fields=malclient.ListStatusFields.all())
 anime6 = client.get_seasonal_anime('winter', 2022)
 anime7 = client.get_suggested_anime()
 

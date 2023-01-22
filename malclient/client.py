@@ -4,6 +4,7 @@ import os
 import datetime
 import logging
 from typing import Optional
+import platform
 
 from .request_handler import APICaller
 from .anime import Anime
@@ -24,7 +25,7 @@ def generate_authorization_url(client_id: str, *,
 
     assert 48 <= len(code_verifier) <= 128
 
-    authorization_url = f"https://myanimelist.net/v1/oauth2/authorize?response_type=code&client_id={client_id}&state=RequestID42&code_challenge={code_challenge}&code_challenge_method=plain&redirect_uri={redirect_uri}"
+    authorization_url = f"https://myanimelist.net/v1/oauth2/authorize?response_type=code&client_id={client_id}&state=RequestID42&code_challenge={code_verifier}&code_challenge_method=plain&redirect_uri={redirect_uri}"
     return authorization_url, code_verifier
 
 
@@ -74,9 +75,6 @@ def setup_logging(*, format: str = None, filename: str = None, log_level: loggin
     now = datetime.datetime.now()
     if filename is None:
         filename = f"malclient_log_{now.strftime('%Y-%m-%d_%H-%M')}.log"
-    with open(filename, "a+") as file:
-        file.write("#Software: Malclient-Upgraded 1.2.5\n")
-        file.write(f"#Start-Date: {now.strftime('%Y-%m-%d %H:%M:%S.%f %Z')}\n")
     logging.basicConfig(filename=filename, level=log_level, format=format)
 
 
@@ -105,8 +103,12 @@ class Client(Anime, Manga, MyList, Boards):
     @classmethod
     def generate_new_token(cls, client_id: str, client_secret: str, *, code_verifier: str = None, redirect_uri: Optional[str] = None):
         auth_url, code_verifier = generate_authorization_url(client_id, code_verifier=code_verifier, redirect_uri=redirect_uri)
-        # TODO Linux integration
-        os.system(f"explorer \"{auth_url}\"")
+        if 'windows' in platform.system().lower():
+            os.system(f"explorer \"{auth_url}\"")
+        elif 'darwin' in platform.system().lower():
+            os.system(f"open \"{auth_url}\"")
+        elif 'linux' in platform.system().lower():
+            os.system(f"xdg-open \"{auth_url}\"")
         print(f"If opening url failed enter it manually into your browser:\n{auth_url}")
         code_url = input("Paste url you were redirected to\n")
         code = re.search(r"(?<=code=)(\w+)", code_url).group()

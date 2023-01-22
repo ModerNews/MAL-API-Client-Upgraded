@@ -61,7 +61,7 @@ class APICaller(object):
 
     @staticmethod
     def _parse_error(response, method, url):
-        logging.error(f"{method.upper()} {url} {response.status_code} {json.loads(response.text)['error']}: {json.loads(response.text)['message'] if 'message' in json.loads(response.text) or len(json.loads(response.text)) != 0 else 'null'}")
+        logging.error(f"{method.upper()} {url} {response.status_code} {json.loads(response.text)['error']}: {json.loads(response.text)['message'] if 'message' in json.loads(response.text) or len(json.loads(response.text)) != 0 else ''}")
         if str(response.status_code) == "400" or str(response.status_code).lower() == "400 bad request":
             raise BadRequest(response)
         elif str(response.status_code) == "401" or str(response.status_code).lower() == "401 unauthorized":

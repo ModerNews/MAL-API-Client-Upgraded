@@ -6,6 +6,7 @@ from pydantic import BaseModel, HttpUrl
 
 from .enums import *
 from .pagination import PagedResult
+from .fields import Fields
 from ..exceptions import NotFound
 
 __all__ = ['Asset', 'Node', 'AnimeSeason', 'Genre', 'Studio', 'Broadcast', 'Statistics', 'Relation', 'Recommendation',
@@ -290,6 +291,19 @@ class AnimeObject(MalEntryObject):
     videos: Optional[list[Video]]
     list_status: Union[MyAnimeListStatus, None]  # IMPORTANT: This is not the same as my_anime_list_status, this is for my_lsit endpoints only
 
+    def populate(self, client):
+        """
+
+        Send new request and return new object containing full details
+
+        :param malclient.Client client: client with which new data will be fetched
+
+        :returns: Fully populated AnimeObject
+        :rtype: AnimeObject
+
+        """
+        return client.get_anime_details(self.id)
+
 
 class MangaObject(MalEntryObject):
     """
@@ -306,6 +320,19 @@ class MangaObject(MalEntryObject):
     authors: Optional[list[MangaAuthor]]
     serialization: Optional[list[Serialization]]
     list_status: Union[MyMangaListStatus, None]  # IMPORTANT: This is not the same as my_anime_list_status, this is for my_lsit endpoints only
+
+    def populate(self, client):
+        """
+
+        Send new request and return new object containing full details
+
+        :param malclient.Client client: client with which new data will be fetched
+
+        :returns: Fully populated MangaObject
+        :rtype: MangaObject
+
+        """
+        return client.get_manga_details(self.id)
 
 
 class UserAnimeStatistics(MALBaseModel):

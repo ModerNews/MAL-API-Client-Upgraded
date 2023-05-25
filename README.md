@@ -10,7 +10,6 @@ Originally created by [@JFryy](https://github.com/JFryy/MAL-API-Client), dropped
 
 ## Documentation
 Unsure what to do? [Check out our documentation](https://mal-api-client-upgraded.readthedocs.io) </br>
-There will be quick guide coming up soon as well!
 
 ## Installation
 **Python 3.9 or newer required**, this is due to changes in type hinting guidelines, for more info regarding this issue read [PEP 585](https://peps.python.org/pep-0585/)  
@@ -97,7 +96,6 @@ anime = client.search_anime("Monogatari", limit=1)
 ```
 
 ### Most Imoprtant To-Do's
-- [ ] Rewrite boards (currently disabled)
 - [ ] Implement additional search endpoint
 
 ### Useful resources

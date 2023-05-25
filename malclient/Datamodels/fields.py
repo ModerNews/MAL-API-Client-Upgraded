@@ -1,7 +1,7 @@
 from types import MethodType, MethodWrapperType, BuiltinFunctionType
 from typing import Union
 
-__all__ = ['Fields', 'AuthorFields', 'ListStatusFields', 'UserFields']
+__all__ = ['Fields', 'AuthorFields', 'ListStatusFields', 'UserFields', "CharacterFields"]
 
 
 class FieldsBase(object):
@@ -44,9 +44,9 @@ class FieldsBase(object):
                 fields.append(field)
         return ','.join(fields)
 
-    def _generate_subclass(self, r_type, kwargs, key):
-        return r_type(**kwargs.get(key)) if isinstance(kwargs.get(key), dict) else kwargs.get(key) if isinstance(
-            kwargs.get(key), r_type) else False if kwargs.get(key) is not True else r_type()
+    def _generate_subclass(self, r_type, value):
+        return r_type(**value) if isinstance(value, dict) else value if isinstance(
+            value, r_type) else False if value is not True else r_type()
 
     @classmethod
     def from_list(cls, field_list: list[str]):
@@ -93,12 +93,12 @@ class Fields(FieldsBase):
         self.updated_at: bool = kwargs.get('updated_at', False)
         self.genres: bool = kwargs.get('genres', False)
         # self.my_list_status: bool = kwargs.get('my_list_status', False)
-        self._my_list_status: ListStatusFields = self._generate_subclass(ListStatusFields, kwargs, 'my_list_status')
+        self._my_list_status: ListStatusFields = self._generate_subclass(ListStatusFields, kwargs.get('my_list_status', False))
         self.pictures: bool = kwargs.get('pictures', False)
         self.background: bool = kwargs.get('background', False)
-        self._related_anime: bool = self._generate_subclass(Fields, kwargs, 'related_anime')
-        self._related_manga: bool = self._generate_subclass(Fields, kwargs, 'related_manga')
-        self._recommendations: bool = self._generate_subclass(Fields, kwargs, 'recommendations')
+        self._related_anime: bool = self._generate_subclass(Fields, kwargs.get('related_anime', False))
+        self._related_manga: bool = self._generate_subclass(Fields, kwargs.get('related_manga', False))
+        self._recommendations: bool = self._generate_subclass(Fields, kwargs.get('recommendations', False))
         self.nsfw: bool = kwargs.get('nsfw', False)
         self.created_at: bool = kwargs.get('created_at', False)
         self.media_type: bool = kwargs.get('media_type', False)
@@ -121,11 +121,11 @@ class Fields(FieldsBase):
         # manga related
         self.num_volumes: bool = kwargs.get('num_volumes', False)
         self.num_chapters: bool = kwargs.get('num_chapters', False)
-        self._authors: Union[AuthorFields, bool] = self._generate_subclass(AuthorFields, kwargs, 'authors')
+        self._authors: Union[AuthorFields, bool] = self._generate_subclass(AuthorFields, kwargs.get('authors', False))
         self.serialization: bool = kwargs.get('serialization', False)
 
         # endpoint specific
-        self._list_status: Union[ListStatusFields, bool] = self._generate_subclass(ListStatusFields, kwargs, 'list_status')
+        self._list_status: Union[ListStatusFields, bool] = self._generate_subclass(ListStatusFields, kwargs.get('list_status'))
         # self._list_status: bool = kwargs.get('ranking', False)
 
     @property
@@ -134,7 +134,7 @@ class Fields(FieldsBase):
 
     @authors.setter
     def authors(self, value):
-        self._authors = self._generate_subclass(AuthorFields, {'authors': value}, 'authors')
+        self._authors = self._generate_subclass(AuthorFields, value)
 
     @property
     def list_status(self):
@@ -142,7 +142,7 @@ class Fields(FieldsBase):
 
     @list_status.setter
     def list_status(self, value):
-        self._list_status = self._generate_subclass(ListStatusFields, {'list_status': value}, 'list_status')
+        self._list_status = self._generate_subclass(ListStatusFields, value)
 
     @property
     def related_anime(self):
@@ -150,7 +150,7 @@ class Fields(FieldsBase):
 
     @related_anime.setter
     def related_anime(self, value):
-        self._related_anime = self._generate_subclass(Fields, {'related_anime': value}, 'related_anime')
+        self._related_anime = self._generate_subclass(Fields, value)
 
     @property
     def related_manga(self):
@@ -158,7 +158,7 @@ class Fields(FieldsBase):
 
     @related_manga.setter
     def related_manga(self, value):
-        self._related_manga = self._generate_subclass(Fields, {'related_manga': value}, 'related_manga')
+        self._related_manga = self._generate_subclass(Fields, value)
 
     @property
     def recommendations(self):
@@ -166,7 +166,7 @@ class Fields(FieldsBase):
 
     @recommendations.setter
     def recommendations(self, value):
-        self._recommendations = self._generate_subclass(Fields, {'recommendations': value}, 'recommendations')
+        self._recommendations = self._generate_subclass(Fields, value)
 
     @property
     def my_list_status(self):
@@ -174,7 +174,7 @@ class Fields(FieldsBase):
 
     @my_list_status.setter
     def my_list_status(self, value):
-        self._my_list_status: ListStatusFields = self._generate_subclass(ListStatusFields, {'my_list_status': value}, 'my_list_status')
+        self._my_list_status: ListStatusFields = self._generate_subclass(ListStatusFields, value)
 
     @classmethod
     def empty(cls):
@@ -345,6 +345,27 @@ class UserFields(FieldsBase):
                    name=True,
                    picture=True,
                    anime_statistics=True)
+
+
+class CharacterFields(FieldsBase):
+    def __init__(self, **kwargs):
+        self.id: bool = kwargs.get("id", True)
+        self.role: bool = kwargs.get("role", True)
+        self.first_name: bool = kwargs.get("first_name", False)
+        self.last_name: bool = kwargs.get("last_name", False)
+        self.alternative_name: bool = kwargs.get("alternative_name", False)
+        self.main_picture: bool = kwargs.get("main_picture", False)
+        self.biography: bool = kwargs.get("biography", False)
+        self.pictures: bool = kwargs.get("pictures", False)
+        self._animeography: Fields = self._generate_subclass(Fields, kwargs.get("animeography", False))
+
+    @property
+    def animeography(self) -> Fields:
+        return self._animeography
+
+    @animeography.setter
+    def animeography(self, value: Fields):
+        self._animeography: Fields = self._generate_subclass(Fields, value)
 
 
 # Deprecated - This serves no purpose, you can't specify fields for this parameter

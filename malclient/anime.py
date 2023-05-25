@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import Optional, Literal, Union
 
-from .Datamodels import Fields, AnimeObject, Node, Season, PagedResult, AnimeRankingType, SeasonalAnimeSorting, Character
+from .Datamodels import Fields, AnimeObject, Node, Season, PagedResult, AnimeRankingType, SeasonalAnimeSorting, Character, CharacterFields
 from .exceptions import MainAuthRequiredError
 
 __all__ = ["Anime"]
@@ -161,7 +161,7 @@ class Anime:
         r_class = Node if fields == Fields.node() else AnimeObject
         return PagedResult([r_class(**anime) for anime in temp["data"]], temp['paging'])
 
-    def get_anime_characters(self, anime_id: int, *, fields: str = "id,first_name,last_name,alternative_name,main_picture,biography,pictures,animeography", limit: int = 500, offset: int = 0) -> PagedResult[Character]:
+    def get_anime_characters(self, anime_id: int, *, fields: CharacterFields = CharacterFields, limit: int = 500, offset: int = 0) -> PagedResult[Character]:
         """
         Gets list of characters from specified anime
 
@@ -181,7 +181,7 @@ class Anime:
         temp = self._api_handler.call(uri=uri, params=params)
         return PagedResult([Character(**character) for character in temp["data"]], temp['paging'])
 
-    def get_character_details(self, character_id: int, *, fields: str = "id,first_name,last_name,alternative_name,main_picture,biography,pictures,animeography") -> Character:
+    def get_character_details(self, character_id: int, *, fields: CharacterFields = CharacterFields.all()) -> Character:
         """
         Gets details of specified character
 

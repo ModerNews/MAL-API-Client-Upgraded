@@ -12,7 +12,7 @@ from ..exceptions import NotFound
 __all__ = ['Asset', 'Node', 'AnimeSeason', 'Genre', 'Studio', 'Broadcast', 'Statistics', 'Relation', 'Recommendation',
            'MyMangaListStatus', 'MyAnimeListStatus', 'AnimeObject', 'MangaObject', 'UserAnimeStatistics', "User",
            'ForumTopicDetail', 'ForumTopic', 'ForumCategory', 'ForumAuthor', 'ForumPoll', 'ForumPollOption',
-           'ForumPost', 'ForumBoard', 'ForumSubboard']
+           'ForumPost', 'ForumBoard', 'ForumSubboard', 'Character']
 
 
 class MALBaseModel(BaseModel):
@@ -228,7 +228,7 @@ class MangaAuthor(MALBaseModel):
 
 class RankingObject(MALBaseModel):
     rank: int
-    previous_rank: int  # docs states that this exist, did not find it in response yet
+    previous_rank: Optional[int]  # docs states that this exist, did not find it in response yet
 
 
 class MalEntryObject(Node):
@@ -479,3 +479,15 @@ class ForumBoard(MALBaseModel):
 class ForumCategory(MALBaseModel):
     title: str
     boards: list[ForumBoard]
+
+
+class Character(MALBaseModel):
+    id: int
+    role: str
+    first_name: Optional[str]
+    last_name: Optional[str]
+    alternative_name: Optional[list[str]]
+    main_picture: Optional[HttpUrl]
+    biography: Optional[str]
+    pictures: Optional[list[HttpUrl]]
+    animeography: Optional[list[AnimeObject]]

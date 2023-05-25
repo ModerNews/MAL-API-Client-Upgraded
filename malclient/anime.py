@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import Optional, Literal, Union
 
-from .Datamodels import Fields, AnimeObject, Node, Season, PagedResult, AnimeRankingType, SeasonalAnimeSorting
+from .Datamodels import Fields, AnimeObject, Node, Season, PagedResult, AnimeRankingType, SeasonalAnimeSorting, Character
 from .exceptions import MainAuthRequiredError
 
 __all__ = ["Anime"]
@@ -160,3 +160,38 @@ class Anime:
         temp = self._api_handler.call(uri=uri, params=params)
         r_class = Node if fields == Fields.node() else AnimeObject
         return PagedResult([r_class(**anime) for anime in temp["data"]], temp['paging'])
+
+    def get_anime_characters(self, anime_id: int, *, fields: str = "id,first_name,last_name,alternative_name,main_picture,biography,pictures,animeography", limit: int = 500, offset: int = 0) -> PagedResult[Character]:
+        """
+        Gets list of characters from specified anime
+
+        :param int anime_id: Id of anime to fetch characters from
+        :param Fields fields: Fields returned alongside results
+        :param int limit: number of queries returned
+        :param int offset: Position from which search results will be presented
+
+        :return: List of entries fetched from MyAnimeList with paging support
+        :rtype: PagedResult[Character]
+        """
+        uri = f'anime/{anime_id}/characters'
+        params = {"limit": limit,
+                  "offset": offset,
+                  "fields": fields}
+
+        temp = self._api_handler.call(uri=uri, params=params)
+        return PagedResult([Character(**character) for character in temp["data"]], temp['paging'])
+
+    def get_character_details(self, character_id: int, *, fields: str = "id,first_name,last_name,alternative_name,main_picture,biography,pictures,animeography") -> Character:
+        """
+        Gets details of specified character
+
+        :param int character_id: Id of character to fetch
+        :param Fields fields: Fields returned alongside results
+
+        :return: List of entries fetched from MyAnimeList with paging support
+        :rtype: PagedResult[Character]
+        """
+        uri = f'characters/{character_id}'
+        params = {"fields": fields}
+
+        return Character(**self._api_handler.call(uri=uri, params=params))

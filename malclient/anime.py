@@ -161,7 +161,7 @@ class Anime:
         r_class = Node if fields == Fields.node() else AnimeObject
         return PagedResult([r_class(**anime) for anime in temp["data"]], temp['paging'])
 
-    def get_anime_characters(self, anime_id: int, *, fields: CharacterFields = CharacterFields, limit: int = 500, offset: int = 0) -> PagedResult[Character]:
+    def get_anime_characters(self, anime_id: int, *, fields: CharacterFields = CharacterFields.all(), limit: int = 500, offset: int = 0) -> PagedResult[Character]:
         """
         Gets list of characters from specified anime
 
@@ -176,7 +176,7 @@ class Anime:
         uri = f'anime/{anime_id}/characters'
         params = {"limit": limit,
                   "offset": offset,
-                  "fields": fields}
+                  "fields": fields.to_payload()}
 
         temp = self._api_handler.call(uri=uri, params=params)
         return PagedResult([Character(**character) for character in temp["data"]], temp['paging'])
@@ -192,6 +192,6 @@ class Anime:
         :rtype: PagedResult[Character]
         """
         uri = f'characters/{character_id}'
-        params = {"fields": fields}
+        params = {"fields": fields.to_payload()}
 
         return Character(**self._api_handler.call(uri=uri, params=params))

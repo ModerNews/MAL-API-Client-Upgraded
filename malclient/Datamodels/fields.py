@@ -358,6 +358,7 @@ class CharacterFields(FieldsBase):
         self.biography: bool = kwargs.get("biography", False)
         self.pictures: bool = kwargs.get("pictures", False)
         self._animeography: Fields = self._generate_subclass(Fields, kwargs.get("animeography", False))
+        self.num_favorites: bool = kwargs.get("num_favorites", False)
 
     @property
     def animeography(self) -> Fields:

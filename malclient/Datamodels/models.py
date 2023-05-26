@@ -481,13 +481,26 @@ class ForumCategory(MALBaseModel):
     boards: list[ForumBoard]
 
 
+# This is added to avoid further expanding of AnimeObject
+class Animeography(AnimeObject):
+    """
+    Object represents animeography of character.
+    It might be populated same way as AnimeObject, depending on fields requested.
+    However it always contains role field, which represents role given to character in anime.
+
+    This object is only available in Character object.
+    """
+    role: Optional[str]
+
+
 class Character(MALBaseModel):
     id: int
-    role: str
+    role: Optional[str]
     first_name: Optional[str]
     last_name: Optional[str]
     alternative_name: Optional[list[str]]
-    main_picture: Optional[HttpUrl]
+    main_picture: Optional[Asset]
     biography: Optional[str]
-    pictures: Optional[list[HttpUrl]]
-    animeography: Optional[list[AnimeObject]]
+    pictures: Optional[list[Asset]]
+    animeography: Optional[list[Animeography]]
+    num_favorites: Optional[int]

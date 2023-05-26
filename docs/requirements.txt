@@ -1,4 +1,4 @@
-malclient-upgraded==1.4a1
+malclient-upgraded==1.4a2
 setuptools~=57.0.0
 requests~=2.27.1
 pydantic~=1.9.0

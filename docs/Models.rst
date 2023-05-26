@@ -62,6 +62,10 @@ Anime Specific
 
 .. autopydantic_model:: Character
 
+.. note::
+    This is available only in alpha build of a wrapper
+
+.. autopydantic_model:: Animeography
 
 Manga Specific
 ==============
@@ -291,8 +295,8 @@ Fields
           - Character's first name
         * - last_name
           - Character's last name
-        * - alternative_names
-          - List of alternative name
+        * - alternative_name
+          - List of alternative names
         * - main_picture
           - Main picture for character
         * - biography

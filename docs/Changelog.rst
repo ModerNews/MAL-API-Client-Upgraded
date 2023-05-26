@@ -7,12 +7,14 @@ Version 1.4
 .. warning::
     This is still in alpha stage, and is not recommended for production use. Further functionalities still need to be added.
 
+* Rewritten base parser for JSON responses, improving it's functionality and readability
 * Introduced new endpoints added by MAL:
     * Client.get_anime_characters()
     * Client.get_character_details()
 * Created helper models for characters:
     * Character - represents character object in API
     * CharacterFields - represents fields for character query
+    * Animeography - represents animeography field in API, inherits after AnimeObject
 * Added repopulating methods for AnimeObject and MangaObject, those methods send new query to API and update object with new data, based on its id:
     * AnimeObject.populate()
     * MangaObject.populate()

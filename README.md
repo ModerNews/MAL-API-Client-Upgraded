@@ -96,6 +96,8 @@ anime = client.search_anime("Monogatari", limit=1)
 ```
 
 ### Most Imoprtant To-Do's
+- [ ] Implement people endpoint
+- [ ] Implement episodes endpoint
 - [ ] Implement additional search endpoint
 
 ### Useful resources

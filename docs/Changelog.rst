@@ -2,6 +2,28 @@
 Changelog
 =========
 
+Version 1.4
+===========
+.. warning::
+    This is still in alpha stage, and is not recommended for production use. Further functionalities still need to be added.
+
+* Introduced new endpoints added by MAL:
+    * Client.get_anime_characters()
+    * Client.get_character_details()
+* Created helper models for characters:
+    * Character - represents character object in API
+    * CharacterFields - represents fields for character query
+* Added repopulating methods for AnimeObject and MangaObject, those methods send new query to API and update object with new data, based on its id:
+    * AnimeObject.populate()
+    * MangaObject.populate()
+* :code:`Client.generate_new_token` now works on Linux and Darwin (MacOS) systems
+* :code:`Client.generate_new_token` now takes additional argument for hiding token response in console
+* Fixed:
+    * :code:`redirect_uri` not present in OAuth2 flow
+    * :code:`Client.get_user_anime_list` and :code:`Client.get_user_manga_list` raising errors for empty lists, now returns :code:`None` instead
+    * :code:`Fields.list_status` not working
+    * :code:`Client.get_user_info` not working
+
 Version 1.3
 ===========
 * Introduced forum boards handlers

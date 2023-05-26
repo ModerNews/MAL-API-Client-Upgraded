@@ -57,6 +57,11 @@ Anime Specific
 
 .. autoclass:: MyAnimeListSorting
 
+.. note::
+    This is available only in alpha build of a wrapper
+
+.. autopydantic_model:: Character
+
 
 Manga Specific
 ==============
@@ -266,6 +271,40 @@ Fields
           - | How likely is user to reread this series
             | Available only for manga entries
 
+.. note::
+    This is available only in alpha build of a wrapper
+
+.. autoclass:: CharacterFields
+    :members:
+
+    .. list-table:: Available Fields
+        :widths: 25 50
+        :header-rows: 1
+
+        * - Value
+          - Description
+        * - id
+          - Character's id on MAL
+        * - role
+          - Character's role in anime one of: [Main, Supporting]
+        * - first_name
+          - Character's first name
+        * - last_name
+          - Character's last name
+        * - alternative_names
+          - List of alternative name
+        * - main_picture
+          - Main picture for character
+        * - biography
+          - Character's description on MAL
+        * - pictures
+          - | List of all pictures for this character
+            | You cannot contain this field in a list.
+        * - animeography
+          - | List of all anime in which this character appears
+            | You cannot contain this field in a list.
+        * - num_favorite
+          - Number of users who have this character in their favourites
 
 Forums
 ======

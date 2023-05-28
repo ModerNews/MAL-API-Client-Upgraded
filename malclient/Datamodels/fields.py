@@ -1,7 +1,7 @@
 from types import MethodType, MethodWrapperType, BuiltinFunctionType
 from typing import Union
 
-__all__ = ['Fields', 'AuthorFields', 'ListStatusFields', 'UserFields', "CharacterFields"]
+__all__ = ['Fields', 'AuthorFields', 'ListStatusFields', 'UserFields', "CharacterFields", 'PersonFields']
 
 
 class FieldsBase(object):
@@ -368,6 +368,17 @@ class CharacterFields(FieldsBase):
     def animeography(self, value: Fields):
         self._animeography: Fields = self._generate_subclass(Fields, value)
 
+
+class PersonFields(FieldsBase):
+    def __init__(self, **kwargs):
+        self.id: bool = kwargs.get("id", True)
+        self.first_name: bool = kwargs.get("first_name", True)
+        self.last_name: bool = kwargs.get("last_name", True)
+        self.alternative_names: bool = kwargs.get("alternative_names", False)
+        self.num_favorites: bool = kwargs.get("num_favorites", False)
+        self.main_picture: bool = kwargs.get("main_picture", False)
+        self.birthday: bool = kwargs.get("birthday", False)
+        self.more: bool = kwargs.get("more", False)
 
 # Deprecated - This serves no purpose, you can't specify fields for this parameter
 # class AnimeStatisticsFields(FieldsBase):

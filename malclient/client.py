@@ -10,6 +10,7 @@ from .request_handler import APICaller
 from .anime import Anime
 from .my_list import MyList
 from .manga import Manga
+from .industry import Industry
 from .exceptions import AuthorizationError
 from .boards import Boards
 
@@ -78,7 +79,7 @@ def setup_logging(*, format: str = None, filename: str = None, log_level: loggin
     logging.basicConfig(filename=filename, level=log_level, format=format)
 
 
-class Client(Anime, Manga, MyList, Boards):
+class Client(Anime, Manga, MyList, Boards, Industry):
     """
 
     Base class for interacting with MyAnimeList REST API

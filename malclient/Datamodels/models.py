@@ -12,7 +12,7 @@ from ..exceptions import NotFound
 __all__ = ['Asset', 'Node', 'AnimeSeason', 'Genre', 'Studio', 'Broadcast', 'Statistics', 'Relation', 'Recommendation',
            'MyMangaListStatus', 'MyAnimeListStatus', 'AnimeObject', 'MangaObject', 'UserAnimeStatistics', "User",
            'ForumTopicDetail', 'ForumTopic', 'ForumCategory', 'ForumAuthor', 'ForumPoll', 'ForumPollOption',
-           'ForumPost', 'ForumBoard', 'ForumSubboard', 'Character']
+           'ForumPost', 'ForumBoard', 'ForumSubboard', 'Character', 'Person']
 
 
 class MALBaseModel(BaseModel):
@@ -493,14 +493,19 @@ class Animeography(AnimeObject):
     role: Optional[str]
 
 
-class Character(MALBaseModel):
-    id: int
+class Character(PersonBase):
     role: Optional[str]
-    first_name: Optional[str]
-    last_name: Optional[str]
-    alternative_name: Optional[list[str]]
+    alternative_name: Optional[str]
     main_picture: Optional[Asset]
     biography: Optional[str]
     pictures: Optional[list[Asset]]
     animeography: Optional[list[Animeography]]
     num_favorites: Optional[int]
+
+
+class Person(PersonBase):
+    alternative_names: Optional[list[str]]
+    num_favorites: Optional[int]
+    main_picture: Optional[Asset]
+    birthday: Optional[datetime.date]
+    more: Optional[str]

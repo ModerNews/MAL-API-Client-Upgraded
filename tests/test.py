@@ -25,4 +25,6 @@ manga4 = client.get_user_manga_list('michalwrpo')
 
 character1 = client.get_character_details(161357)
 character2 = client.get_anime_characters(21)
+
+person1 = client.get_person_details(160, fields=malclient.PersonFields.all())
 print('Ready to finish...')

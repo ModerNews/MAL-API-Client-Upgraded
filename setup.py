@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="malclient-upgraded",
-    version="1.4a2",
+    version="1.4a3",
     author="ModerNews",
     author_email="polski.gruzin.biz@gmail.com",
     description=
